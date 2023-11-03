@@ -30,36 +30,20 @@ function create_block_gutenpride_block_init()
 
 add_action('init', 'create_block_gutenpride_block_init');
 
-function enqueue_and_localize_my_plugin_script()
+function print_my_plugin_data()
 {
-	// プラグインのスクリプトをエンキューします。
-	wp_enqueue_script('my-plugin-script', plugins_url('/src/index.js', __FILE__), array('jquery'), null, true);
-
-	// ローカライズされるデータを準備します。
 	$plugin_data = array(
-		'pluginImagePath' => esc_url(plugins_url('images/', __FILE__)),
-		'restUrl'         => esc_url(rest_url('j-weather-customizer/save-data/')),
-		'siteUrl'         => esc_url(get_site_url()),
+		'pluginImagePath' => plugins_url('images/', __FILE__),
+		'restUrl' => rest_url('j-weather-customizer/save-data/'),
+		'siteUrl' => get_site_url()  // WordPressのサイトURLを取得
 	);
 
-	// ローカライズ関数を呼び出し、データを安全にJavaScriptに渡します。
-	wp_localize_script('my-plugin-script', 'myPluginData', $plugin_data);
+	echo '<script type="text/javascript">';
+	echo 'var myPluginData = ' . json_encode($plugin_data) . ';';
+	echo '</script>';
 }
 
-// スクリプトをエンキューし、ローカライズするためのアクションフックを追加します。
-add_action('admin_enqueue_scripts', 'enqueue_and_localize_my_plugin_script');
-
-function add_module_type_attribute($tag, $handle, $src) {
-	// ハンドル名が'my-plugin-script'のスクリプトにのみ適用します。
-	if ('my-plugin-script' !== $handle) {
-			return $tag;
-	}
-	// scriptタグにtype属性を追加します。
-	return '<script type="module" src="' . esc_url($src) . '"></script>' . "\n";
-}
-
-add_filter('script_loader_tag', 'add_module_type_attribute', 10, 3);
-
+add_action('admin_footer', 'print_my_plugin_data');
 
 include dirname(__FILE__) . '/render-blocks.php';
 
