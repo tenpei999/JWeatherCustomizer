@@ -32,10 +32,6 @@ function generateBorderStyle($borders, $borderRadiusValue)
 
 $function_name = J_WEATHER_CUSTOMIZER_FUNCTION;
 
-echo '<pre>';
-var_dump($function_name);
-echo '</pre>';
-
 function J_WEATHER_CUSTOMIZER_FUNCTION($attr, $content)
 {
   $weather_data = json_decode(get_option('my_weather_data'), true);
