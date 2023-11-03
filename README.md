@@ -15,7 +15,7 @@ JWeatherCustomizerプラグインは、WordPressの`plugins`ディレクトリ�
 
 ### Git Cloneを使用する場合
 ```bash
-git clone https://github.com/your-username/JWeatherCustomizer.git
+git clone https://github.com/tenpei999/JWeatherCustomizer.git
 ```
 
 ### ZIPファイルをダウンロードしてインストールする場合
