@@ -20,7 +20,7 @@ git clone https://github.com/tenpei999/JWeatherCustomizer.git
 
 ### ZIPファイルをダウンロードしてインストールする場合
 1 以下のURLからZIPファイルをダウンロードします。<br>
-https://github.com/your-username/JWeatherCustomizer/archive/main.zip<br>
+https://github.com/tenpei999/JWeatherCustomizer/archive/main.zip<br>
 2 ZIPファイルを解凍し、JWeatherCustomizerフォルダをWordPressのpluginsディレクトリにアップロードします。
 
 ## 使い方
