@@ -28,16 +28,16 @@ https://github.com/your-username/JWeatherCustomizer/archive/main.zip
 2 投稿または固定ページの編集画面に移動し、「ブロックを追加」ボタンからJWeatherCustomizerプラグインを選択します。
 3 ブロックがページに追加された後、以下の設定でカスタマイズすることができます。
 
-###ブロックの追加
+### ブロックの追加
 ・投稿または固定ページの編集画面で、「ブロックを追加」をクリックします。
 ・「テキスト」カテゴリー内にあるJWeatherCustomizerを選択してブロックを追加します。
 
-###初期設定
+### 初期設定
 ・ブロックを追加すると、JWeatherCustomizerの設定モードが表示されます。
 ・東京の今日・明日の天気と週間予報がデフォルトで表示されます。
 ・デフォルトの見た目に満足していれば、ブロック外をクリックして設定を完了します。
 
-###カスタマイズ
+### カスタマイズ
 **・都市を選択**: プルダウンメニューから都市を選択できます。
 **・表示設定**: 以下の項目の表示・非表示を選択できます。
   今日の天気
@@ -46,7 +46,7 @@ https://github.com/your-username/JWeatherCustomizer/archive/main.zip
   祝日
   降水確率
 
-####・見た目の設定####: 
+#### ・見た目の設定: 
 **・BORDERS**: border-width, border-radius, border-color, border-styleをカスタマイズできます。
 **・テキストの色**: 黒または白を選択できます。
 **・フォントファミリー**: Noto Sans JP, Noto Serif JP, M PLUS 1p, Kosugi Maru, Sawarabi Gothicから選択できます。
