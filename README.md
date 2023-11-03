@@ -3,7 +3,7 @@
 ## 説明
 JWeatherCustomizerは、ブロックエディタを採用しているWordPressバージョンで利用可能な、天気予報を表示するWordPressプラグインです。<br>ユーザーはサイトに表示したい地域の天気予報を自由に選択し、見た目の設定もカスタマイズ可能です。<br>ただし、このプラグインは日本国内の都市の天気のみをサポートしています。
 
-**注意:** 2023年11月現在、JWeatherCustomizerは公式のWordPressプラグインディレクトリには登録されていません。
+**注意:** 2023年11月現在、JWeatherCustomizerは公式のWordPressプラグインディレクトリには登録されておらず、種々のセキュリティーリスクに対して無防備な状態にあります。
 
 ## 機能
 - 日本国内の都市の天気予報を表示する機能<br>
@@ -51,7 +51,7 @@ https://github.com/tenpei999/JWeatherCustomizer/archive/main.zip<br>
 **・テキストの色**: 黒または白を選択できます。<br>
 **・フォントファミリー**: Noto Sans JP, Noto Serif JP, M PLUS 1p, Kosugi Maru, Sawarabi Gothicから選択できます。<br>
 **・フォントバランス**: EmphasizeTheWeather, EmphasizeTheTemperature, Comfortableの中からバランスを選択できます。<br>
-**・背景の種類**: グラデーション, カラー、背景画像から選択できます。
+**・背景の種類**: グラデーション, カラーから選択できます。
 
 ## API情報
 JWeatherCustomizerは以下のAPIに依存しています。
