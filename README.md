@@ -51,7 +51,7 @@ https://github.com/tenpei999/JWeatherCustomizer/archive/main.zip<br>
 **・テキストの色**: 黒または白を選択できます。<br>
 **・フォントファミリー**: Noto Sans JP, Noto Serif JP, M PLUS 1p, Kosugi Maru, Sawarabi Gothicから選択できます。<br>
 **・フォントバランス**: EmphasizeTheWeather, EmphasizeTheTemperature, Comfortableの中からバランスを選択できます。<br>
-**・背景の種類**: グラデーション, カラー、background-colorから選択できます。
+**・背景の種類**: グラデーション, カラー、背景画像から選択できます。
 
 ## API情報
 JWeatherCustomizerは以下のAPIに依存しています。
