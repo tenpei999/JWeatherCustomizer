@@ -2,76 +2,110 @@
 
 /**
  * Plugin Name:       JWeatherCustomizer
- * Description:       A Gutenberg block to show your pride! This block enables you to type text and style it with the color font Gilbert from Type with Pride.
- * Version:           0.1.0
+ * Plugin URI:        https://example.com/jweather-customizer
+ * Description:       カスタム天気情報を表示するGutenbergブロック。
+ * Version:           1.0
  * Requires at least: 6.1
  * Requires PHP:      7.0
  * Author:            The WordPress Contributors
+ * Author URI:        https://wordpress.org/
  * License:           GPL-2.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain:       JWeatherCustomizer
+ * Text Domain:       jweather-customizer
+ * Domain Path:       /languages
  *
  * @package           create-block
  */
 
-define('J_WEATHER_CUSTOMIZER', 'jWeatherCustomizer');
-define('J_WEATHER_CUSTOMIZER_ROUTE', 'j-weather-customizer');
-define('J_WEATHER_CUSTOMIZER_FUNCTION', J_WEATHER_CUSTOMIZER . '_render_block');
-
-function create_block_gutenpride_block_init()
-{
-	register_block_type(
-		__DIR__ . '/build',
-		[
-			'render_callback' => J_WEATHER_CUSTOMIZER_FUNCTION,
-		]
-	);
+// 直接アクセスを防ぐ。
+if (!defined('ABSPATH')) {
+	exit; // 直接アクセスされた場合は終了。
 }
 
-add_action('init', 'create_block_gutenpride_block_init');
-
-function print_my_plugin_data()
+class JWeatherCustomizer
 {
-	$plugin_data = array(
-		'pluginImagePath' => plugins_url('images/', __FILE__),
-		'restUrl' => rest_url('j-weather-customizer/save-data/'),
-		'siteUrl' => get_site_url()  // WordPressのサイトURLを取得
-	);
 
-	echo '<script type="text/javascript">';
-	echo 'var myPluginData = ' . json_encode($plugin_data) . ';';
-	echo '</script>';
-}
-
-add_action('admin_footer', 'print_my_plugin_data');
-
-include dirname(__FILE__) . '/render-blocks.php';
-
-add_action('rest_api_init', function () {
-	register_rest_route('j-weather-customizer', '/save-data/', array(
-		'methods' => 'POST',
-		'callback' => 'save_weather_data',
-		'permission_callback' => '__return_true'
-	));
-});
-
-function save_weather_data(WP_REST_Request $request)
-{
-	// error_log('[Debug] save_weather_data - Start');
-	// error_log('[Debug] Request Parameters: ' . print_r($request->get_params(), true));
-	$data = $request->get_param('dailyData');
-	if ($data) {
-		// error_log('[Debug] Data to be saved: ' . print_r($data, true));
-	} else {
-		// error_log('[Debug] No dailyData parameter found in the request.');
+	/**
+	 * コンストラクタ。
+	 */
+	public function __construct()
+	{
+		add_action('init', [$this, 'register_block']);
+		add_action('admin_enqueue_scripts', [$this, 'enqueue_scripts']);
+		add_action('rest_api_init', [$this, 'register_rest_routes']);
+		include_once dirname(__FILE__) . '/render-blocks.php';
 	}
-	if ($data) {
+
+	/**
+	 * ブロックを登録します。`block.json`ファイルから読み込んだメタデータを使用します。
+	 */
+	public function register_block()
+	{
+		register_block_type_from_metadata(__DIR__ . '/build');
+	}
+
+	/**
+	 * エディター用にブロックのアセットをキューに入れます。
+	 */
+	public function enqueue_scripts()
+	{
+		$script_handle = 'jweather-customizer-script';
+		wp_register_script(
+			$script_handle,
+			plugins_url('/build/index.js', __FILE__),
+			[],
+			filemtime(plugin_dir_path(__FILE__) . 'build/index.js'),
+			true
+		);
+
+		wp_enqueue_script($script_handle);
+
+		// 新しいデータでスクリプトをローカライズします。
+		$plugin_data = [
+			'pluginImagePath' => plugins_url('images/', __FILE__),
+			'restUrl'         => rest_url('j-weather-customizer/v1/save-data/'),
+			'siteUrl'         => get_site_url(),
+		];
+		wp_localize_script($script_handle, 'myPluginData', $plugin_data);
+	}
+
+	/**
+	 * REST APIルートを登録します。
+	 */
+	public function register_rest_routes()
+	{
+		register_rest_route('j-weather-customizer/v1', '/save-data/', [
+			'methods'             => WP_REST_Server::CREATABLE,
+			'callback'            => [$this, 'handle_save_data'],
+			'permission_callback' => '__return_true',
+			'args'                => [
+				'dailyData' => [
+					'required'          => true,
+					'validate_callback' => function ($param, $request, $key) {
+						return is_array($param);
+					},
+				],
+			],
+		]);
+	}
+
+	/**
+	 * REST API呼び出しからデータを保存する処理を行います。
+	 */
+	public function handle_save_data(WP_REST_Request $request)
+	{
+		$data = $request->get_param('dailyData');
+		if (!$data) {
+			return new WP_REST_Response('エラー: データが提供されていません', 400);
+		}
+
 		$result = update_option('my_weather_data', json_encode($data));
-		// error_log('[Debug] Update Option Result: ' . ($result ? 'Success' : 'Failed'));
-	} else {
-		// error_log('[Debug] Data not provided');
-		return new WP_REST_Response('Error: Data not provided', 400);
+
+		return $result ?
+			new WP_REST_Response(['message' => '成功'], 200) :
+			new WP_REST_Response(['message' => 'データの保存に失敗しました'], 500);
 	}
-	// error_log('[Debug] save_weather_data - End');
-	return new WP_REST_Response(array('message' => 'Success'), 200);
 }
+
+// プラグインを初期化します。
+new JWeatherCustomizer();
