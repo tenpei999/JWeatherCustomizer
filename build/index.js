@@ -1379,7 +1379,6 @@ __webpack_require__.r(__webpack_exports__);
  * @see https://developer.wordpress.org/block-editor/developers/block-api/#registering-a-block
  */
 
- // 追加した行
 
 /**
  * Lets webpack process CSS, SASS or SCSS files referenced in JavaScript files.
@@ -1402,23 +1401,14 @@ __webpack_require__.r(__webpack_exports__);
 /**
  * Only register block if it's not already registered
  */
-if ((0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__.getBlockType)(_block_json__WEBPACK_IMPORTED_MODULE_4__.name) === undefined) {
-  // Block settings
-  const blockSettings = {
-    // Block settings can be defined here as usual
-    example: {
-      attributes: {
-        message: 'j-weather-customizer'
-      }
-    },
+if (!(0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__.getBlockType)(_block_json__WEBPACK_IMPORTED_MODULE_4__.name)) {
+  (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__.registerBlockType)(_block_json__WEBPACK_IMPORTED_MODULE_4__.name, {
+    ..._block_json__WEBPACK_IMPORTED_MODULE_4__,
+    // メタデータを展開して設定に適用します
     edit: _edit__WEBPACK_IMPORTED_MODULE_3__["default"],
-    save() {
-      // Defines what happens when the block is saved
-      return null; // We return null because save is handled in PHP
-    }
-  };
-
-  (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__.registerBlockType)(_block_json__WEBPACK_IMPORTED_MODULE_4__.name, blockSettings);
+    // 編集コンポーネントを設定します
+    save: () => null // PHP側で保存処理を行うので、ここではnullを返します
+  });
 }
 
 /***/ }),
@@ -1646,6 +1636,8 @@ const weatherObject = async (cityurl, setTodayWeather, setTomorrowWeather, setWe
       throw new Error(`URL not found for city "${cityurl}".`);
     }
     const apiUrl = myPluginData.siteUrl + '/wp-json/j-weather-customizer/save-data/';
+    console.log('Making request to weather API for city:', cityurl); // API呼び出し前のログ
+
     const response = await fetch(cityurl);
     if (!response.ok) {
       throw new Error(`Failed to fetch data for city: ${cityurl}. Status: ${response.status}`);
@@ -1707,8 +1699,10 @@ const weatherObject = async (cityurl, setTodayWeather, setTomorrowWeather, setWe
     const postResponse = await fetch(apiUrl, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'X-WP-Nonce': myPluginData.nonce // nonceをヘッダーに追加
       },
+
       body: JSON.stringify({
         dailyData: dailyData
       })

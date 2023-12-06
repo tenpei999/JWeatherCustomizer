@@ -6,7 +6,7 @@ const weatherObject = async (
   setTodayWeather,
   setTomorrowWeather,
   setWeeklyWeather,
-  addBreak = false 
+  addBreak = false
 ) => {
   try {
     if (!cityurl) {
@@ -18,6 +18,8 @@ const weatherObject = async (
     }
 
     const apiUrl = myPluginData.siteUrl + '/wp-json/j-weather-customizer/save-data/';
+
+    console.log('Making request to weather API for city:', cityurl); // API呼び出し前のログ
 
     const response = await fetch(cityurl);
     if (!response.ok) {
@@ -93,6 +95,7 @@ const weatherObject = async (
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'X-WP-Nonce': myPluginData.nonce // nonceをヘッダーに追加
       },
       body: JSON.stringify({ dailyData: dailyData })
     });
