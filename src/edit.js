@@ -13,15 +13,16 @@
 import { useBlockProps } from '@wordpress/block-editor';
 import { __ } from '@wordpress/i18n';
 import { useState, useRef, useEffect } from '@wordpress/element';
-import { SelectControl } from '@wordpress/components';
+// import { SelectControl } from '@wordpress/components';
 import './editor.scss';
 import './style.scss';
+import SettingGroup from './components/SettingGroup';
 import { CurrentWeather } from './components/CurrentWeather';
 import WeekWeather from './components/WeekWeather';
-import UIControlGroup from './components/UICintrolGroup';
+// import UIControlGroup from './components/UICintrolGroup';
 import useBlockSelection from './functions/useOutsideClick';
 import { createVisibilitySettings } from './objects/visibilitySettings';
-import VisibilityControl from './components/VisibilityControl';
+// import VisibilityControl from './components/VisibilityControl';
 import { useWeatherData } from './functions/useWeatherData';
 import { useChangeCity } from './functions/useChangeCity';
 import { cities } from './objects/getSpotWeather';
@@ -29,7 +30,6 @@ import { useFontFamilyControl } from './functions/useFontFamilyControl';
 import { useChangeBalance } from './functions/useChangeBalance';
 
 export default function Edit({ attributes, setAttributes }) {
-
 	const defaultCityObject = {
 		name: '東京',
 		url: 'https://api.open-meteo.com/v1/forecast?latitude=35.6895&longitude=139.6917&hourly=precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14',
@@ -39,12 +39,10 @@ export default function Edit({ attributes, setAttributes }) {
 	const [selectedCity, setSelectedCity] = useState(currentCityFromAttributes || defaultCityObject);
 	const ref = useRef(null);
 	const { fontFamily, onChangeFontFamily } = useFontFamilyControl(attributes, setAttributes);
+	const [textColor, setTextColor] = useState(attributes.textColor); 
 	const { todayWeather, tomorrowWeather, weeklyWeather } = useWeatherData(setAttributes);
-    
 	const visibilitySettings = createVisibilitySettings({ attributes, setAttributes });
-
 	const [selectedMedia, setSelectedMedia] = useState(attributes.selectedMedia);
-	const [textColor, setTextColor] = useState(attributes.textColor);
 	const { showSelection, handleLayoutClick } = useBlockSelection();
 
 	useChangeCity(selectedCity);
@@ -91,7 +89,7 @@ export default function Edit({ attributes, setAttributes }) {
 		borderRadius: attributes.borderRadiusValue,
 		borders: attributes.borders,
 		fontFamily: attributes.fontFamily,
-		color: textColor,
+		color: attributes.textColor,
 		styleVariant: selectedOption.value,
 		backgroundStyleType: attributes.backgroundStyleType,
 		selectedMedia: selectedMedia,
@@ -103,28 +101,20 @@ export default function Edit({ attributes, setAttributes }) {
 		<div {...blockProps}  >
 			<div onClick={handleLayoutClick} ref={ref}>
 				{showSelection ? (
-					<div className="checkbox-wrapper">
-						<div className="detail-settings">
-							<SelectControl
-								label="都市を選択"
-								value={selectedCity.name} // 現在選択されている都市名
-								options={cityOptions}
-								onChange={handleCityChange}
-							/>
-							<VisibilityControl settings={visibilitySettings} />
-							<UIControlGroup
-								fontFamily={fontFamily}
-								onChangeFontFamily={onChangeFontFamily}
-								textColor={textColor}
-								setTextColor={setTextColor}
-								selectedOption={selectedOption}
-								setSelectedOption={setSelectedOption}
-								fontBalanceOptions={fontBalanceOptions}
-								attributes={attributes}
-								setAttributes={setAttributes}
-							/>
-						</div>
-					</div>
+					<SettingGroup
+						selectedCity={selectedCity}
+						cityOptions={cityOptions}
+						handleCityChange={handleCityChange}
+						visibilitySettings={visibilitySettings}
+						fontFamily={fontFamily}
+						onChangeFontFamily={onChangeFontFamily}
+						textColor={textColor}
+						selectedOption={selectedOption}
+						setSelectedOption={setSelectedOption}
+						fontBalanceOptions={fontBalanceOptions}
+						attributes={attributes}
+						setAttributes={setAttributes}
+					/>
 				) : (
 					<div className="layout">
 						<div className="today-and-tomorrow weather-layout">
