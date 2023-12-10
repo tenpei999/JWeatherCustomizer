@@ -89,50 +89,20 @@ function save_weather_data(WP_REST_Request $request)
 	}
 
 	foreach ($data as $day => $value) {
-		// If the value is not a string, assume it's already a decoded array
 		if (!is_string($value)) {
-			// Check if value is an array, sanitize it directly
 			if (is_array($value)) {
 				$sanitized_value = array_map('sanitize_text_field', $value);
 			} else {
-				// If value is not an array or string, this is an error
 				return new WP_REST_Response('Error: Each item of dailyData must be a JSON string or an array.', 400);
 			}
 		} else {
-			// If the value is a string, decode it assuming it's a JSON string
 			$decoded_value = json_decode($value, true);
 			if (json_last_error() === JSON_ERROR_NONE) {
-				// It's a valid JSON string, sanitize the array
 				$sanitized_value = array_map('sanitize_text_field', $decoded_value);
 			} else {
-				// JSON decode failed, invalid JSON string
 				return new WP_REST_Response('Error: Invalid JSON string provided for day ' . $day, 400);
 			}
 		}
-		// Store sanitized value back in data
 		$data[$day] = $sanitized_value;
 	}
-
-	// オプション値の存在をチェックする
-	$existing_data = get_option('jweather_customizer_data');
-	if ($existing_data === false) {
-		// オプションが存在しない場合は、新しいオプションを追加します。
-		$result = add_option('jweather_customizer_data', json_encode($data));
-	} else {
-		// オプションが存在する場合は、既存のオプションを更新します。
-		$result = update_option('jweather_customizer_data', json_encode($data));
-	}
-
-	if ($existing_data === false) {
-		// オプションが存在しない場合は、エラーログにメッセージを出力
-		error_log('オプション "jweather_customizer_data" が存在しません。');
-	} else {
-		// オプションが存在する場合は、データベースエラーをログに出力
-		global $wpdb;
-		error_log('データベースエラー: ' . $wpdb->last_error);
-	}
-
-	$option_value = get_option('jweather_customizer_data');
-	// error_log($option_value);
-
 }
