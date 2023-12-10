@@ -1324,20 +1324,22 @@ const useWeatherData = (setAttributes, addBreak = false) => {
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     const cityurl = 'https://api.open-meteo.com/v1/forecast?latitude=35.6895&longitude=139.6917&hourly=precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14';
     (0,_objects_weatherObject__WEBPACK_IMPORTED_MODULE_1__["default"])(cityurl, todayData => {
-      setCachedWeather(prev => ({
-        ...prev,
+      const updatedWeather = {
+        ...cachedWeather,
         today: todayData
-      }));
+      };
+      setCachedWeather(updatedWeather);
       setAttributes({
         todayWeather: todayData,
         showHoliday: todayData.day.isHoliday,
         showPrecipitation: todayData.rainProbability
       });
     }, tomorrowData => {
-      setCachedWeather(prev => ({
-        ...prev,
+      const updatedWeather = {
+        ...cachedWeather,
         tomorrow: tomorrowData
-      }));
+      };
+      setCachedWeather(updatedWeather);
       setAttributes({
         tomorrowWeather: tomorrowData,
         showHoliday: tomorrowData.day.isHoliday,
@@ -1345,16 +1347,17 @@ const useWeatherData = (setAttributes, addBreak = false) => {
       });
     }, weeklyData => {
       const weeklyHolidays = weeklyData.map(data => data.day);
-      setCachedWeather(prev => ({
-        ...prev,
+      const updatedWeather = {
+        ...cachedWeather,
         weekly: weeklyData
-      }));
+      };
+      setCachedWeather(updatedWeather);
       setAttributes({
         weeklyWeather: weeklyData,
         showHoliday: weeklyHolidays
       });
     }, addBreak);
-  }, [setAttributes, addBreak]);
+  }, [setAttributes, addBreak, cachedWeather]);
   return cachedWeather;
 };
 
@@ -1636,7 +1639,8 @@ const weatherObject = async (cityurl, setTodayWeather, setTomorrowWeather, setWe
       throw new Error(`URL not found for city "${cityurl}".`);
     }
     const apiUrl = myPluginData.siteUrl + '/wp-json/j-weather-customizer/save-data/';
-    console.log('Making request to weather API for city:', cityurl); // API呼び出し前のログ
+
+    // console.log('Making request to weather API for city:', cityurl); // API呼び出し前のログ
 
     const response = await fetch(cityurl);
     if (!response.ok) {
@@ -1694,8 +1698,6 @@ const weatherObject = async (cityurl, setTodayWeather, setTomorrowWeather, setWe
       lowestTemperatureComparison: lowestTemperatureDifferencesForWeek[index + 1],
       rainProbability: rainProbability1[index + 1]
     }));
-
-    // WordPress REST APIエンドポイントにデータをPOST
     const postResponse = await fetch(apiUrl, {
       method: 'POST',
       headers: {
@@ -1719,9 +1721,19 @@ const weatherObject = async (cityurl, setTodayWeather, setTomorrowWeather, setWe
     if (typeof setWeeklyWeather !== 'function') {
       throw new Error('setWeeklyWeather is not a function.');
     }
-    setTodayWeather(dailyData[0]);
-    setTomorrowWeather(dailyData[1]);
-    setWeeklyWeather(dailyData.slice(2, 7));
+
+    // 属性の設定
+    if (typeof setTodayWeather === 'function') {
+      setTodayWeather(dailyData[0]);
+    }
+    if (typeof setTomorrowWeather === 'function') {
+      setTomorrowWeather(dailyData[1]);
+    }
+    if (typeof setWeeklyWeather === 'function') {
+      setWeeklyWeather(dailyData.slice(2, 7));
+    }
+
+    // オプション値の存在を確認
   } catch (error) {
     console.error('APIの呼び出しに失敗:', error);
   }
@@ -1830,7 +1842,7 @@ module.exports = window["wp"]["i18n"];
   \************************/
 /***/ (function(module) {
 
-module.exports = JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"create-block/j-weather-customizer","version":"1.0","title":"JWeatherCustomizer","category":"text","icon":"flag","description":"A Gutenberg block to show your pride! This block enables you to type text and style it with the color font Gilbert from Type with Pride.","attributes":{"selectedCity":{"type":"object","default":{"name":"東京","url":"https://api.open-meteo.com/v1/forecast?latitude=35.6895&longitude=139.6917&hourly=precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14"}},"showTomorrowWeather":{"type":"boolean","default":true},"showWeeklyWeather":{"type":"boolean","default":true},"showTodayWeather":{"type":"boolean","default":true},"showHoliday":{"type":"boolean","default":true},"showPrecipitation":{"type":"boolean","default":true},"tomorrowWeather":{"type":"object","default":{}},"weeklyWeather":{"type":"array","default":[]},"todayWeather":{"type":"object","default":{}},"borderRadiusValue":{"type":"string","default":"0px"},"borders":{"type":"object","default":{"top":{"color":"#72aee6","style":"dashed","width":"1px"},"right":{"color":"#72aee6","style":"dashed","width":"1px"},"bottom":{"color":"#72aee6","style":"dashed","width":"1px"},"left":{"color":"#72aee6","style":"dashed","width":"1px"}}},"fontFamily":{"type":"string","default":"Noto Sans JP, sans-serif"},"textColor":{"type":"string","default":"black"},"backgroundStyleType":{"type":"string","default":"color"},"backgroundImage":{"type":"string","default":"http://hoge.local/wp-content/uploads/2023/10/IMG_5308-scaled.jpeg"},"backgroundGradient":{"type":"string","default":"linear-gradient(135deg,#1E9600 0%, #FFF200 0%, #FF0000 100%)"},"backgroundColor":{"type":"string","default":"#fff"},"balanceOption":{"type":"string","default":"EmphasizeTheWeather"}},"supports":{"html":false},"textdomain":"j-weather-customizer","editorScript":"file:./index.js","editorStyle":"file:./style-index.css","style":"file:./style-index.css"}');
+module.exports = JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"create-block/j-weather-customizer","version":"1.0","title":"JWeatherCustomizer","category":"text","icon":"flag","description":"A plugin that allows you to display a weather forecast of your choice on your website.","attributes":{"selectedCity":{"type":"object","default":{"name":"東京","url":"https://api.open-meteo.com/v1/forecast?latitude=35.6895&longitude=139.6917&hourly=precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14"}},"showTomorrowWeather":{"type":"boolean","default":true},"showWeeklyWeather":{"type":"boolean","default":true},"showTodayWeather":{"type":"boolean","default":true},"showHoliday":{"type":"boolean","default":true},"showPrecipitation":{"type":"boolean","default":true},"tomorrowWeather":{"type":"object","default":{}},"weeklyWeather":{"type":"array","default":[]},"todayWeather":{"type":"object","default":{}},"borderRadiusValue":{"type":"string","default":"0px"},"borders":{"type":"object","default":{"top":{"color":"#72aee6","style":"dashed","width":"1px"},"right":{"color":"#72aee6","style":"dashed","width":"1px"},"bottom":{"color":"#72aee6","style":"dashed","width":"1px"},"left":{"color":"#72aee6","style":"dashed","width":"1px"}}},"fontFamily":{"type":"string","default":"Noto Sans JP, sans-serif"},"textColor":{"type":"string","default":"black"},"backgroundStyleType":{"type":"string","default":"color"},"backgroundImage":{"type":"string","default":"http://hoge.local/wp-content/uploads/2023/10/IMG_5308-scaled.jpeg"},"backgroundGradient":{"type":"string","default":"linear-gradient(135deg,#1E9600 0%, #FFF200 0%, #FF0000 100%)"},"backgroundColor":{"type":"string","default":"#fff"},"balanceOption":{"type":"string","default":"EmphasizeTheWeather"}},"supports":{"html":false},"textdomain":"j-weather-customizer","editorScript":"file:./index.js","editorStyle":"file:./style-index.css","style":"file:./style-index.css"}');
 
 /***/ })
 

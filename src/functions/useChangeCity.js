@@ -18,7 +18,7 @@ export function useChangeCity(selectedCity) {
 
       // 'selectedCity'が存在し、URLが含まれている場合、以下の処理を行います。
       const cityUrl = selectedCity.url;
-
+      
       await weatherObject(
         cityUrl,
         (todayWeather) => {

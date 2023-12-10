@@ -6,7 +6,7 @@
   "title": "JWeatherCustomizer",
   "category": "text",
   "icon": "flag",
-  "description": "A Gutenberg block to show your pride! This block enables you to type text and style it with the color font Gilbert from Type with Pride.",
+  "description": "A plugin that allows you to display a weather forecast of your choice on your website.",
   "attributes": {
     "selectedCity": {
       "type": "object",

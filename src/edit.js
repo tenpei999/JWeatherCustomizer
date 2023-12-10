@@ -99,8 +99,6 @@ export default function Edit({ attributes, setAttributes }) {
 		backgroundColor: attributes.backgroundColor,
 	};
 
-
-
 	return (
 		<div {...blockProps}  >
 			<div onClick={handleLayoutClick} ref={ref}>

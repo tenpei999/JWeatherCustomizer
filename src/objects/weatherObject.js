@@ -19,7 +19,7 @@ const weatherObject = async (
 
     const apiUrl = myPluginData.siteUrl + '/wp-json/j-weather-customizer/save-data/';
 
-    console.log('Making request to weather API for city:', cityurl); // API呼び出し前のログ
+    // console.log('Making request to weather API for city:', cityurl); // API呼び出し前のログ
 
     const response = await fetch(cityurl);
     if (!response.ok) {
@@ -90,7 +90,6 @@ const weatherObject = async (
       rainProbability: rainProbability1[index + 1],
     }));
 
-    // WordPress REST APIエンドポイントにデータをPOST
     const postResponse = await fetch(apiUrl, {
       method: 'POST',
       headers: {
@@ -114,10 +113,19 @@ const weatherObject = async (
       throw new Error('setWeeklyWeather is not a function.');
     }
 
-    setTodayWeather(dailyData[0]);
-    setTomorrowWeather(dailyData[1]);
-    setWeeklyWeather(dailyData.slice(2, 7));
+    // 属性の設定
+    if (typeof setTodayWeather === 'function') {
+      setTodayWeather(dailyData[0]);
+    }
+    if (typeof setTomorrowWeather === 'function') {
+      setTomorrowWeather(dailyData[1]);
+    }
+    if (typeof setWeeklyWeather === 'function') {
+      setWeeklyWeather(dailyData.slice(2, 7));
+    }
 
+    // オプション値の存在を確認
+    
   } catch (error) {
     console.error('APIの呼び出しに失敗:', error);
   }

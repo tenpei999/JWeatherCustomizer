@@ -114,20 +114,25 @@ function save_weather_data(WP_REST_Request $request)
 	}
 
 	// オプション値の存在をチェックする
-	$existing_data = get_option('my_weather_data');
+	$existing_data = get_option('jweather_customizer_data');
 	if ($existing_data === false) {
 		// オプションが存在しない場合は、新しいオプションを追加します。
-		$result = add_option('my_weather_data', json_encode($data));
+		$result = add_option('jweather_customizer_data', json_encode($data));
 	} else {
 		// オプションが存在する場合は、既存のオプションを更新します。
-		$result = update_option('my_weather_data', json_encode($data));
+		$result = update_option('jweather_customizer_data', json_encode($data));
 	}
 
-	// 更新または追加の結果に基づいてレスポンスを返します。
-	if ($result) {
-		return new WP_REST_Response(array('message' => 'Data saved successfully'), 200);
+	if ($existing_data === false) {
+		// オプションが存在しない場合は、エラーログにメッセージを出力
+		error_log('オプション "jweather_customizer_data" が存在しません。');
 	} else {
-		error_log('Error: Failed to update the option "my_weather_data".');
-		return new WP_REST_Response('Error: Failed to save data', 500);
+		// オプションが存在する場合は、データベースエラーをログに出力
+		global $wpdb;
+		error_log('データベースエラー: ' . $wpdb->last_error);
 	}
+
+	$option_value = get_option('jweather_customizer_data');
+	// error_log($option_value);
+
 }

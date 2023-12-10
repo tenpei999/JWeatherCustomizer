@@ -26,7 +26,11 @@ export const useWeatherData = (setAttributes, addBreak = false) => {
         weatherObject(
             cityurl,
             (todayData) => {
-                setCachedWeather(prev => ({ ...prev, today: todayData }));
+                const updatedWeather = {
+                    ...cachedWeather,
+                    today: todayData,
+                };
+                setCachedWeather(updatedWeather);
                 setAttributes({
                     todayWeather: todayData,
                     showHoliday: todayData.day.isHoliday,
@@ -34,7 +38,11 @@ export const useWeatherData = (setAttributes, addBreak = false) => {
                 });
             },
             (tomorrowData) => {
-                setCachedWeather(prev => ({ ...prev, tomorrow: tomorrowData }));
+                const updatedWeather = {
+                    ...cachedWeather,
+                    tomorrow: tomorrowData,
+                };
+                setCachedWeather(updatedWeather);
                 setAttributes({
                     tomorrowWeather: tomorrowData,
                     showHoliday: tomorrowData.day.isHoliday,
@@ -43,7 +51,11 @@ export const useWeatherData = (setAttributes, addBreak = false) => {
             },
             (weeklyData) => {
                 const weeklyHolidays = weeklyData.map(data => data.day);
-                setCachedWeather(prev => ({ ...prev, weekly: weeklyData }));
+                const updatedWeather = {
+                    ...cachedWeather,
+                    weekly: weeklyData,
+                };
+                setCachedWeather(updatedWeather);
                 setAttributes({
                     weeklyWeather: weeklyData,
                     showHoliday: weeklyHolidays,
@@ -51,7 +63,7 @@ export const useWeatherData = (setAttributes, addBreak = false) => {
             },
             addBreak 
         );
-    }, [setAttributes, addBreak ]);
+    }, [setAttributes, addBreak, cachedWeather]);
 
     return cachedWeather;
 };
