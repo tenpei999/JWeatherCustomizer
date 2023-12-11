@@ -287,6 +287,53 @@ function FontFamilyControl({
 
 /***/ }),
 
+/***/ "./src/components/SelectCity.js":
+/*!**************************************!*\
+  !*** ./src/components/SelectCity.js ***!
+  \**************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__);
+
+
+const SelectCity = ({
+  selectedCity,
+  cityOptions,
+  handleCityChange
+}) => {
+  const boxStyle = {
+    display: 'flex'
+  };
+  const labelStyle = {
+    width: '50%'
+  };
+  const formStyle = {
+    width: '50%',
+    textAlign: 'center'
+  };
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    style: boxStyle
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    style: labelStyle
+  }, "\u90FD\u5E02\u3092\u9078\u629E:"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    style: formStyle
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
+    value: selectedCity.name,
+    options: cityOptions,
+    onChange: handleCityChange,
+    style: {
+      textAlign: 'center'
+    }
+  })));
+};
+/* harmony default export */ __webpack_exports__["default"] = (SelectCity);
+
+/***/ }),
+
 /***/ "./src/components/SettingGroup.js":
 /*!****************************************!*\
   !*** ./src/components/SettingGroup.js ***!
@@ -296,8 +343,7 @@ function FontFamilyControl({
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
-/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _SelectCity__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./SelectCity */ "./src/components/SelectCity.js");
 /* harmony import */ var _VisibilityControl__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./VisibilityControl */ "./src/components/VisibilityControl.js");
 /* harmony import */ var _UICintrolGroup__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./UICintrolGroup */ "./src/components/UICintrolGroup.js");
 
@@ -319,15 +365,20 @@ const SettingGroup = ({
   attributes,
   setAttributes
 }) => {
+  const wrapperStyle = {
+    padding: '10px'
+  };
+  const headingTitle = {
+    textAlign: 'center'
+  };
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "checkbox-wrapper"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "detail-settings"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
-    label: "\u90FD\u5E02\u3092\u9078\u629E",
-    value: selectedCity.name,
-    options: cityOptions,
-    onChange: handleCityChange
+    style: wrapperStyle
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h3", {
+    style: headingTitle
+  }, "\u8A2D\u5B9A"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_SelectCity__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    selectedCity: selectedCity,
+    cityOptions: cityOptions,
+    handleCityChange: handleCityChange
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_VisibilityControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
     settings: visibilitySettings
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_UICintrolGroup__WEBPACK_IMPORTED_MODULE_3__["default"], {
@@ -340,7 +391,7 @@ const SettingGroup = ({
     fontBalanceOptions: fontBalanceOptions,
     attributes: attributes,
     setAttributes: setAttributes
-  })));
+  }));
 };
 /* harmony default export */ __webpack_exports__["default"] = (SettingGroup);
 
@@ -566,19 +617,38 @@ __webpack_require__.r(__webpack_exports__);
 const VisibilityControl = ({
   settings
 }) => {
+  const group1 = settings.slice(0, 4); // 最初の3つ
+  const group2 = settings.slice(4); // 残りの2つ
+
   const handleVisibilityChange = (index, isChecked) => {
     const updatedSettings = [...settings];
     updatedSettings[index].checked = isChecked;
     updatedSettings[index].onChange(isChecked);
   };
+  const boxStyle = {
+    display: 'flex'
+  };
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "visibility-control"
-  }, settings.map((setting, index) => (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.CheckboxControl, {
+    className: "visibility-control",
+    style: boxStyle
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "visibility-group",
+    id: "group1"
+  }, group1.map((setting, index) => (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.CheckboxControl, {
     key: index,
     label: setting.label,
     checked: setting.checked,
     onChange: isChecked => handleVisibilityChange(index, isChecked)
-  })));
+  }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "visibility-group",
+    id: "group2"
+  }, group2.map((setting, index) => (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.CheckboxControl, {
+    key: index + group1.length // インデックスを調整
+    ,
+    label: setting.label,
+    checked: setting.checked,
+    onChange: isChecked => handleVisibilityChange(index + group1.length, isChecked)
+  }))));
 };
 /* harmony default export */ __webpack_exports__["default"] = (VisibilityControl);
 
