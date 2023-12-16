@@ -20,6 +20,8 @@ const SettingGroup = ({
 
   const wrapperStyle = {
     padding: '10px',
+    display: 'flex',
+    flexDirection: 'column',
   };
 
   const headingTitle = {

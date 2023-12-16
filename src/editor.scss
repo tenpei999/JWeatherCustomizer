@@ -4,3 +4,50 @@
  * Replace them with your own styles or remove the file completely.
  */
 
+.jwc {
+  &-border {
+    &-main {
+      label {
+        font-size: 20px;
+      }
+    }
+    &-radius {
+      label {
+        font-size: 20px;
+      }
+    }
+  }
+
+  &-select-city {
+    .components-flex {
+      display: flex;
+      flex-direction: row;
+      gap: 0;
+
+      &-item {
+        width: 50%;
+      }
+
+      label {
+        &.components-text {
+          font-size: 20px;
+        }
+      }
+    }
+  }
+
+  &-visibility {
+    &-control {
+      &__title {
+        width: 50%;
+
+        p {
+          transform: translateX(33%);
+          font-size: 20px;
+        }
+      }
+    }
+  }
+}
+
+// components-border-box-control

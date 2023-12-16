@@ -16,7 +16,7 @@ const UIControlGroup = ({
   setAttributes,
 }) => {
   return (
-    <div className="detail-settings">
+    <>
       <BorderControlGroup
         attributes={attributes}
         setAttributes={setAttributes}
@@ -42,7 +42,7 @@ const UIControlGroup = ({
         }}
       />
       <BackgroundSelector attributes={attributes} setAttributes={setAttributes} />
-    </div>
+    </>
   );
 };
 

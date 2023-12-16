@@ -13,34 +13,44 @@ const VisibilityControl = ({ settings }) => {
 
     const boxStyle = {
         display: 'flex',
+        justifyContent: 'space-between',
+        paddingTop: '15px',
+    }
+
+    const columnStyle = {
+        display: 'flex',
+        gap: '15px',
+        width: '50%',
     }
 
     return (
-        <div className="visibility-control" style={boxStyle}>
-            {/* グループ1 */}
-            <div className="visibility-group" id="group1">
-                {group1.map((setting, index) => (
-                    <CheckboxControl
-                        key={index}
-                        label={setting.label}
-                        checked={setting.checked}
-                        onChange={(isChecked) => handleVisibilityChange(index, isChecked)}
-                    />
-                ))}
+        <div className="jwc-visibility-control" style={boxStyle}>
+            <div className='jwc-visibility-control__title'>
+                <p style={{ fontSize: '20px' }}>表示設定</p>
             </div>
-
-            {/* グループ2 */}
-            <div className="visibility-group" id="group2">
-                {group2.map((setting, index) => (
-                    <CheckboxControl
-                        key={index + group1.length} // インデックスを調整
-                        label={setting.label}
-                        checked={setting.checked}
-                        onChange={(isChecked) => handleVisibilityChange(index + group1.length, isChecked)}
-                    />
-                ))}
+            <div style={columnStyle}>
+                <div className="visibility-group" id="group1">
+                    {group1.map((setting, index) => (
+                        <CheckboxControl
+                            key={index}
+                            label={setting.label}
+                            checked={setting.checked}
+                            onChange={(isChecked) => handleVisibilityChange(index, isChecked)}
+                        />
+                    ))}
+                </div>
+                <div className="visibility-group" id="group2">
+                    {group2.map((setting, index) => (
+                        <CheckboxControl
+                            key={index + group1.length} // インデックスを調整
+                            label={setting.label}
+                            checked={setting.checked}
+                            onChange={(isChecked) => handleVisibilityChange(index + group1.length, isChecked)}
+                        />
+                    ))}
+                </div>
             </div>
-        </div>
+        </div >
     );
 };
 

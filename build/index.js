@@ -141,24 +141,52 @@ function BorderControlGroup({
     // ここを変更しました
     units
   } = (0,_functions_useBorderControl__WEBPACK_IMPORTED_MODULE_3__.useBorderControl)(attributes, setAttributes);
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.__experimentalBorderBoxControl, {
+  const borderMainStyle = {
+    width: '83.5%',
+    alignSelf: 'end',
+    paddingTop: '15px'
+  };
+  const radiusStyle = {
+    paddingTop: '15px',
+    display: 'flex',
+    gap: '10px',
+    alignItems: 'end',
+    alignSelf: 'end',
+    width: '83.5%'
+  };
+  const valueStyle = {
+    width: '90%'
+  };
+  const unitStyle = {
+    width: '10%'
+  };
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "jwc-border-main",
+    style: borderMainStyle
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.__experimentalBorderBoxControl, {
     colors: borderColors // ここを変更しました
     ,
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Borders'),
+    label: '枠線の色と形',
     onChange: onChangeBorder,
     value: borders
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {
-    label: "Set your value",
+  })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "jwc-border-radius",
+    style: radiusStyle
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    style: valueStyle
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {
+    label: "\u4E38\u307F",
     value: parseInt(attributes.borderRadiusValue, 10),
     onChange: handleRangeChange,
     min: 0,
     max: attributes.borderRadiusValue && attributes.borderRadiusValue.includes('px') ? 100 : 100
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
-    label: "Select unit",
+  })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    style: unitStyle
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
     value: attributes.borderRadiusValue && attributes.borderRadiusValue.replace(/[0-9]/g, ''),
     options: units,
     onChange: handleUnitChange
-  })));
+  }))));
 }
 
 /***/ }),
@@ -305,30 +333,31 @@ const SelectCity = ({
   cityOptions,
   handleCityChange
 }) => {
-  const boxStyle = {
-    display: 'flex'
-  };
   const labelStyle = {
     width: '50%'
   };
   const formStyle = {
-    width: '50%',
-    textAlign: 'center'
+    width: '100%',
+    textAlign: 'left'
   };
+  const selectedCityLavel = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    style: {
+      display: 'block',
+      transform: 'translateX(33%)'
+    }
+  }, "\u90FD\u5E02\u3092\u9078\u629E");
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    style: boxStyle
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
-    style: labelStyle
-  }, "\u90FD\u5E02\u3092\u9078\u629E:"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    style: formStyle
+    style: formStyle,
+    className: "jwc-select-city"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
     value: selectedCity.name,
+    label: selectedCityLavel,
     options: cityOptions,
     onChange: handleCityChange,
     style: {
       textAlign: 'center'
     }
-  })));
+  }));
 };
 /* harmony default export */ __webpack_exports__["default"] = (SelectCity);
 
@@ -366,7 +395,9 @@ const SettingGroup = ({
   setAttributes
 }) => {
   const wrapperStyle = {
-    padding: '10px'
+    padding: '10px',
+    display: 'flex',
+    flexDirection: 'column'
   };
   const headingTitle = {
     textAlign: 'center'
@@ -565,9 +596,7 @@ const UIControlGroup = ({
   attributes,
   setAttributes
 }) => {
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "detail-settings"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_BorderControlGroup__WEBPACK_IMPORTED_MODULE_5__["default"], {
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_BorderControlGroup__WEBPACK_IMPORTED_MODULE_5__["default"], {
     attributes: attributes,
     setAttributes: setAttributes
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_FontFamilyControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
@@ -626,11 +655,26 @@ const VisibilityControl = ({
     updatedSettings[index].onChange(isChecked);
   };
   const boxStyle = {
-    display: 'flex'
+    display: 'flex',
+    justifyContent: 'space-between',
+    paddingTop: '15px'
+  };
+  const columnStyle = {
+    display: 'flex',
+    gap: '15px',
+    width: '50%'
   };
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "visibility-control",
+    className: "jwc-visibility-control",
     style: boxStyle
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "jwc-visibility-control__title"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    style: {
+      fontSize: '20px'
+    }
+  }, "\u8868\u793A\u8A2D\u5B9A")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    style: columnStyle
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "visibility-group",
     id: "group1"
@@ -648,7 +692,7 @@ const VisibilityControl = ({
     label: setting.label,
     checked: setting.checked,
     onChange: isChecked => handleVisibilityChange(index + group1.length, isChecked)
-  }))));
+  })))));
 };
 /* harmony default export */ __webpack_exports__["default"] = (VisibilityControl);
 
@@ -1101,10 +1145,10 @@ function useBorderControl(attributes, setAttributes) {
     left: defaultBorder
   });
   const units = [{
-    label: 'Pixels (px)',
+    label: 'px',
     value: 'px'
   }, {
-    label: 'Percentage (%)',
+    label: '%',
     value: '%'
   }];
   const onChangeBorder = newBorders => {
@@ -1960,7 +2004,7 @@ module.exports = window["wp"]["i18n"];
   \************************/
 /***/ (function(module) {
 
-module.exports = JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"create-block/j-weather-customizer","version":"1.0","title":"JWeatherCustomizer","category":"text","icon":"flag","description":"A plugin that allows you to display a weather forecast of your choice on your website.","attributes":{"selectedCity":{"type":"object","default":{"name":"東京","url":"https://api.open-meteo.com/v1/forecast?latitude=35.6895&longitude=139.6917&hourly=precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14"}},"showTomorrowWeather":{"type":"boolean","default":true},"showWeeklyWeather":{"type":"boolean","default":true},"showTodayWeather":{"type":"boolean","default":true},"showHoliday":{"type":"boolean","default":true},"showPrecipitation":{"type":"boolean","default":true},"tomorrowWeather":{"type":"object","default":{}},"weeklyWeather":{"type":"array","default":[]},"todayWeather":{"type":"object","default":{}},"borderRadiusValue":{"type":"string","default":"0px"},"borders":{"type":"object","default":{"top":{"color":"#72aee6","style":"dashed","width":"1px"},"right":{"color":"#72aee6","style":"dashed","width":"1px"},"bottom":{"color":"#72aee6","style":"dashed","width":"1px"},"left":{"color":"#72aee6","style":"dashed","width":"1px"}}},"fontFamily":{"type":"string","default":"Noto Sans JP, sans-serif"},"textColor":{"type":"string","default":"black"},"backgroundStyleType":{"type":"string","default":"color"},"backgroundImage":{"type":"string","default":"http://hoge.local/wp-content/uploads/2023/10/IMG_5308-scaled.jpeg"},"backgroundGradient":{"type":"string","default":"linear-gradient(135deg,#1E9600 0%, #FFF200 0%, #FF0000 100%)"},"backgroundColor":{"type":"string","default":"#fff"},"balanceOption":{"type":"string","default":"EmphasizeTheWeather"}},"supports":{"html":false},"textdomain":"j-weather-customizer","editorScript":"file:./index.js","editorStyle":"file:./style-index.css","style":"file:./style-index.css"}');
+module.exports = JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"create-block/j-weather-customizer","version":"1.0","title":"JWeatherCustomizer","category":"text","icon":"flag","description":"A plugin that allows you to display a weather forecast of your choice on your website.","attributes":{"selectedCity":{"type":"object","default":{"name":"東京","url":"https://api.open-meteo.com/v1/forecast?latitude=35.6895&longitude=139.6917&hourly=precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14"}},"showTomorrowWeather":{"type":"boolean","default":true},"showWeeklyWeather":{"type":"boolean","default":true},"showTodayWeather":{"type":"boolean","default":true},"showHoliday":{"type":"boolean","default":true},"showPrecipitation":{"type":"boolean","default":true},"tomorrowWeather":{"type":"object","default":{}},"weeklyWeather":{"type":"array","default":[]},"todayWeather":{"type":"object","default":{}},"borderRadiusValue":{"type":"string","default":"0px"},"borders":{"type":"object","default":{"top":{"color":"#72aee6","style":"dashed","width":"1px"},"right":{"color":"#72aee6","style":"dashed","width":"1px"},"bottom":{"color":"#72aee6","style":"dashed","width":"1px"},"left":{"color":"#72aee6","style":"dashed","width":"1px"}}},"fontFamily":{"type":"string","default":"Noto Sans JP, sans-serif"},"textColor":{"type":"string","default":"black"},"backgroundStyleType":{"type":"string","default":"color"},"backgroundImage":{"type":"string","default":"http://hoge.local/wp-content/uploads/2023/10/IMG_5308-scaled.jpeg"},"backgroundGradient":{"type":"string","default":"linear-gradient(135deg,#1E9600 0%, #FFF200 0%, #FF0000 100%)"},"backgroundColor":{"type":"string","default":"#fff"},"balanceOption":{"type":"string","default":"EmphasizeTheWeather"}},"supports":{"html":false},"textdomain":"j-weather-customizer","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css"}');
 
 /***/ })
 

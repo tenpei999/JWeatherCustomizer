@@ -17,8 +17,8 @@ export function useBorderControl(attributes, setAttributes) {
   });
 
   const units = [
-    { label: 'Pixels (px)', value: 'px' },
-    { label: 'Percentage (%)', value: '%' },
+    { label: 'px', value: 'px' },
+    { label: '%', value: '%' },
   ];
 
 
