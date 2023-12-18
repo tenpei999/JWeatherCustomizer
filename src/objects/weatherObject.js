@@ -1,5 +1,12 @@
 import getWeatherInfo from "../data/getWeatherInfo";
 import dayWithHoliday from "./dayWithHoloday";
+export { isApiError };
+
+let isApiError = {
+  isError: false,
+  statusCode: null
+};
+let apiRequestCount = 0;
 
 const weatherObject = async (
   cityurl,
@@ -12,18 +19,25 @@ const weatherObject = async (
     if (!cityurl) {
       throw new Error(`City "${cityurl}" does not exist in the city object.`);
     }
-
-    if (!cityurl) {
-      throw new Error(`URL not found for city "${cityurl}".`);
-    }
-
     const apiUrl = myPluginData.siteUrl + '/wp-json/j-weather-customizer/save-data/';
 
     // console.log('Making request to weather API for city:', cityurl); // API呼び出し前のログ
 
+    apiRequestCount++;
+    console.log(`リクエスト回数: ${apiRequestCount}`);
     const response = await fetch(cityurl);
     if (!response.ok) {
-      throw new Error(`Failed to fetch data for city: ${cityurl}. Status: ${response.status}`);
+      // 429 エラーの場合、APIアクセスが制限されているとみなす
+      isApiError = true;
+      isApiError.statusCode = response.status;
+
+      if (response.status === 429) {
+      } else {
+        throw new Error(`Failed to fetch data for city: ${cityurl}. Status: ${response.status}`);
+      }
+    } else {
+      isApiError.isError = false;
+      isApiError.statusCode = null;
     }
 
     const data2 = await response.json();
@@ -125,10 +139,10 @@ const weatherObject = async (
     }
 
     // オプション値の存在を確認
-    
+
   } catch (error) {
     console.error('APIの呼び出しに失敗:', error);
   }
 }
 
-export default weatherObject;
+export { weatherObject };

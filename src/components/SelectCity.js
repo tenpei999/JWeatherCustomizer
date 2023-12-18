@@ -7,18 +7,19 @@ const SelectCity = ({ selectedCity, cityOptions, handleCityChange }) => {
   }
   const formStyle = {
     width: '100%',
+    textAlign: 'center',
     textAlign: 'left',
   }
 
-  const selectedCityLavel = (
-    <span style={{  display: 'block',transform: 'translateX(33%)' }}>都市を選択</span>
+  const selectedCityLabel = (
+    <span style={{ display: 'block', transform: 'translateX(33%)' }}> 都市を選択</span>
   )
 
   return (
     <div style={formStyle} className='jwc-select-city'>
       <SelectControl
         value={selectedCity.name}
-        label={selectedCityLavel}
+        label={selectedCityLabel}
         options={cityOptions}
         onChange={handleCityChange}
         style={{ textAlign: 'center' }}

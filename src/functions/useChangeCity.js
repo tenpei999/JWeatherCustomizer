@@ -1,5 +1,5 @@
 import { useEffect, useState } from '@wordpress/element';
-import weatherObject from '../objects/weatherObject';
+import { weatherObject } from '../objects/weatherObject';
 
 export function useChangeCity(selectedCity) {
   // 天気データを状態として保存します。
@@ -18,7 +18,7 @@ export function useChangeCity(selectedCity) {
 
       // 'selectedCity'が存在し、URLが含まれている場合、以下の処理を行います。
       const cityUrl = selectedCity.url;
-      
+
       await weatherObject(
         cityUrl,
         (todayWeather) => {
@@ -43,6 +43,6 @@ export function useChangeCity(selectedCity) {
     }
 
     fetchData();
-  }, [selectedCity]); 
+  }, [selectedCity]);
   return weatherData;
 }

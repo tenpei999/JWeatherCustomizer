@@ -17,17 +17,17 @@ import { useState, useRef, useEffect } from '@wordpress/element';
 import './editor.scss';
 import './style.scss';
 import SettingGroup from './components/SettingGroup';
-import { CurrentWeather } from './components/CurrentWeather';
-import WeekWeather from './components/WeekWeather';
 // import UIControlGroup from './components/UICintrolGroup';
 import useBlockSelection from './functions/useOutsideClick';
 import { createVisibilitySettings } from './objects/visibilitySettings';
 // import VisibilityControl from './components/VisibilityControl';
-import { useWeatherData } from './functions/useWeatherData';
 import { useChangeCity } from './functions/useChangeCity';
+import { useWeatherData } from './functions/useWeatherData';
 import { cities } from './objects/getSpotWeather';
 import { useFontFamilyControl } from './functions/useFontFamilyControl';
 import { useChangeBalance } from './functions/useChangeBalance';
+import Preview from './components/Preview';
+
 
 export default function Edit({ attributes, setAttributes }) {
 	const defaultCityObject = {
@@ -39,7 +39,7 @@ export default function Edit({ attributes, setAttributes }) {
 	const [selectedCity, setSelectedCity] = useState(currentCityFromAttributes || defaultCityObject);
 	const ref = useRef(null);
 	const { fontFamily, onChangeFontFamily } = useFontFamilyControl(attributes, setAttributes);
-	const [textColor, setTextColor] = useState(attributes.textColor); 
+	const [textColor, setTextColor] = useState(attributes.textColor);
 	const { todayWeather, tomorrowWeather, weeklyWeather } = useWeatherData(setAttributes);
 	const visibilitySettings = createVisibilitySettings({ attributes, setAttributes });
 	const [selectedMedia, setSelectedMedia] = useState(attributes.selectedMedia);
@@ -116,31 +116,7 @@ export default function Edit({ attributes, setAttributes }) {
 						setAttributes={setAttributes}
 					/>
 				) : (
-					<div className="layout">
-						<div className="today-and-tomorrow weather-layout">
-							{attributes.showTodayWeather &&
-								<CurrentWeather
-									weather={attributes.todayWeather}
-									title="今日の天気"
-									showHoliday={attributes.showHoliday}
-									showPrecipitation={attributes.showPrecipitation}
-									{...commonProps}
-								/>}
-							{attributes.showTomorrowWeather &&
-								<CurrentWeather
-									weather={attributes.tomorrowWeather}
-									title="明日の天気"
-									showHoliday={attributes.showHoliday}
-									showPrecipitation={attributes.showPrecipitation}
-									{...commonProps}
-								/>}
-						</div>
-						{attributes.showWeeklyWeather &&
-							<WeekWeather
-								weather={attributes.weeklyWeather}
-								{...commonProps}
-							/>}
-					</div>
+					<Preview attributes={attributes} commonProps={commonProps} />
 				)}
 			</div>
 		</div>

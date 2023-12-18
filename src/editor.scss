@@ -11,6 +11,7 @@
         font-size: 20px;
       }
     }
+
     &-radius {
       label {
         font-size: 20px;
@@ -18,7 +19,8 @@
     }
   }
 
-  &-select-city {
+  &-select-city,
+  &-change-font {
     .components-flex {
       display: flex;
       flex-direction: row;
