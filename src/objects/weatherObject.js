@@ -142,6 +142,11 @@ const weatherObject = async (
 
   } catch (error) {
     console.error('APIの呼び出しに失敗:', error);
+
+    // エラーが発生した場合、isApiError を更新
+    isApiError.isError = true;
+    isApiError.statusCode = null; // ここでエラーのステータスコードをクリアするか、必要に応じて設定
+  
   }
 }
 

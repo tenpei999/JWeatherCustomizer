@@ -2,13 +2,13 @@ import { __ } from '@wordpress/i18n';
 import { CurrentWeather } from './CurrentWeather';
 import WeekWeather from './WeekWeather';
 import { isApiError } from '../objects/weatherObject';
-import ErrorMessage from './ErrorMessage';
+import ManagedError from './ManegedError';
 export default function Preview({ attributes, commonProps }) {
 
   return (
     <>
       {isApiError.isError ? (
-        <ErrorMessage isApiError={isApiError.statusCode} />
+        <ManagedError isApiError={isApiError.statusCode} />
       ) : (
         <div className="layout">
           <div className="today-and-tomorrow weather-layout">

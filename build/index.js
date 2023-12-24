@@ -268,50 +268,6 @@ const CurrentWeather = ({
 
 /***/ }),
 
-/***/ "./src/components/ErrorMessage.js":
-/*!****************************************!*\
-  !*** ./src/components/ErrorMessage.js ***!
-  \****************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _objects_weatherObject__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../objects/weatherObject */ "./src/objects/weatherObject.js");
-
-
-const ErrorMessage = () => {
-  let errorMessage;
-  switch (_objects_weatherObject__WEBPACK_IMPORTED_MODULE_1__.isApiError.statusCode) {
-    case 400:
-      errorMessage = "リクエストが不正です。入力を確認してください。";
-      break;
-    case 401:
-      errorMessage = "認証に失敗しました。APIキーを確認してください。";
-      break;
-    case 403:
-      errorMessage = "アクセスが拒否されました。権限を確認してください。";
-      break;
-    case 404:
-      errorMessage = "リクエストしたリソースが見つかりませんでした。";
-      break;
-    case 500:
-      errorMessage = "サーバー側で問題が発生しました。後ほど再試行してください。";
-      break;
-    case 503:
-      errorMessage = "サービスが利用不可です。後ほど再試行してください。";
-      break;
-    default:
-      errorMessage = "不明なエラーが発生しました。";
-  }
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "API\u306E\u53D6\u5F97\u306B\u5931\u6557\u3057\u307E\u3057\u305F\u3002"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
-    className: "error-message"
-  }, errorMessage), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "\u30B9\u30C6\u30FC\u30BF\u30B9\u30B3\u30FC\u30C9: ", _objects_weatherObject__WEBPACK_IMPORTED_MODULE_1__.isApiError.statusCode)));
-};
-/* harmony default export */ __webpack_exports__["default"] = (ErrorMessage);
-
-/***/ }),
-
 /***/ "./src/components/FontFamilyControl.js":
 /*!*********************************************!*\
   !*** ./src/components/FontFamilyControl.js ***!
@@ -375,6 +331,35 @@ function FontFamilyControl({
 
 /***/ }),
 
+/***/ "./src/components/ManegedError.js":
+/*!****************************************!*\
+  !*** ./src/components/ManegedError.js ***!
+  \****************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _objects_errorMessages__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../objects/errorMessages */ "./src/objects/errorMessages.js");
+/* harmony import */ var _objects_weatherObject__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../objects/weatherObject */ "./src/objects/weatherObject.js");
+
+
+
+const ManagedError = () => {
+  let errorMessage;
+  if (_objects_weatherObject__WEBPACK_IMPORTED_MODULE_2__.isApiError.statusCode === null || _objects_weatherObject__WEBPACK_IMPORTED_MODULE_2__.isApiError.statusCode === undefined) {
+    _objects_weatherObject__WEBPACK_IMPORTED_MODULE_2__.isApiError.statusCode = "不明なエラー";
+  } else {
+    errorMessage = _objects_errorMessages__WEBPACK_IMPORTED_MODULE_1__.responseErrorMessage[_objects_weatherObject__WEBPACK_IMPORTED_MODULE_2__.isApiError.statusCode] || "不明なエラーが発生しました。";
+  }
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "API\u306E\u53D6\u5F97\u306B\u5931\u6557\u3057\u307E\u3057\u305F\u3002"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "error-message"
+  }, errorMessage), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "\u30B9\u30C6\u30FC\u30BF\u30B9\u30B3\u30FC\u30C9: ", _objects_weatherObject__WEBPACK_IMPORTED_MODULE_2__.isApiError.statusCode)));
+};
+/* harmony default export */ __webpack_exports__["default"] = (ManagedError);
+
+/***/ }),
+
 /***/ "./src/components/Preview.js":
 /*!***********************************!*\
   !*** ./src/components/Preview.js ***!
@@ -392,7 +377,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _CurrentWeather__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./CurrentWeather */ "./src/components/CurrentWeather.js");
 /* harmony import */ var _WeekWeather__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./WeekWeather */ "./src/components/WeekWeather.js");
 /* harmony import */ var _objects_weatherObject__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../objects/weatherObject */ "./src/objects/weatherObject.js");
-/* harmony import */ var _ErrorMessage__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./ErrorMessage */ "./src/components/ErrorMessage.js");
+/* harmony import */ var _ManegedError__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./ManegedError */ "./src/components/ManegedError.js");
 
 
 
@@ -403,7 +388,7 @@ function Preview({
   attributes,
   commonProps
 }) {
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, _objects_weatherObject__WEBPACK_IMPORTED_MODULE_4__.isApiError.isError ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_ErrorMessage__WEBPACK_IMPORTED_MODULE_5__["default"], {
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, _objects_weatherObject__WEBPACK_IMPORTED_MODULE_4__.isApiError.isError ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_ManegedError__WEBPACK_IMPORTED_MODULE_5__["default"], {
     isApiError: _objects_weatherObject__WEBPACK_IMPORTED_MODULE_4__.isApiError.statusCode
   }) : (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "layout"
@@ -1657,6 +1642,29 @@ const dayWithHoliday = async (addBreak = false) => {
 
 /***/ }),
 
+/***/ "./src/objects/errorMessages.js":
+/*!**************************************!*\
+  !*** ./src/objects/errorMessages.js ***!
+  \**************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   responseErrorMessage: function() { return /* binding */ responseErrorMessage; }
+/* harmony export */ });
+// errorMessages.js
+
+const responseErrorMessage = {
+  400: "リクエストが不正です。入力を確認してください。",
+  401: "認証に失敗しました。APIキーを確認してください。",
+  403: "アクセスが拒否されました。権限を確認してください。",
+  404: "リクエストしたリソースが見つかりませんでした。",
+  500: "サーバー側で問題が発生しました。後ほど再試行してください。",
+  503: "サービスが利用不可です。後ほど再試行してください。"
+};
+
+/***/ }),
+
 /***/ "./src/objects/getSpotWeather.js":
 /*!***************************************!*\
   !*** ./src/objects/getSpotWeather.js ***!
@@ -1935,8 +1943,13 @@ const weatherObject = async (cityurl, setTodayWeather, setTomorrowWeather, setWe
     // オプション値の存在を確認
   } catch (error) {
     console.error('APIの呼び出しに失敗:', error);
+
+    // エラーが発生した場合、isApiError を更新
+    isApiError.isError = true;
+    isApiError.statusCode = null; // ここでエラーのステータスコードをクリアするか、必要に応じて設定
   }
 };
+
 
 
 /***/ }),

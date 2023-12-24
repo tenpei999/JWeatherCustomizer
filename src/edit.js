@@ -27,7 +27,6 @@ import { useFontFamilyControl } from './functions/useFontFamilyControl';
 import { useChangeBalance } from './functions/useChangeBalance';
 import Preview from './components/Preview';
 
-
 export default function Edit({ attributes, setAttributes }) {
 	const defaultCityObject = {
 		name: '東京',
