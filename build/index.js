@@ -281,7 +281,32 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const ErrorMessage = () => {
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "API\u306E\u53D6\u5F97\u306B\u5931\u6557\u3057\u307E\u3057\u305F\u3002"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "\u30B9\u30C6\u30FC\u30BF\u30B9\u30B3\u30FC\u30C9: ", _objects_weatherObject__WEBPACK_IMPORTED_MODULE_1__.isApiError.statusCode)));
+  let errorMessage;
+  switch (_objects_weatherObject__WEBPACK_IMPORTED_MODULE_1__.isApiError.statusCode) {
+    case 400:
+      errorMessage = "リクエストが不正です。入力を確認してください。";
+      break;
+    case 401:
+      errorMessage = "認証に失敗しました。APIキーを確認してください。";
+      break;
+    case 403:
+      errorMessage = "アクセスが拒否されました。権限を確認してください。";
+      break;
+    case 404:
+      errorMessage = "リクエストしたリソースが見つかりませんでした。";
+      break;
+    case 500:
+      errorMessage = "サーバー側で問題が発生しました。後ほど再試行してください。";
+      break;
+    case 503:
+      errorMessage = "サービスが利用不可です。後ほど再試行してください。";
+      break;
+    default:
+      errorMessage = "不明なエラーが発生しました。";
+  }
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "API\u306E\u53D6\u5F97\u306B\u5931\u6557\u3057\u307E\u3057\u305F\u3002"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "error-message"
+  }, errorMessage), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "\u30B9\u30C6\u30FC\u30BF\u30B9\u30B3\u30FC\u30C9: ", _objects_weatherObject__WEBPACK_IMPORTED_MODULE_1__.isApiError.statusCode)));
 };
 /* harmony default export */ __webpack_exports__["default"] = (ErrorMessage);
 
