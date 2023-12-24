@@ -28,7 +28,7 @@ const weatherObject = async (
     const response = await fetch(cityurl);
     if (!response.ok) {
       // 429 エラーの場合、APIアクセスが制限されているとみなす
-      isApiError = true;
+      isApiError = false;
       isApiError.statusCode = response.status;
 
       if (response.status === 429) {

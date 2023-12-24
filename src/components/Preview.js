@@ -5,9 +5,6 @@ import { isApiError } from '../objects/weatherObject';
 import ErrorMessage from './ErrorMessage';
 export default function Preview({ attributes, commonProps }) {
 
-  console.log(attributes.todayWeather)
-
-
   return (
     <>
       {isApiError.isError ? (

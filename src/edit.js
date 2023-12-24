@@ -17,12 +17,11 @@ import { useState, useRef, useEffect } from '@wordpress/element';
 import './editor.scss';
 import './style.scss';
 import SettingGroup from './components/SettingGroup';
+import { useChangeCity } from './functions/useChangeCity';
 // import UIControlGroup from './components/UICintrolGroup';
 import useBlockSelection from './functions/useOutsideClick';
 import { createVisibilitySettings } from './objects/visibilitySettings';
 // import VisibilityControl from './components/VisibilityControl';
-import { useChangeCity } from './functions/useChangeCity';
-import { useWeatherData } from './functions/useWeatherData';
 import { cities } from './objects/getSpotWeather';
 import { useFontFamilyControl } from './functions/useFontFamilyControl';
 import { useChangeBalance } from './functions/useChangeBalance';
@@ -40,12 +39,10 @@ export default function Edit({ attributes, setAttributes }) {
 	const ref = useRef(null);
 	const { fontFamily, onChangeFontFamily } = useFontFamilyControl(attributes, setAttributes);
 	const [textColor, setTextColor] = useState(attributes.textColor);
-	const { todayWeather, tomorrowWeather, weeklyWeather } = useWeatherData(setAttributes);
+	const weatherData = useChangeCity(selectedCity);
 	const visibilitySettings = createVisibilitySettings({ attributes, setAttributes });
 	const [selectedMedia, setSelectedMedia] = useState(attributes.selectedMedia);
 	const { showSelection, handleLayoutClick } = useBlockSelection();
-
-	useChangeCity(selectedCity);
 
 	const blockProps = useBlockProps({
 		className: 'my-first-plugin',
@@ -79,11 +76,22 @@ export default function Edit({ attributes, setAttributes }) {
 		}
 	}, [attributes.selectedMedia]);
 
+
 	useEffect(() => {
 		if (attributes.selectedCity) {
 			setSelectedCity(attributes.selectedCity);
 		}
 	}, [attributes.selectedCity]);
+	useEffect(() => {
+		// 天気データが取得された場合、それを属性に設定
+		if (weatherData) {
+			setAttributes({
+				todayWeather: weatherData.today,
+				tomorrowWeather: weatherData.tomorrow,
+				weeklyWeather: weatherData.weekly
+			});
+		}
+	}, [weatherData]);
 
 	const commonProps = {
 		borderRadius: attributes.borderRadiusValue,
@@ -96,6 +104,8 @@ export default function Edit({ attributes, setAttributes }) {
 		backgroundGradient: attributes.backgroundGradient,
 		backgroundColor: attributes.backgroundColor,
 	};
+
+	console.log(attributes)
 
 	return (
 		<div {...blockProps}  >
