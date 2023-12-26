@@ -346,15 +346,19 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const ManagedError = () => {
+  let errorTitle;
   let errorMessage;
+  if (_objects_weatherObject__WEBPACK_IMPORTED_MODULE_2__.isApiError.isError) {
+    errorTitle = "APIの取得に失敗しました。";
+  }
   if (_objects_weatherObject__WEBPACK_IMPORTED_MODULE_2__.isApiError.statusCode === null || _objects_weatherObject__WEBPACK_IMPORTED_MODULE_2__.isApiError.statusCode === undefined) {
     _objects_weatherObject__WEBPACK_IMPORTED_MODULE_2__.isApiError.statusCode = "不明なエラー";
   } else {
     errorMessage = _objects_errorMessages__WEBPACK_IMPORTED_MODULE_1__.responseErrorMessage[_objects_weatherObject__WEBPACK_IMPORTED_MODULE_2__.isApiError.statusCode] || "不明なエラーが発生しました。";
   }
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "API\u306E\u53D6\u5F97\u306B\u5931\u6557\u3057\u307E\u3057\u305F\u3002"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, errorTitle), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
     className: "error-message"
-  }, errorMessage), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "\u30B9\u30C6\u30FC\u30BF\u30B9\u30B3\u30FC\u30C9: ", _objects_weatherObject__WEBPACK_IMPORTED_MODULE_2__.isApiError.statusCode)));
+  }, errorMessage), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "\u30B9\u30C6\u30FC\u30BF\u30B9\u30B3\u30FC\u30C9: ", _objects_weatherObject__WEBPACK_IMPORTED_MODULE_2__.isApiError.statusCode), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "\u30D6\u30E9\u30A6\u30B6\u306E\u958B\u767A\u8005\u30C4\u30FC\u30EB\u3092\u958B\u304D\u3001"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "\u30A8\u30E9\u30FC\u5185\u5BB9\u3092\u78BA\u8A8D\u3057\u3066\u304F\u3060\u3055\u3044\u3002")));
 };
 /* harmony default export */ __webpack_exports__["default"] = (ManagedError);
 
