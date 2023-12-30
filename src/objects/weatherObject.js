@@ -19,7 +19,7 @@ const weatherObject = async (
     if (!cityurl) {
       throw new Error(`City "${cityurl}" does not exist in the city object.`);
     }
-    const apiUrl = myPluginData.siteUrl + '/wp-json/j-weather-customizer/save-data/';
+    const apiUrl = JWeatherCustomizerData.siteUrl + '/wp-json/j-weather-customizer/save-data/';
 
     // console.log('Making request to weather API for city:', cityurl); // API呼び出し前のログ
 
@@ -108,7 +108,7 @@ const weatherObject = async (
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-WP-Nonce': myPluginData.nonce // nonceをヘッダーに追加
+        'X-WP-Nonce': JWeatherCustomizerData.nonce // nonceをヘッダーに追加
       },
       body: JSON.stringify({ dailyData: dailyData })
     });
@@ -146,7 +146,7 @@ const weatherObject = async (
     // エラーが発生した場合、isApiError を更新
     isApiError.isError = true;
     isApiError.statusCode = null; // ここでエラーのステータスコードをクリアするか、必要に応じて設定
-  
+
   }
 }
 

@@ -14,7 +14,7 @@
  * @package           create-block
  */
 
-function create_block_gutenpride_block_init()
+function create_block_JWeatherCustomizer_block_init()
 {
 	register_block_type(
 		__DIR__ . '/build',
@@ -24,17 +24,14 @@ function create_block_gutenpride_block_init()
 	);
 }
 
-add_action('init', 'create_block_gutenpride_block_init');
+add_action('init', 'create_block_JWeatherCustomizer_block_init');
 
 
-function enqueue_my_plugin_script()
+function enqueue_jWeatherCustomizer_script()
 {
-	// スクリプトを登録します。ここでの 'my-plugin-script' はあなたのスクリプトハンドルです。
-	wp_register_script('my-plugin-script', plugins_url('build/index.js', __FILE__), array('wp-blocks'), '1.0.0', true);
-
 	// ブロックエディタ用のスクリプトを登録
 	wp_register_script(
-		'my-plugin-script',
+		'j-weather-customizer-script',
 		plugins_url('build/index.js', __FILE__),
 		array('wp-blocks'), // 必要に応じて依存関係を記述
 		'1.0.0',
@@ -50,13 +47,13 @@ function enqueue_my_plugin_script()
 	);
 
 	// ローカライズスクリプト
-	wp_localize_script('my-plugin-script', 'myPluginData', $plugin_data);
+	wp_localize_script('j-weather-customizer-script', 'JWeatherCustomizerData', $plugin_data);
 
 	// スクリプトをエンキューします。
-	wp_enqueue_script('my-plugin-script');
+	wp_enqueue_script('j-weather-customizer-script');
 }
 
-add_action('admin_enqueue_scripts', 'enqueue_my_plugin_script');
+add_action('admin_enqueue_scripts', 'enqueue_jWeatherCustomizer_script');
 
 include dirname(__FILE__) . '/render-blocks.php';
 

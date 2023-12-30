@@ -16,7 +16,7 @@
 */
 
 const getWeatherInfo = (weatherCode) => {
-  const pluginImagePaths = myPluginData.pluginImagePath;
+  const pluginImagePaths = JWeatherCustomizerData.pluginImagePath;
 
   // 0 : Clear Sky
   if (weatherCode === 0) {

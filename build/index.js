@@ -903,7 +903,7 @@ __webpack_require__.r(__webpack_exports__);
 */
 
 const getWeatherInfo = weatherCode => {
-  const pluginImagePaths = myPluginData.pluginImagePath;
+  const pluginImagePaths = JWeatherCustomizerData.pluginImagePath;
 
   // 0 : Clear Sky
   if (weatherCode === 0) {
@@ -1839,7 +1839,7 @@ const weatherObject = async (cityurl, setTodayWeather, setTomorrowWeather, setWe
     if (!cityurl) {
       throw new Error(`City "${cityurl}" does not exist in the city object.`);
     }
-    const apiUrl = myPluginData.siteUrl + '/wp-json/j-weather-customizer/save-data/';
+    const apiUrl = JWeatherCustomizerData.siteUrl + '/wp-json/j-weather-customizer/save-data/';
 
     // console.log('Making request to weather API for city:', cityurl); // API呼び出し前のログ
 
@@ -1913,7 +1913,7 @@ const weatherObject = async (cityurl, setTodayWeather, setTomorrowWeather, setWe
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-WP-Nonce': myPluginData.nonce // nonceをヘッダーに追加
+        'X-WP-Nonce': JWeatherCustomizerData.nonce // nonceをヘッダーに追加
       },
 
       body: JSON.stringify({
