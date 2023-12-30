@@ -29,27 +29,23 @@ add_action('init', 'create_block_JWeatherCustomizer_block_init');
 
 function enqueue_jWeatherCustomizer_script()
 {
-	// ブロックエディタ用のスクリプトを登録
 	wp_register_script(
 		'j-weather-customizer-script',
-		plugins_url('build/index.js', __FILE__),
-		array('wp-blocks'), // 必要に応じて依存関係を記述
+		esc_url(plugins_url('build/index.js', __FILE__)),
+		array('wp-blocks'),
 		'1.0.0',
 		true
 	);
 
-	// データをローカライズしてセキュアな方法でスクリプトに渡します。
+	// 安全なデータのみを含むことを確認
 	$plugin_data = array(
-		'pluginImagePath' => plugins_url('images/', __FILE__),
-		'restUrl'         => rest_url('j-weather-customizer/save-data/'),
-		'nonce' => wp_create_nonce('wp_rest'),
-		'siteUrl'         => get_site_url(),
+		'pluginImagePath' => esc_url(plugins_url('images/', __FILE__)),
+		'restUrl'         => esc_url(rest_url('j-weather-customizer/save-data/')),
+		'nonce'           => wp_create_nonce('wp_rest'),
+		'siteUrl'         => esc_url(get_site_url()),
 	);
 
-	// ローカライズスクリプト
 	wp_localize_script('j-weather-customizer-script', 'JWeatherCustomizerData', $plugin_data);
-
-	// スクリプトをエンキューします。
 	wp_enqueue_script('j-weather-customizer-script');
 }
 
@@ -59,10 +55,9 @@ include dirname(__FILE__) . '/render-blocks.php';
 
 add_action('rest_api_init', function () {
 	register_rest_route('j-weather-customizer', '/save-data/', array(
-		'methods' => 'POST',
-		'callback' => 'save_weather_data',
+		'methods'             => 'POST',
+		'callback'            => 'save_weather_data',
 		'permission_callback' => function () {
-
 			return current_user_can('edit_posts');
 		}
 	));
@@ -76,7 +71,6 @@ function save_weather_data(WP_REST_Request $request)
 	}
 
 	$data = $request->get_param('dailyData');
-
 	if (!$data) {
 		return new WP_REST_Response('Error: No data provided', 400);
 	}
@@ -97,7 +91,7 @@ function save_weather_data(WP_REST_Request $request)
 			if (json_last_error() === JSON_ERROR_NONE) {
 				$sanitized_value = array_map('sanitize_text_field', $decoded_value);
 			} else {
-				return new WP_REST_Response('Error: Invalid JSON string provided for day ' . $day, 400);
+				return new WP_REST_Response('Error: Invalid JSON string provided for day ' . esc_html($day), 400);
 			}
 		}
 		$data[$day] = $sanitized_value;

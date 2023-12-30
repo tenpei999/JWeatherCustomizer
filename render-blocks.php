@@ -1,11 +1,10 @@
 <?php
 
-// Helper function to set text color based on day properties
-
-// error_log('hoge');
 function setTextColor($day)
 {
-  if (($day['isHoliday'] ?? false) || ($day['isSunday'] ?? false)) {
+  if ($day['isHoliday'] ?? false) {
+    return ' style="color: red"';
+  } elseif ($day['isSunday'] ?? false) {
     return ' style="color: red"';
   } elseif ($day['isSaturday'] ?? false) {
     return ' style="color: blue"';
@@ -16,17 +15,40 @@ function setTextColor($day)
 function generateBorderStyle($borders, $borderRadiusValue)
 {
   $styles = [];
-
   if ($borders) {
     foreach ($borders as $side => $border) {
       $styles[] = "border-{$side}: {$border['width']} {$border['style']} {$border['color']}";
     }
   }
-
   if ($borderRadiusValue) {
     $styles[] = "border-radius: {$borderRadiusValue}";
   }
+  return implode('; ', $styles);
+}
 
+function generateBackgroundStyles($attr)
+{
+  $styles = [];
+  switch ($attr['backgroundStyleType']) {
+    case 'image':
+      if ($attr['backgroundImage']) {
+        $styles[] = 'background-image: url(' . esc_url($attr['backgroundImage']) . ')';
+        $styles[] = 'background-size: cover';
+        $styles[] = 'background-repeat: no-repeat';
+        $styles[] = 'background-position: center';
+      }
+      break;
+    case 'color':
+      if ($attr['backgroundColor']) {
+        $styles[] = 'background: ' . $attr['backgroundColor'];
+      }
+      break;
+    case 'gradient':
+      if ($attr['backgroundGradient']) {
+        $styles[] = 'background: ' . $attr['backgroundGradient'];
+      }
+      break;
+  }
   return implode('; ', $styles);
 }
 
@@ -34,101 +56,64 @@ function jWeatherCustomizer_render_block($attr, $content)
 {
   $weather_data = json_decode(get_option('my_weather_data'), true);
 
-  // 天気データがnullかチェック
-  if ($weather_data === null) {
+  if (!$weather_data) {
     return '天気データが取得できませんでした。';
   }
 
-  if (!is_array($weather_data)) {
-    return '天気データのフォーマットが不正です。';
-  }
+  $attr = array_merge([
+    'showTodayWeather' => true,
+    'showTomorrowWeather' => true,
+    'showWeeklyWeather' => true,
+    'showHoliday' => null,
+    'showPrecipitation' => null,
+    'borders' => null,
+    'borderRadiusValue' => null,
+    'fontFamily' => 'Noto Sans JP, sans-serif',
+    'textColor' => 'black',
+    'backgroundStyleType' => 'color',
+    'backgroundImage' => '',
+    'backgroundGradient' => '',
+    'backgroundColor' => '#fff',
+    'balanceOption' => 'EmphasizeTheWeather'
+  ], $attr);
 
-  // Attribute Defaults
-  $showTodayWeather = $attr['showTodayWeather'] ?? true; // デフォルトはtrue
-  $showTomorrowWeather = $attr['showTomorrowWeather'] ?? true; // デフォルトはtrue
-  $showWeeklyWeather = $attr['showWeeklyWeather'] ?? true;
-  $showHoliday = $attr['showHoliday'] ?? null;
-  $showPrecipitation = $attr['showPrecipitation'] ?? null;
-  $borders = $attr['borders'] ?? null;
-  $borderRadiusValue = $attr['borderRadiusValue'] ?? null;
-  $selectedFontFamily = $attr['fontFamily'] ?? 'Noto Sans JP, sans-serif';
-  $selectedColor = $attr['textColor'] ?? 'black';
-  $backgroundStyleType = $attr['backgroundStyleType'] ?? 'color';
-  $selectedBackgroundImage = $attr['backgroundImage'] ?? 'http://hoge.local/wp-content/uploads/2023/10/IMG_5308-scaled.jpeg';
-  $selectedBackgroundGradient = $attr['backgroundGradient'] ?? 'linear-gradient(135deg,#1E9600 0%, #FFF200 0%, #FF0000 100%)';
-  $selectedBackgroundColor = $attr['backgroundColor'] ?? '#fff';
-  $selectedBalance = $attr['balanceOption'] ?? 'EmphasizeTheWeather';
+  // Styles
+  $colorStyle = 'color: ' . $attr['textColor'] . ';';
+  $fontStyle = 'font-family: ' . $attr['fontFamily'] . ';';
+  $backgroundStyles = generateBackgroundStyles($attr);
+  $borderStyles = generateBorderStyle($attr['borders'], $attr['borderRadiusValue']);
 
-  $colorStyle = 'color: ' . $selectedColor . ';';
-  $fontStyle = 'font-family: ' . $selectedFontFamily . ';';
-  $backgroundStyles = array(); // 初期化
+  $commonStyle = $borderStyles . ' ; ' . $colorStyle . ' ; ' . $backgroundStyles . ' ; ' . $fontStyle . ' ; ';
 
-  switch ($backgroundStyleType) {
-    case 'image':
-      // 画像が選択されている場合、背景画像として設定
-      if ($selectedBackgroundImage) {
-        $backgroundStyles[] = 'background-image: url(' . esc_url($selectedBackgroundImage) . ')';
-        $backgroundStyles[] = 'background-size: cover';
-        $backgroundStyles[] = 'background-repeat: no-repeat';
-        $backgroundStyles[] = 'background-position: center';
-      }
-      break;
-
-    case 'color':
-      // グラデーションが選択されている場合、背景として背景色を設定
-      if ($selectedBackgroundColor) {
-        $backgroundStyles[] = 'background: ' . $selectedBackgroundColor;
-      }
-      break;
-
-    case 'gradient':
-      // グラデーションが選択されている場合、背景として背景グラデーションを設定
-      if ($selectedBackgroundGradient) {
-        $backgroundStyles[] = 'background: ' . $selectedBackgroundGradient;
-      }
-      break;
-
-    default:
-      // デフォルトの背景設定（必要に応じて）または何も適用しない
-      break;
-  }
-
-  $backgroundStylesString = implode('; ', $backgroundStyles);
-
-  $commonStyle = generateBorderStyle($borders, $borderRadiusValue) . ' ; ' . $colorStyle . ' ; ' . $backgroundStylesString . ' ; ' . $fontStyle . ' ; ';
-
-  $output = '<div class="wp-block-create-block-j-weather-customizer"><div class="layout"><div class="today-and-tomorrow weather-layout">';
+  // Output
+  $output = '<div class="wp-block-create-block-j-weather-customizer" style="">';
+  $output .= '<div class="layout"><div class="today-and-tomorrow weather-layout">';
 
   $time_ranges = ['0-6時', '6-12時', '12-18時', '18-24時'];
 
-  if ($showTodayWeather && isset($weather_data[0])) {
+  if ($attr['showTodayWeather'] && isset($weather_data[0])) {
     // error_log('Debug: Today Weather Data - ' . print_r($weather_data[0], true));
     $textColor = setTextColor($weather_data[0]['day'] ?? []);
-    $output .= generateWeatherOutput($weather_data[0], $textColor, $time_ranges, $showHoliday, $showPrecipitation, __('今日の天気', 'j-weather-customizer'), $commonStyle, $selectedBalance);
+    $output .= generateWeatherOutput($weather_data[0], $textColor, $time_ranges, $attr['showHoliday'], $attr['showPrecipitation'], __('今日の天気', 'j-weather-customizer'), $commonStyle, $attr['selectedBalance']);
   }
 
-  if ($showTomorrowWeather && isset($weather_data[1])) {
+  if ($attr['showTomorrowWeather'] && isset($weather_data[1])) {
     // error_log('Debug: Tomorrow Weather Data - ' . print_r($weather_data[1], true));
     $textColor = setTextColor($weather_data[1]['day']  ?? []);
-    $output .= generateWeatherOutput($weather_data[1], $textColor, $time_ranges, $showHoliday, $showPrecipitation, __('明日の天気', 'j-weather-customizer'), $commonStyle, $selectedBalance);
-  }
-
-  $output .= '</div>';
-
-  if ($showWeeklyWeather) {
-    $output .= '<ul class="block--weekly weather-layout ' . esc_attr($selectedBalance) . '" style="' . $commonStyle . '">';
-
-    for ($i = 2; $i <= 6; $i++) {
-      if (isset($weather_data[$i])) {
-        $textColor = setTextColor($weather_data[$i]['day'] ?? []);
-        $output .= generateWeeklyWeatherOutput($weather_data[$i], $textColor, $showHoliday);
-      }
-    }
-
-    $output .= '</ul>';
+    $output .= generateWeatherOutput($weather_data[1], $textColor, $time_ranges, $attr['showHoliday'], $attr['showPrecipitation'], __('明日の天気', 'j-weather-customizer'), $commonStyle, $attr['selectedBalance']);
   }
 
   $output .= '</div></div>';
+
+  if ($attr['showWeeklyWeather']) {
+    $output .= '<ul class="block--weekly weather-layout ' . esc_attr($attr['balanceOption']) . '" style="' . $commonStyle . '">';
+    for ($i = 2; $i <= 6; $i++) {
+      if (isset($weather_data[$i])) {
+        $output .= generateWeeklyWeatherOutput($weather_data[$i], $textColor, $attr);
+      }
+    }
+    $output .= '</ul>';
+  }
 
   return $output;
 }
