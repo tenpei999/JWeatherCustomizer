@@ -35,6 +35,10 @@
 			"type": "boolean",
 			"default": true
 		},
+		"todayWeather": {
+			"type": "object",
+			"default": {}
+		},
 		"tomorrowWeather": {
 			"type": "object",
 			"default": {}
@@ -42,10 +46,6 @@
 		"weeklyWeather": {
 			"type": "array",
 			"default": []
-		},
-		"todayWeather": {
-			"type": "object",
-			"default": {}
 		},
 		"borderRadiusValue": {
 			"type": "string",

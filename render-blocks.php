@@ -1,16 +1,16 @@
 <?php
 
-function setTextColor($day)
-{
-  if ($day['isHoliday'] ?? false) {
-    return ' style="color: red"';
-  } elseif ($day['isSunday'] ?? false) {
-    return ' style="color: red"';
-  } elseif ($day['isSaturday'] ?? false) {
-    return ' style="color: blue"';
-  }
-  return '';
-}
+// function setTextColor($day)
+// {
+//   if ($day['isHoliday'] ?? false) {
+//     return ' style="color: red"';
+//   } elseif ($day['isSunday'] ?? false) {
+//     return ' style="color: red"';
+//   } elseif ($day['isSaturday'] ?? false) {
+//     return ' style="color: blue"';
+//   }
+//   return '';
+// }
 
 function generateBorderStyle($borders, $borderRadiusValue)
 {
@@ -54,11 +54,12 @@ function generateBackgroundStyles($attr)
 
 function jWeatherCustomizer_render_block($attr, $content)
 {
-  $weather_data = json_decode(get_option('my_weather_data'), true);
+  $weather_data = json_decode(get_option('jweather_customizer_data'), true);
 
   if (!$weather_data) {
     return '天気データが取得できませんでした。';
   }
+
 
   $attr = array_merge([
     'showTodayWeather' => true,
@@ -74,8 +75,34 @@ function jWeatherCustomizer_render_block($attr, $content)
     'backgroundImage' => '',
     'backgroundGradient' => '',
     'backgroundColor' => '#fff',
-    'balanceOption' => 'EmphasizeTheWeather'
+    'balanceOption' => 'EmphasizeTheWeather',
+    'todayWeather' => [
+      'type' => 'object',
+      'default' => []
+    ],
+    'tomorrowWeather' => [
+      'type' => 'object',
+      'default' => []
+    ],
+    'weeklyWeather' => [
+      'type' => 'array',
+      'default' => []
+    ],
   ], $attr);
+
+  // error_log('Data that failed to save: ' . print_r($attr, true));
+
+  function setTextColor($day)
+  {
+    if ($day['isHoliday'] ?? false) {
+      return ' style="color: red"';
+    } elseif ($day['isSunday'] ?? false) {
+      return ' style="color: red"';
+    } elseif ($day['isSaturday'] ?? false) {
+      return ' style="color: blue"';
+    }
+    return '';
+  }
 
   // Styles
   $colorStyle = 'color: ' . $attr['textColor'] . ';';
@@ -91,28 +118,29 @@ function jWeatherCustomizer_render_block($attr, $content)
 
   $time_ranges = ['0-6時', '6-12時', '12-18時', '18-24時'];
 
-  if ($attr['showTodayWeather'] && isset($weather_data[0])) {
-    // error_log('Debug: Today Weather Data - ' . print_r($weather_data[0], true));
-    $textColor = setTextColor($weather_data[0]['day'] ?? []);
-    $output .= generateWeatherOutput($weather_data[0], $textColor, $time_ranges, $attr['showHoliday'], $attr['showPrecipitation'], __('今日の天気', 'j-weather-customizer'), $commonStyle, $attr['selectedBalance']);
+
+
+  if ($attr['showTodayWeather'] && isset($attr['todayWeather'])) {
+    $data = $attr['todayWeather']; // 今日の天気データを $data に設定
+    $textColor = setTextColor($data['day'] ?? []);
+    $output .= generateWeatherOutput($data, $textColor, $time_ranges, $attr['showHoliday'], $attr['showPrecipitation'], __('今日の天気', 'j-weather-customizer'), $commonStyle, $attr['balanceOption']);
   }
 
-  if ($attr['showTomorrowWeather'] && isset($weather_data[1])) {
-    // error_log('Debug: Tomorrow Weather Data - ' . print_r($weather_data[1], true));
-    $textColor = setTextColor($weather_data[1]['day']  ?? []);
-    $output .= generateWeatherOutput($weather_data[1], $textColor, $time_ranges, $attr['showHoliday'], $attr['showPrecipitation'], __('明日の天気', 'j-weather-customizer'), $commonStyle, $attr['selectedBalance']);
+  if ($attr['showTomorrowWeather'] && isset($attr['tomorrowWeather'])) {
+    $data = $attr['tomorrowWeather']; // 明日の天気データを $data に設定
+    $textColor = setTextColor($data['day'] ?? []);
+    $output .= generateWeatherOutput($data, $textColor, $time_ranges, $attr['showHoliday'], $attr['showPrecipitation'], __('明日の天気', 'j-weather-customizer'), $commonStyle, $attr['balanceOption']);
   }
 
   $output .= '</div></div>';
 
-  if ($attr['showWeeklyWeather']) {
+  if ($attr['showWeeklyWeather'] && isset($attr['weeklyWeather']) && is_array($attr['weeklyWeather'])) {
     $output .= '<ul class="block--weekly weather-layout ' . esc_attr($attr['balanceOption']) . '" style="' . $commonStyle . '">';
-    for ($i = 2; $i <= 6; $i++) {
-      if (isset($weather_data[$i])) {
-        $output .= generateWeeklyWeatherOutput($weather_data[$i], $textColor, $attr);
-      }
+    foreach ($attr['weeklyWeather'] as $i => $dayWeather) {
+      $data = $attr['weeklyWeather'][$i]; // 週間天気データを $data に設定
+      $textColor = setTextColor($data['day'] ?? []);
+      $output .= generateWeeklyWeatherOutput($data, $textColor, $attr['showHoliday']); // 週間天気用の出力関数を呼び出し
     }
-    $output .= '</ul>';
   }
 
   return $output;
@@ -120,6 +148,8 @@ function jWeatherCustomizer_render_block($attr, $content)
 
 function generateWeatherOutput($data, $textColor, $time_ranges, $showHoliday, $showPrecipitation, $title, $commonStyle, $selectedBalance)
 {
+  // error_log('generateWeatherOutput - data: ' . print_r($data, true));
+
   $output = '<div class="block--current ' . esc_attr($selectedBalance) . '" style="' . $commonStyle . '">';
   $output .= '<h3>' . $title . '</h3>';
   $output .= '<h4' . $textColor . '>' . ($data['day']['date']['month'] ?? '') . ($data['day']['date']['day'] ?? '') . '<br/>' . ($data['day']['date']['dayOfWeek']  ?? '') . '</h4>';
@@ -154,8 +184,11 @@ function generateWeatherOutput($data, $textColor, $time_ranges, $showHoliday, $s
   return $output;
 }
 
+
 function generateWeeklyWeatherOutput($data, $textColor, $showHoliday)
 {
+
+  // error_log('generateWeeklyWeatherOutput - data: ' . print_r($data, true));
   $output = '<li class="block--day">';
   $output .= '<h4' . $textColor . '>' . ($data['day']['date']['month'] ?? '') . ($data['day']['date']['day'] ?? '') . '<br/>' . ($data['day']['date']['dayOfWeek']  ?? '') . '</h4>';
   if ($showHoliday) {

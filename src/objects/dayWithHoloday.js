@@ -28,6 +28,7 @@ const dayWithHoliday = async (addBreak = false) => {
     // Get the holidays
     const holidays = await getHolidays();
 
+
     // Create an array of dates with holidays data included
     const oneWeekDatesWithHolidays = oneWeekDates.map(date => {
 
