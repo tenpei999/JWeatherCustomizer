@@ -7,16 +7,29 @@ function TextColorControl({ textColor, setTextColor, setAttributes }) {
     setAttributes({ textColor: newTextColor });
   };
 
+  const formStyle = {
+    width: '100%',
+    textAlign: 'center',
+    textAlign: 'left',
+    paddingTop: '15px',
+  }
+
+  const textColorControlLabel = (
+    <span style={{ display: 'block', transform: 'translateX(33%)' }}> テキストの色</span>
+  )
+
   return (
-    <SelectControl
-      label="テキストの色を選択"
-      value={textColor}
-      options={[
-        { label: '黒', value: 'black' },
-        { label: '白', value: 'white' },
-      ]}
-      onChange={handleOnChange}
-    />
+    <div style={formStyle} className='jwc-text-color-control'>
+      <SelectControl
+        label={textColorControlLabel}
+        value={textColor}
+        options={[
+          { label: '黒', value: 'black' },
+          { label: '白', value: 'white' },
+        ]}
+        onChange={handleOnChange}
+      />
+    </div>
   );
 }
 

@@ -20,7 +20,10 @@
   }
 
   &-select-city,
-  &-change-font {
+  &-change-font,
+  &-text-color-control,
+  &-font-balance,
+  &-back-ground {
     .components-flex {
       display: flex;
       flex-direction: row;
@@ -35,6 +38,14 @@
           font-size: 20px;
         }
       }
+    }
+  }
+
+  &-back-ground {
+    &__selector {
+      display: flex;
+      flex-direction: row-reverse;
+      width: 50%;
     }
   }
 

@@ -105,6 +105,60 @@ const BackgroundSelector = ({
 
 /***/ }),
 
+/***/ "./src/components/BalanceControl.js":
+/*!******************************************!*\
+  !*** ./src/components/BalanceControl.js ***!
+  \******************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__);
+
+
+const BalanceControl = ({
+  selectedOption,
+  setSelectedOption,
+  fontBalanceOptions
+}) => {
+  const formStyle = {
+    width: '100%',
+    textAlign: 'center',
+    textAlign: 'left',
+    paddingTop: '15px'
+  };
+  const balanceControlLabel = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    style: {
+      display: 'block',
+      transform: 'translateX(33%)'
+    }
+  }, " \u30D0\u30E9\u30F3\u30B9");
+  const wrapperStyle = {
+    display: 'flex',
+    flexDirection: 'column'
+  };
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "jwc-font-balance",
+    style: formStyle
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
+    label: balanceControlLabel,
+    value: selectedOption.label,
+    options: fontBalanceOptions.map(opt => ({
+      label: opt.label,
+      value: opt.label
+    })),
+    onChange: label => {
+      const option = fontBalanceOptions.find(opt => opt.label === label);
+      setSelectedOption(option);
+    }
+  }));
+};
+/* harmony default export */ __webpack_exports__["default"] = (BalanceControl);
+
+/***/ }),
+
 /***/ "./src/components/BorderControlGroup.js":
 /*!**********************************************!*\
   !*** ./src/components/BorderControlGroup.js ***!
@@ -294,7 +348,8 @@ function FontFamilyControl({
   };
   const formStyle = {
     width: '100%',
-    textAlign: 'left'
+    textAlign: 'left',
+    paddingTop: '15px'
   };
   const changeFontLavel = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     style: {
@@ -595,8 +650,23 @@ function TextColorControl({
       textColor: newTextColor
     });
   };
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
-    label: "\u30C6\u30AD\u30B9\u30C8\u306E\u8272\u3092\u9078\u629E",
+  const formStyle = {
+    width: '100%',
+    textAlign: 'center',
+    textAlign: 'left',
+    paddingTop: '15px'
+  };
+  const textColorControlLabel = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    style: {
+      display: 'block',
+      transform: 'translateX(33%)'
+    }
+  }, " \u30C6\u30AD\u30B9\u30C8\u306E\u8272");
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    style: formStyle,
+    className: "jwc-text-color-control"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
+    label: textColorControlLabel,
     value: textColor,
     options: [{
       label: '黒',
@@ -606,7 +676,7 @@ function TextColorControl({
       value: 'white'
     }],
     onChange: handleOnChange
-  });
+  }));
 }
 /* harmony default export */ __webpack_exports__["default"] = (TextColorControl);
 
@@ -677,12 +747,11 @@ const TimeZone = ({
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
-/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _FontFamilyControl__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./FontFamilyControl */ "./src/components/FontFamilyControl.js");
-/* harmony import */ var _TextColorControl__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./TextColorControl */ "./src/components/TextColorControl.js");
-/* harmony import */ var _BackgroundSelector__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./BackgroundSelector */ "./src/components/BackgroundSelector.js");
-/* harmony import */ var _BorderControlGroup__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./BorderControlGroup */ "./src/components/BorderControlGroup.js");
+/* harmony import */ var _FontFamilyControl__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./FontFamilyControl */ "./src/components/FontFamilyControl.js");
+/* harmony import */ var _TextColorControl__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./TextColorControl */ "./src/components/TextColorControl.js");
+/* harmony import */ var _BackgroundSelector__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./BackgroundSelector */ "./src/components/BackgroundSelector.js");
+/* harmony import */ var _BorderControlGroup__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./BorderControlGroup */ "./src/components/BorderControlGroup.js");
+/* harmony import */ var _BalanceControl__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./BalanceControl */ "./src/components/BalanceControl.js");
 
 
 
@@ -700,15 +769,20 @@ const UIControlGroup = ({
   attributes,
   setAttributes
 }) => {
+  const wrapperStyle = {
+    display: 'flex',
+    flexDirection: 'column'
+  };
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "detail-settings"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_BorderControlGroup__WEBPACK_IMPORTED_MODULE_5__["default"], {
+    className: "detail-settings",
+    style: wrapperStyle
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_BorderControlGroup__WEBPACK_IMPORTED_MODULE_4__["default"], {
     attributes: attributes,
     setAttributes: setAttributes
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_FontFamilyControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_FontFamilyControl__WEBPACK_IMPORTED_MODULE_1__["default"], {
     fontFamily: fontFamily || attributes.fontFamily,
     setFontFamily: onChangeFontFamily
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_TextColorControl__WEBPACK_IMPORTED_MODULE_3__["default"], {
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_TextColorControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
     textColor: textColor || attributes.textColor,
     setTextColor: value => {
       setTextColor(value);
@@ -716,18 +790,11 @@ const UIControlGroup = ({
         textColor: value
       });
     }
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
-    label: "Font Balance",
-    value: selectedOption.label,
-    options: fontBalanceOptions.map(opt => ({
-      label: opt.label,
-      value: opt.label
-    })),
-    onChange: label => {
-      const option = fontBalanceOptions.find(opt => opt.label === label);
-      setSelectedOption(option);
-    }
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_BackgroundSelector__WEBPACK_IMPORTED_MODULE_4__["default"], {
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_BalanceControl__WEBPACK_IMPORTED_MODULE_5__["default"], {
+    selectedOption: selectedOption,
+    setSelectedOption: setSelectedOption,
+    fontBalanceOptions: fontBalanceOptions
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_BackgroundSelector__WEBPACK_IMPORTED_MODULE_3__["default"], {
     attributes: attributes,
     setAttributes: setAttributes
   }));

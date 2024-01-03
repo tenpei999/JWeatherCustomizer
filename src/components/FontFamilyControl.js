@@ -12,6 +12,7 @@ function FontFamilyControl({ fontFamily, setFontFamily }) {
   const formStyle = {
     width: '100%',
     textAlign: 'left',
+    paddingTop: '15px',
   }
 
   const changeFontLavel = (

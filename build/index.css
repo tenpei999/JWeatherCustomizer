@@ -12,16 +12,21 @@
 .jwc-border-radius label {
   font-size: 20px;
 }
-.jwc-select-city .components-flex, .jwc-change-font .components-flex {
+.jwc-select-city .components-flex, .jwc-change-font .components-flex, .jwc-text-color-control .components-flex, .jwc-font-balance .components-flex, .jwc-back-ground .components-flex {
   display: flex;
   flex-direction: row;
   gap: 0;
 }
-.jwc-select-city .components-flex-item, .jwc-change-font .components-flex-item {
+.jwc-select-city .components-flex-item, .jwc-change-font .components-flex-item, .jwc-text-color-control .components-flex-item, .jwc-font-balance .components-flex-item, .jwc-back-ground .components-flex-item {
   width: 50%;
 }
-.jwc-select-city .components-flex label.components-text, .jwc-change-font .components-flex label.components-text {
+.jwc-select-city .components-flex label.components-text, .jwc-change-font .components-flex label.components-text, .jwc-text-color-control .components-flex label.components-text, .jwc-font-balance .components-flex label.components-text, .jwc-back-ground .components-flex label.components-text {
   font-size: 20px;
+}
+.jwc-back-ground__selector {
+  display: flex;
+  flex-direction: row-reverse;
+  width: 50%;
 }
 .jwc-visibility-control__title {
   width: 50%;
