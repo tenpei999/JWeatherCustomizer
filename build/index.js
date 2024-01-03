@@ -478,7 +478,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _SelectCity__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./SelectCity */ "./src/components/SelectCity.js");
 /* harmony import */ var _VisibilityControl__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./VisibilityControl */ "./src/components/VisibilityControl.js");
-/* harmony import */ var _UICintrolGroup__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./UICintrolGroup */ "./src/components/UICintrolGroup.js");
+/* harmony import */ var _UIControlGroup__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./UIControlGroup */ "./src/components/UIControlGroup.js");
 
 
 
@@ -516,7 +516,7 @@ const SettingGroup = ({
     handleCityChange: handleCityChange
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_VisibilityControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
     settings: visibilitySettings
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_UICintrolGroup__WEBPACK_IMPORTED_MODULE_3__["default"], {
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_UIControlGroup__WEBPACK_IMPORTED_MODULE_3__["default"], {
     fontFamily: fontFamily,
     onChangeFontFamily: onChangeFontFamily,
     textColor: textColor,
@@ -668,9 +668,9 @@ const TimeZone = ({
 
 /***/ }),
 
-/***/ "./src/components/UICintrolGroup.js":
+/***/ "./src/components/UIControlGroup.js":
 /*!******************************************!*\
-  !*** ./src/components/UICintrolGroup.js ***!
+  !*** ./src/components/UIControlGroup.js ***!
   \******************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
@@ -700,14 +700,16 @@ const UIControlGroup = ({
   attributes,
   setAttributes
 }) => {
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_BorderControlGroup__WEBPACK_IMPORTED_MODULE_5__["default"], {
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "detail-settings"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_BorderControlGroup__WEBPACK_IMPORTED_MODULE_5__["default"], {
     attributes: attributes,
     setAttributes: setAttributes
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_FontFamilyControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
     fontFamily: fontFamily || attributes.fontFamily,
     setFontFamily: onChangeFontFamily
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_TextColorControl__WEBPACK_IMPORTED_MODULE_3__["default"], {
-    textColor: textColor,
+    textColor: textColor || attributes.textColor,
     setTextColor: value => {
       setTextColor(value);
       setAttributes({

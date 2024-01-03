@@ -1,17 +1,5 @@
 <?php
 
-// function setTextColor($day)
-// {
-//   if ($day['isHoliday'] ?? false) {
-//     return ' style="color: red"';
-//   } elseif ($day['isSunday'] ?? false) {
-//     return ' style="color: red"';
-//   } elseif ($day['isSaturday'] ?? false) {
-//     return ' style="color: blue"';
-//   }
-//   return '';
-// }
-
 function generateBorderStyle($borders, $borderRadiusValue)
 {
   $styles = [];
@@ -60,7 +48,6 @@ function jWeatherCustomizer_render_block($attr, $content)
     return '天気データが取得できませんでした。';
   }
 
-
   $attr = array_merge([
     'showTodayWeather' => true,
     'showTomorrowWeather' => true,
@@ -90,7 +77,6 @@ function jWeatherCustomizer_render_block($attr, $content)
     ],
   ], $attr);
 
-  // error_log('Data that failed to save: ' . print_r($attr, true));
 
   function setTextColor($day)
   {
@@ -102,6 +88,7 @@ function jWeatherCustomizer_render_block($attr, $content)
       return ' style="color: blue"';
     }
     return '';
+    error_log('Data that failed to save: ' . print_r($day, true));
   }
 
   // Styles
@@ -109,7 +96,6 @@ function jWeatherCustomizer_render_block($attr, $content)
   $fontStyle = 'font-family: ' . $attr['fontFamily'] . ';';
   $backgroundStyles = generateBackgroundStyles($attr);
   $borderStyles = generateBorderStyle($attr['borders'], $attr['borderRadiusValue']);
-
   $commonStyle = $borderStyles . ' ; ' . $colorStyle . ' ; ' . $backgroundStyles . ' ; ' . $fontStyle . ' ; ';
 
   // Output
@@ -117,8 +103,6 @@ function jWeatherCustomizer_render_block($attr, $content)
   $output .= '<div class="layout"><div class="today-and-tomorrow weather-layout">';
 
   $time_ranges = ['0-6時', '6-12時', '12-18時', '18-24時'];
-
-
 
   if ($attr['showTodayWeather'] && isset($attr['todayWeather'])) {
     $data = $attr['todayWeather']; // 今日の天気データを $data に設定
@@ -183,7 +167,6 @@ function generateWeatherOutput($data, $textColor, $time_ranges, $showHoliday, $s
 
   return $output;
 }
-
 
 function generateWeeklyWeatherOutput($data, $textColor, $showHoliday)
 {

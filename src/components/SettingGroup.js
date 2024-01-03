@@ -1,6 +1,6 @@
 import SelectCity from './SelectCity';
 import VisibilityControl from './VisibilityControl';
-import UIControlGroup from './UICintrolGroup';
+import UIControlGroup from './UIControlGroup';
 
 const SettingGroup = ({
   selectedCity,
