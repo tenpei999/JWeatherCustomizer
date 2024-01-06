@@ -23,10 +23,23 @@
 .jwc-select-city .components-flex label.components-text, .jwc-change-font .components-flex label.components-text, .jwc-text-color-control .components-flex label.components-text, .jwc-font-balance .components-flex label.components-text, .jwc-back-ground .components-flex label.components-text {
   font-size: 20px;
 }
+.jwc-back-ground--wrapper .components-circular-option-picker__custom-clear-wrapper {
+  margin-top: -12px;
+}
 .jwc-back-ground__selector {
   display: flex;
   flex-direction: row-reverse;
   width: 50%;
+}
+.jwc-back-ground__image {
+  text-align: right;
+}
+.jwc-back-ground__image .button-insert {
+  font-size: 13px;
+  border: 0.5px solid;
+  width: 100%;
+  margin: auto;
+  display: block;
 }
 .jwc-visibility-control__title {
   width: 50%;

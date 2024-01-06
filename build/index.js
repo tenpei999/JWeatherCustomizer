@@ -56,8 +56,39 @@ const BackgroundSelector = ({
       backgroundStyleType: newStyleType
     });
   };
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
-    label: "\u80CC\u666F\u30B9\u30BF\u30A4\u30EB",
+  const formStyle = {
+    width: '100%',
+    textAlign: 'center',
+    textAlign: 'left',
+    paddingTop: '15px'
+  };
+  const flexCol = {
+    display: 'flex',
+    flexDirection: 'column'
+  };
+  const selectorStyle = {
+    width: '83%',
+    alignSelf: 'end',
+    paddingTop: '10px'
+  };
+  const imageUploadButton = {
+    textAlign: 'center',
+    width: '50%'
+  };
+  const backgroundControlLabel = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    style: {
+      display: 'block',
+      transform: 'translateX(33%)'
+    }
+  }, "\u80CC\u666F");
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    style: flexCol,
+    className: "jwc-back-ground--wrapper"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "jwc-back-ground",
+    style: formStyle
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
+    label: backgroundControlLabel,
     value: attributes.backgroundStyleType // 現在の値をattributesから取得
     ,
     options: [{
@@ -71,15 +102,22 @@ const BackgroundSelector = ({
       value: 'gradient'
     }],
     onChange: handleBackgroundStyleChange // ここで新しい関数を使用します
-  }), backgroundStyleType === 'image' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.MediaUploadCheck, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.MediaUpload, {
+  })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    style: {
+      ...selectorStyle,
+      ...imageUploadButton
+    },
+    className: "jwc-back-ground__image"
+  }, backgroundStyleType === 'image' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.MediaUploadCheck, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.MediaUpload, {
     onSelect: handleMediaSelect,
     allowedTypes: ['image'],
     value: attributes.backgroundImage,
     render: ({
       open
     }) => (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
+      className: "button-insert",
       onClick: open
-    }, "Open Media Library")
+    }, "\u30E1\u30C7\u30A3\u30A2\u30E9\u30A4\u30D6\u30E9\u30EA\u3092\u958B\u3044\u3066\u753B\u50CF\u3092\u9078\u629E")
   })), backgroundStyleType === 'color' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ColorPalette, {
     onChange: handleColorChange,
     value: attributes.backgroundColor
@@ -99,7 +137,7 @@ const BackgroundSelector = ({
       gradient: 'linear-gradient(135deg,#1E9600 0%, #FFF200 0%, #FF0000 100%)',
       slug: 'rastafari'
     }]
-  }));
+  })));
 };
 /* harmony default export */ __webpack_exports__["default"] = (BackgroundSelector);
 
@@ -558,6 +596,9 @@ const SettingGroup = ({
     display: 'flex',
     flexDirection: 'column'
   };
+  const spacing = {
+    transform: 'translateX(-8.15%)'
+  };
   const headingTitle = {
     textAlign: 'center'
   };
@@ -565,7 +606,9 @@ const SettingGroup = ({
     style: wrapperStyle
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h3", {
     style: headingTitle
-  }, "\u8A2D\u5B9A"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_SelectCity__WEBPACK_IMPORTED_MODULE_1__["default"], {
+  }, "\u8A2D\u5B9A"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    style: spacing
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_SelectCity__WEBPACK_IMPORTED_MODULE_1__["default"], {
     selectedCity: selectedCity,
     cityOptions: cityOptions,
     handleCityChange: handleCityChange
@@ -581,7 +624,7 @@ const SettingGroup = ({
     fontBalanceOptions: fontBalanceOptions,
     attributes: attributes,
     setAttributes: setAttributes
-  }));
+  })));
 };
 /* harmony default export */ __webpack_exports__["default"] = (SettingGroup);
 

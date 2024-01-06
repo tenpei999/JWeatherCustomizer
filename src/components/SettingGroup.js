@@ -24,30 +24,36 @@ const SettingGroup = ({
     flexDirection: 'column',
   };
 
+  const spacing = {
+    transform: 'translateX(-8.15%)',
+  }
+
   const headingTitle = {
     textAlign: 'center',
   }
 
   return (
-    <div  style={wrapperStyle}>
-      <h3  style={headingTitle}>設定</h3>
-      <SelectCity
-        selectedCity={selectedCity}
-        cityOptions={cityOptions}
-        handleCityChange={handleCityChange}
-      />
-      <VisibilityControl settings={visibilitySettings} />
-      <UIControlGroup
-        fontFamily={fontFamily}
-        onChangeFontFamily={onChangeFontFamily}
-        textColor={textColor}
-        setTextColor={setTextColor}
-        selectedOption={selectedOption}
-        setSelectedOption={setSelectedOption}
-        fontBalanceOptions={fontBalanceOptions}
-        attributes={attributes}
-        setAttributes={setAttributes}
-      />
+    <div style={wrapperStyle}>
+      <h3 style={headingTitle}>設定</h3>
+      <div style={spacing}>
+        <SelectCity
+          selectedCity={selectedCity}
+          cityOptions={cityOptions}
+          handleCityChange={handleCityChange}
+        />
+        <VisibilityControl settings={visibilitySettings} />
+        <UIControlGroup
+          fontFamily={fontFamily}
+          onChangeFontFamily={onChangeFontFamily}
+          textColor={textColor}
+          setTextColor={setTextColor}
+          selectedOption={selectedOption}
+          setSelectedOption={setSelectedOption}
+          fontBalanceOptions={fontBalanceOptions}
+          attributes={attributes}
+          setAttributes={setAttributes}
+        />
+      </div>
     </div>
   );
 };
