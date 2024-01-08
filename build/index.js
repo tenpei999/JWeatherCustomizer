@@ -121,7 +121,7 @@ const BackgroundSelector = ({
   })), backgroundStyleType === 'color' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ColorPalette, {
     onChange: handleColorChange,
     value: attributes.backgroundColor
-  }), backgroundStyleType === 'gradient' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.GradientPicker, {
+  }), backgroundStyleType === 'gradient' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.GradientPicker, {
     value: attributes.backgroundGradient,
     onChange: handleGradientChange,
     gradients: [{
@@ -137,7 +137,7 @@ const BackgroundSelector = ({
       gradient: 'linear-gradient(135deg,#1E9600 0%, #FFF200 0%, #FF0000 100%)',
       slug: 'rastafari'
     }]
-  })));
+  }))));
 };
 /* harmony default export */ __webpack_exports__["default"] = (BackgroundSelector);
 
