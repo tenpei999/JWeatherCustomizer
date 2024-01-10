@@ -8,11 +8,23 @@ export default function BorderControlGroup({ attributes, setAttributes }) {
     const {
         borders,
         onChangeBorder,
-        handleRangeChange,
-        handleUnitChange,
+        handleRangeChange: originalHandleRangeChange,
+        handleUnitChange: originalHandleUnitChange,
         borderColors, // ここを変更しました
         units
     } = useBorderControl(attributes, setAttributes);
+
+    const handleRangeChange = (value) => {
+        if (!Number.isNaN(value) && value >= 0 && value <= 100) {
+            originalHandleRangeChange(value);
+        }
+    };
+
+    const handleUnitChange = (unit) => {
+        if (units.some(option => option.value === unit)) {
+            originalHandleUnitChange(unit);
+        }
+    };
 
     const borderMainStyle = {
         width: '83.5%',

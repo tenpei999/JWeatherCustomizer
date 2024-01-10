@@ -1,10 +1,29 @@
 const dayWithHoliday = async (addBreak = false) => {
 
-  async function getHolidays() {
-    const response = await fetch('https://holidays-jp.github.io/api/v1/date.json');
-    const holidays = await response.json();
-    return holidays;
-  }
+  const cache = {};
+
+  const fetchHolidays = async () => {
+    const url = 'https://holidays-jp.github.io/api/v1/date.json';
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error fetching holidays:', error);
+      return {}; // 空のオブジェクトを返し、処理を続行
+    }
+  };
+  
+  const getHolidays = async () => {
+    const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD形式
+    if (!cache[today]) {
+      cache[today] = await fetchHolidays();
+    }
+    return cache[today];
+  };
 
   function getDateRangeArray(startDate, endDate) {
     const dateArray = [];

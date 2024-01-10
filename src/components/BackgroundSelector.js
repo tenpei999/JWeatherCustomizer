@@ -1,11 +1,29 @@
 import { MediaUpload, MediaUploadCheck } from '@wordpress/block-editor';
 import { SelectControl, Button, ColorPalette, GradientPicker } from '@wordpress/components';
 
+// 選択された画像のurlが不正でないか検証
+const isValidUrl = (url) => {
+  try {
+    new URL(url);
+    return true;
+  } catch (_) {
+    return false;
+  }
+};
+
+//入力されたカラーコードが不正でないか検証
+const isValidColor = (color) => /^#[0-9A-F]{6}$/i.test(color);
+
+//入力されたliner-gradientが不正でないか検証
+const isValidGradient = (gradient) => {
+  return /^linear-gradient\((.+)\)$/i.test(gradient);
+};
+
 const BackgroundSelector = ({ attributes, setAttributes }) => {
   const { backgroundStyleType } = attributes;
 
   const handleMediaSelect = (media) => {
-    if (!media) {
+    if (!media || !isValidUrl(media.url)) {
       setAttributes({
         backgroundImage: null,
         selectedMedia: null,
@@ -21,11 +39,16 @@ const BackgroundSelector = ({ attributes, setAttributes }) => {
   };
 
   const handleColorChange = (color) => {
-    // setBackgroundColor(color);
+    if (!isValidColor(color)) {
+      return;
+    }
     setAttributes({ backgroundColor: color });
   };
 
   const handleGradientChange = (newGradient) => {
+    if (!isValidGradient(newGradient)) {
+      return;
+    }
     setAttributes({ backgroundGradient: newGradient });
   };
 
@@ -74,7 +97,7 @@ const BackgroundSelector = ({ attributes, setAttributes }) => {
           onChange={handleBackgroundStyleChange} // ここで新しい関数を使用します
         />
       </div>
-      <div style={{...selectorStyle, ...imageUploadButton}} className='jwc-back-ground__image'>
+      <div style={{ ...selectorStyle, ...imageUploadButton }} className='jwc-back-ground__image'>
         {backgroundStyleType === 'image' && (
           <MediaUploadCheck>
             <MediaUpload

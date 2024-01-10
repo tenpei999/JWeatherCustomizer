@@ -17,9 +17,17 @@ const BalanceControl = ({
     <span style={{ display: 'block', transform: 'translateX(33%)' }}> バランス</span>
   )
 
-  const wrapperStyle = {
-    display: 'flex',
-    flexDirection: 'column',
+  const handleOptionChange = (label) => {
+    // 選択されたラベルに対応するオプションを見つけます
+    const option = fontBalanceOptions.find((opt) => opt.label === label);
+
+    // 正しいオプションが見つかった場合のみ、状態を更新します
+    if (option) {
+      setSelectedOption(option);
+    } else {
+      console.error('選択されたオプションが見つかりません。');
+      // 必要に応じて、適切なデフォルト値やエラーハンドリングをここに追加します
+    }
   };
 
   return (
@@ -28,10 +36,7 @@ const BalanceControl = ({
         label={balanceControlLabel}
         value={selectedOption.label}
         options={fontBalanceOptions.map((opt) => ({ label: opt.label, value: opt.label }))}
-        onChange={(label) => {
-          const option = fontBalanceOptions.find((opt) => opt.label === label);
-          setSelectedOption(option);
-        }}
+        onChange={handleOptionChange}
       />
     </div>
   );

@@ -18,6 +18,24 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
+// 選択された画像のurlが不正でないか検証
+const isValidUrl = url => {
+  try {
+    new URL(url);
+    return true;
+  } catch (_) {
+    return false;
+  }
+};
+
+//入力されたカラーコードが不正でないか検証
+const isValidColor = color => /^#[0-9A-F]{6}$/i.test(color);
+
+//入力されたliner-gradientが不正でないか検証
+const isValidGradient = gradient => {
+  return /^linear-gradient\((.+)\)$/i.test(gradient);
+};
 const BackgroundSelector = ({
   attributes,
   setAttributes
@@ -26,7 +44,7 @@ const BackgroundSelector = ({
     backgroundStyleType
   } = attributes;
   const handleMediaSelect = media => {
-    if (!media) {
+    if (!media || !isValidUrl(media.url)) {
       setAttributes({
         backgroundImage: null,
         selectedMedia: null
@@ -40,12 +58,17 @@ const BackgroundSelector = ({
     });
   };
   const handleColorChange = color => {
-    // setBackgroundColor(color);
+    if (!isValidColor(color)) {
+      return;
+    }
     setAttributes({
       backgroundColor: color
     });
   };
   const handleGradientChange = newGradient => {
+    if (!isValidGradient(newGradient)) {
+      return;
+    }
     setAttributes({
       backgroundGradient: newGradient
     });
@@ -173,10 +196,19 @@ const BalanceControl = ({
       transform: 'translateX(33%)'
     }
   }, " \u30D0\u30E9\u30F3\u30B9");
-  const wrapperStyle = {
-    display: 'flex',
-    flexDirection: 'column'
+  const handleOptionChange = label => {
+    // 選択されたラベルに対応するオプションを見つけます
+    const option = fontBalanceOptions.find(opt => opt.label === label);
+
+    // 正しいオプションが見つかった場合のみ、状態を更新します
+    if (option) {
+      setSelectedOption(option);
+    } else {
+      console.error('選択されたオプションが見つかりません。');
+      // 必要に応じて、適切なデフォルト値やエラーハンドリングをここに追加します
+    }
   };
+
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "jwc-font-balance",
     style: formStyle
@@ -187,10 +219,7 @@ const BalanceControl = ({
       label: opt.label,
       value: opt.label
     })),
-    onChange: label => {
-      const option = fontBalanceOptions.find(opt => opt.label === label);
-      setSelectedOption(option);
-    }
+    onChange: handleOptionChange
   }));
 };
 /* harmony default export */ __webpack_exports__["default"] = (BalanceControl);
@@ -227,12 +256,22 @@ function BorderControlGroup({
   const {
     borders,
     onChangeBorder,
-    handleRangeChange,
-    handleUnitChange,
+    handleRangeChange: originalHandleRangeChange,
+    handleUnitChange: originalHandleUnitChange,
     borderColors,
     // ここを変更しました
     units
   } = (0,_functions_useBorderControl__WEBPACK_IMPORTED_MODULE_3__.useBorderControl)(attributes, setAttributes);
+  const handleRangeChange = value => {
+    if (!Number.isNaN(value) && value >= 0 && value <= 100) {
+      originalHandleRangeChange(value);
+    }
+  };
+  const handleUnitChange = unit => {
+    if (units.some(option => option.value === unit)) {
+      originalHandleUnitChange(unit);
+    }
+  };
   const borderMainStyle = {
     width: '83.5%',
     alignSelf: 'end',
@@ -1707,11 +1746,29 @@ if (!(0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__.getBlockType)(_block_json
 
 __webpack_require__.r(__webpack_exports__);
 const dayWithHoliday = async (addBreak = false) => {
-  async function getHolidays() {
-    const response = await fetch('https://holidays-jp.github.io/api/v1/date.json');
-    const holidays = await response.json();
-    return holidays;
-  }
+  const cache = {};
+  const fetchHolidays = async () => {
+    const url = 'https://holidays-jp.github.io/api/v1/date.json';
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error fetching holidays:', error);
+      return {}; // 空のオブジェクトを返し、処理を続行
+    }
+  };
+
+  const getHolidays = async () => {
+    const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD形式
+    if (!cache[today]) {
+      cache[today] = await fetchHolidays();
+    }
+    return cache[today];
+  };
   function getDateRangeArray(startDate, endDate) {
     const dateArray = [];
     let currentDate = new Date(startDate);
@@ -1791,65 +1848,66 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   cities: function() { return /* binding */ cities; }
 /* harmony export */ });
+const apiBaseUrl = 'https://api.open-meteo.com/v1/forecast';
+const createCityWeatherUrl = (latitude, longitude) => {
+  return `${apiBaseUrl}?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m,precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14`;
+};
 const cities = {
-  // https://open-meteo.com/en/docs
-  // Daily Weather Variables Weathercode / Maximum Temperature (2 m) / Minimum Temperature (2 m) / Past days 1
-
   札幌: {
     name: '札幌',
-    url: 'https://api.open-meteo.com/v1/forecast?latitude=43.0667&longitude=141.35&hourly=temperature_2m,precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14'
+    url: createCityWeatherUrl(43.0667, 141.35)
   },
   秋田: {
     name: '秋田',
-    url: 'https://api.open-meteo.com/v1/forecast?latitude=39.7167&longitude=140.1167&hourly=temperature_2m,precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14'
+    url: createCityWeatherUrl(39.7167, 140.1167)
   },
   金沢: {
     name: '金沢',
-    url: 'https://api.open-meteo.com/v1/forecast?latitude=36.6&longitude=136.6167&hourly=temperature_2m,precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14'
+    url: createCityWeatherUrl(36.6, 136.6167)
   },
   東京: {
     name: '東京',
-    url: 'https://api.open-meteo.com/v1/forecast?latitude=35.6895&longitude=139.6917&hourly=precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14'
+    url: createCityWeatherUrl(35.6895, 139.6917)
   },
   大宮: {
     name: '大宮',
-    url: 'https://api.open-meteo.com/v1/forecast?latitude=35.9635&longitude=139.8305&hourly=temperature_2m,precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14'
+    url: createCityWeatherUrl(35.9635, 139.8305)
   },
   名古屋: {
     name: '名古屋',
-    url: 'https://api.open-meteo.com/v1/forecast?latitude=35.1815&longitude=136.9064&hourly=temperature_2m,precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14'
+    url: createCityWeatherUrl(35.1815, 136.9064)
   },
   南堀江: {
     name: '南堀江',
-    url: 'https://api.open-meteo.com/v1/forecast?latitude=34.6711&longitude=135.4942&hourly=temperature_2m,precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14'
+    url: createCityWeatherUrl(34.6711, 135.4942)
   },
   八尾: {
     name: '八尾',
-    url: 'https://api.open-meteo.com/v1/forecast?latitude=34.6167&longitude=135.6&hourly=temperature_2m,precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14'
+    url: createCityWeatherUrl(34.6167, 135.6)
   },
   奈良: {
     name: '奈良',
-    url: 'https://api.open-meteo.com/v1/forecast?latitude=34.685&longitude=135.8049&hourly=temperature_2m,precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14'
+    url: createCityWeatherUrl(34.685, 135.8049)
   },
   朝来: {
     name: '朝来',
-    url: 'https://api.open-meteo.com/v1/forecast?latitude=35.2591&longitude=134.8139&hourly=temperature_2m,precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14'
+    url: createCityWeatherUrl(35.2591, 134.8139)
   },
   福岡: {
     name: '福岡',
-    url: 'https://api.open-meteo.com/v1/forecast?latitude=33.6&longitude=130.4167&hourly=temperature_2m,precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14'
+    url: createCityWeatherUrl(33.6, 130.4167)
   },
   佐世保: {
     name: '佐世保',
-    url: 'https://api.open-meteo.com/v1/forecast?latitude=33.1683&longitude=129.725&hourly=temperature_2m,precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14'
+    url: createCityWeatherUrl(33.1683, 129.725)
   },
   諸塚: {
     name: '諸塚',
-    url: 'https://api.open-meteo.com/v1/forecast?latitude=32.5601&longitude=131.3198&hourly=temperature_2m,precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14'
+    url: createCityWeatherUrl(32.5601, 131.3198)
   },
   パリ: {
     name: 'パリ',
-    url: 'https://api.open-meteo.com/v1/forecast?latitude=48.8534&longitude=2.3488&hourly=temperature_2m,precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14'
+    url: createCityWeatherUrl(48.8534, 2.3488)
   }
 };
 
@@ -1876,49 +1934,48 @@ const createVisibilitySettings = ({
     showHoliday,
     showPrecipitation
   } = attributes;
+  const updateAttribute = (attributeName, value) => {
+    if (typeof value === 'boolean') {
+      setAttributes({
+        [attributeName]: value
+      });
+    } else {
+      console.error('Invalid value type for visibility setting');
+    }
+  };
   return [{
     label: "今日の天気を表示",
     checked: attributes.showTodayWeather,
     // 属性から現在の値を取得
     onChange: isChecked => {
       // 'showTodayWeather' 属性を更新
-      setAttributes({
-        showTodayWeather: isChecked
-      });
+      updateAttribute('showTodayWeather', isChecked);
     }
   },, {
     label: '明日の天気を表示',
     checked: attributes.showTomorrowWeather,
     onChange: isChecked => {
       // 'showTodayWeather' 属性を更新
-      setAttributes({
-        showTomorrowWeather: isChecked
-      });
+      updateAttribute('showTomorrowWeather', isChecked);
     }
   }, {
     label: '週間天気を表示',
     checked: attributes.showWeeklyWeather,
     onChange: isChecked => {
       // 'showTodayWeather' 属性を更新
-      setAttributes({
-        showWeeklyWeather: isChecked
-      });
+      updateAttribute('showWeeklyWeather', isChecked);
     }
   }, {
     label: '祝日を表示',
     checked: attributes.showHoliday,
-    onChange: checked => {
-      setAttributes({
-        showHoliday: checked
-      });
+    onChange: isChecked => {
+      updateAttribute('showHoliday', isChecked);
     }
   }, {
     label: '降水確率を表示',
     checked: attributes.showPrecipitation,
-    onChange: checked => {
-      setAttributes({
-        showPrecipitation: checked
-      });
+    onChange: isChecked => {
+      updateAttribute('showPrecipitation', isChecked);
     }
   }];
 };
@@ -1946,15 +2003,41 @@ let isApiError = {
   statusCode: null
 };
 let apiRequestCount = 0;
+const isValidUrl = url => {
+  try {
+    const validBaseUrl = "https://api.open-meteo.com/v1";
+    const parsedUrl = new URL(url);
+    return parsedUrl.href.startsWith(validBaseUrl);
+  } catch (e) {
+    return false;
+  }
+};
 const weatherObject = async (cityurl, setTodayWeather, setTomorrowWeather, setWeeklyWeather, addBreak = false) => {
   try {
-    if (!cityurl) {
+    if (!cityurl || !isValidUrl(cityurl)) {
       throw new Error(`City "${cityurl}" does not exist in the city object.`);
     }
     const apiUrl = JWeatherCustomizerData.siteUrl + '/wp-json/j-weather-customizer/save-data/';
 
     // console.log('Making request to weather API for city:', cityurl); // API呼び出し前のログ
 
+    const validateWeatherData = data => {
+      // 天気データの構造を検証する関数
+      return data && data.daily && Array.isArray(data.daily.weathercode) && Array.isArray(data.daily.temperature_2m_max);
+    };
+    const sanitizeImageUrl = url => {
+      // 画像URLをサニタイズする関数。不正なURLを除去または修正
+      try {
+        return new URL(url).toString();
+      } catch (e) {
+        return ''; // 不正なURLは空文字列に置き換える
+      }
+    };
+
+    const validateTemperature = temperature => {
+      // 温度データが数値であることを検証
+      return !isNaN(temperature) && isFinite(temperature);
+    };
     apiRequestCount++;
     console.log(`リクエスト回数: ${apiRequestCount}`);
     const response = await fetch(cityurl);
@@ -1970,6 +2053,9 @@ const weatherObject = async (cityurl, setTodayWeather, setTomorrowWeather, setWe
       isApiError.statusCode = null;
     }
     const data2 = await response.json();
+    if (!validateWeatherData(data2)) {
+      throw new Error("Invalid weather data format.");
+    }
     if (!data2 || !data2.daily) {
       throw new Error("Unexpected data format received from the weather API.");
     }
@@ -1981,9 +2067,9 @@ const weatherObject = async (cityurl, setTodayWeather, setTomorrowWeather, setWe
 
     // 天気コードを天気名に変換
     const weatherNamesForWeek = weatherCodesForWeek.map(code => (0,_data_getWeatherInfo__WEBPACK_IMPORTED_MODULE_0__["default"])(code).label);
-    const weatherImageForWeek = weatherCodesForWeek.map(code => (0,_data_getWeatherInfo__WEBPACK_IMPORTED_MODULE_0__["default"])(code).icon);
-    const highestTemperatureForWeek = data2.daily.temperature_2m_max; // 昨日から6日後までの天気コード
-    const lowestTemperatureForWeek = data2.daily.temperature_2m_min; // 昨日から6日後までの天気コード
+    const weatherImageForWeek = weatherCodesForWeek.map(code => sanitizeImageUrl((0,_data_getWeatherInfo__WEBPACK_IMPORTED_MODULE_0__["default"])(code).icon));
+    const highestTemperatureForWeek = data2.daily.temperature_2m_max.map(temp => validateTemperature(temp) ? temp : null);
+    const lowestTemperatureForWeek = data2.daily.temperature_2m_min.map(temp => validateTemperature(temp) ? temp : null);
     const highestTemperatureDifferencesForWeek = [];
     for (let i = -1; i < highestTemperatureForWeek.length; i++) {
       const todayMaxTemperature = highestTemperatureForWeek[i + 1];
@@ -2021,20 +2107,6 @@ const weatherObject = async (cityurl, setTodayWeather, setTomorrowWeather, setWe
       lowestTemperatureComparison: lowestTemperatureDifferencesForWeek[index + 1],
       rainProbability: rainProbability1[index + 1]
     }));
-    const postResponse = await fetch(apiUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-WP-Nonce': JWeatherCustomizerData.nonce // nonceをヘッダーに追加
-      },
-
-      body: JSON.stringify({
-        dailyData: dailyData
-      })
-    });
-    if (!postResponse.ok) {
-      throw new Error(`Failed to post data to ${apiUrl}. Status: ${postResponse.status}`);
-    }
     if (typeof setTodayWeather !== 'function') {
       throw new Error('setTodayWeather is not a function.');
     }

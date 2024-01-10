@@ -7,13 +7,21 @@ export const createVisibilitySettings = ({ attributes, setAttributes }) => {
     showPrecipitation,
   } = attributes;
 
+  const updateAttribute = (attributeName, value) => {
+    if (typeof value === 'boolean') {
+      setAttributes({ [attributeName]: value });
+    } else {
+      console.error('Invalid value type for visibility setting');
+    }
+  };
+
   return [
     {
       label: "今日の天気を表示",
       checked: attributes.showTodayWeather, // 属性から現在の値を取得
       onChange: (isChecked) => {
         // 'showTodayWeather' 属性を更新
-        setAttributes({ showTodayWeather: isChecked });
+        updateAttribute('showTodayWeather', isChecked);
       },
     }, ,
     {
@@ -21,7 +29,7 @@ export const createVisibilitySettings = ({ attributes, setAttributes }) => {
       checked: attributes.showTomorrowWeather,
       onChange: (isChecked) => {
         // 'showTodayWeather' 属性を更新
-        setAttributes({ showTomorrowWeather: isChecked });
+        updateAttribute('showTomorrowWeather', isChecked);
       },
     },
     {
@@ -29,23 +37,23 @@ export const createVisibilitySettings = ({ attributes, setAttributes }) => {
       checked: attributes.showWeeklyWeather,
       onChange: (isChecked) => {
         // 'showTodayWeather' 属性を更新
-        setAttributes({ showWeeklyWeather: isChecked });
+        updateAttribute('showWeeklyWeather', isChecked);
       },
     },
     {
       label: '祝日を表示',
       checked: attributes.showHoliday,
-      onChange: (checked) => {
+      onChange: (isChecked) => {
 
-        setAttributes({ showHoliday: checked });
+        updateAttribute('showHoliday', isChecked);
       }
     },
     {
       label: '降水確率を表示',
       checked: attributes.showPrecipitation,
-      onChange: (checked) => {
+      onChange: (isChecked) => {
 
-        setAttributes({ showPrecipitation: checked });
+        updateAttribute('showPrecipitation', isChecked);
       }
     },
   ];

@@ -4,7 +4,7 @@
  *
  * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-block-editor/#useblockprops
  */
-import { useBlockProps } from '@wordpress/block-editor';
+// import { useBlockProps } from '@wordpress/block-editor';
 
 
 /**
@@ -19,50 +19,50 @@ import { useBlockProps } from '@wordpress/block-editor';
  * @return {WPElement} Element to render.
  */
 
-import { CurrentWeather } from './components/CurrentWeather';
-import WeekWeather from './components/WeekWeather';
-import './style.scss';
+// import { CurrentWeather } from './components/CurrentWeather';
+// import WeekWeather from './components/WeekWeather';
+// import './style.scss';
 
-export default function Save({ attributes }) {
+// export default function Save({ attributes }) {
 
 
-	const TodayWeatherComponentProps = {
-		weather: attributes.todayWeather,
-	};
+// 	const TodayWeatherComponentProps = {
+// 		weather: attributes.todayWeather,
+// 	};
 
-	const TomorrowWeatherComponentProps = {
-		weather: attributes.tomorrowWeather,
-	};
+// 	const TomorrowWeatherComponentProps = {
+// 		weather: attributes.tomorrowWeather,
+// 	};
 
-	const WeeklyWeatherComponentProps = {
-		weather: attributes.weeklyWeather,
-	};
+// 	const WeeklyWeatherComponentProps = {
+// 		weather: attributes.weeklyWeather,
+// 	};
 
-	const blockProps = useBlockProps.save({
-		className: 'j-weather-customizer'
-	});
+// 	const blockProps = useBlockProps.save({
+// 		className: 'j-weather-customizer'
+// 	});
 
-	if (!TodayWeatherComponentProps) return null; 
-	if (!TomorrowWeatherComponentProps) return null; 
-	if (!WeeklyWeatherComponentProps) return null; 
+// 	if (!TodayWeatherComponentProps) return null; 
+// 	if (!TomorrowWeatherComponentProps) return null; 
+// 	if (!WeeklyWeatherComponentProps) return null; 
 
-	return (
-		<div {...blockProps}>
-			<div className="layout">
-				<div className="today-and-tomorrow weather-layout">
-					{attributes.todayWeather &&
-						<CurrentWeather
-							{...TodayWeatherComponentProps}
-							title="今日の天気"
-						/>}
-					{attributes.tomorrowWeather &&
-						<CurrentWeather
-							{...TomorrowWeatherComponentProps}
-							title="明日の天気"
-						/>}
-				</div>
-				{attributes.weeklyWeather && <WeekWeather {...WeeklyWeatherComponentProps} />}
-			</div>
-		</div>
-	);
-}
+// 	return (
+// 		<div {...blockProps}>
+// 			<div className="layout">
+// 				<div className="today-and-tomorrow weather-layout">
+// 					{attributes.todayWeather &&
+// 						<CurrentWeather
+// 							{...TodayWeatherComponentProps}
+// 							title="今日の天気"
+// 						/>}
+// 					{attributes.tomorrowWeather &&
+// 						<CurrentWeather
+// 							{...TomorrowWeatherComponentProps}
+// 							title="明日の天気"
+// 						/>}
+// 				</div>
+// 				{attributes.weeklyWeather && <WeekWeather {...WeeklyWeatherComponentProps} />}
+// 			</div>
+// 		</div>
+// 	);
+// }
