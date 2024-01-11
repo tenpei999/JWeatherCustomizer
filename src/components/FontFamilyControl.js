@@ -2,13 +2,18 @@
 import { SelectControl } from '@wordpress/components';
 
 function FontFamilyControl({ fontFamily, setFontFamily }) {
+
+  const allowedFonts = ["NotoSans, sans-serif", "NotoSerif, serif", "MPLUS1, sans-serif", "KosugiMaru, sans-serif", "SawarabiGothic, sans-serif"];
   const handleOnChange = (newFontFamily) => {
-    setFontFamily(newFontFamily);
+    // フォントが許可リストに含まれているか確認
+    if (allowedFonts.includes(newFontFamily)) {
+      setFontFamily(newFontFamily);
+    } else {
+      // 不正なフォントが選択された場合の処理を追加
+      // 例: エラーメッセージを表示するなど
+    }
   };
 
-  const labelStyle = {
-    width: '50%',
-  }
   const formStyle = {
     width: '100%',
     textAlign: 'left',

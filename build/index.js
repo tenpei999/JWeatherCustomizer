@@ -259,7 +259,6 @@ function BorderControlGroup({
     handleRangeChange: originalHandleRangeChange,
     handleUnitChange: originalHandleUnitChange,
     borderColors,
-    // ここを変更しました
     units
   } = (0,_functions_useBorderControl__WEBPACK_IMPORTED_MODULE_3__.useBorderControl)(attributes, setAttributes);
   const handleRangeChange = value => {
@@ -417,11 +416,15 @@ function FontFamilyControl({
   fontFamily,
   setFontFamily
 }) {
+  const allowedFonts = ["NotoSans, sans-serif", "NotoSerif, serif", "MPLUS1, sans-serif", "KosugiMaru, sans-serif", "SawarabiGothic, sans-serif"];
   const handleOnChange = newFontFamily => {
-    setFontFamily(newFontFamily);
-  };
-  const labelStyle = {
-    width: '50%'
+    // フォントが許可リストに含まれているか確認
+    if (allowedFonts.includes(newFontFamily)) {
+      setFontFamily(newFontFamily);
+    } else {
+      // 不正なフォントが選択された場合の処理を追加
+      // 例: エラーメッセージを表示するなど
+    }
   };
   const formStyle = {
     width: '100%',
@@ -524,26 +527,37 @@ function Preview({
   attributes,
   commonProps
 }) {
+  const {
+    showTodayWeather,
+    showTomorrowWeather,
+    showWeeklyWeather,
+    todayWeather,
+    tomorrowWeather,
+    weeklyWeather,
+    showHoliday,
+    showPrecipitation
+  } = attributes;
+  const renderCurrentWeather = (weather, title) => {
+    if (!weather || !weather.day) return null;
+    const isHoliday = weather.day.isHoliday || weather.day.isSunday;
+    const textColor = isHoliday ? 'red' : weather.day.isSaturday ? 'blue' : '';
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_CurrentWeather__WEBPACK_IMPORTED_MODULE_2__.CurrentWeather, {
+      weather: weather,
+      title: title,
+      showHoliday: showHoliday,
+      showPrecipitation: showPrecipitation,
+      ...commonProps,
+      textColor: textColor
+    });
+  };
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, _objects_weatherObject__WEBPACK_IMPORTED_MODULE_4__.isApiError.isError ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_ManegedError__WEBPACK_IMPORTED_MODULE_5__["default"], {
     isApiError: _objects_weatherObject__WEBPACK_IMPORTED_MODULE_4__.isApiError.statusCode
   }) : (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "layout"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "today-and-tomorrow weather-layout"
-  }, attributes.showTodayWeather && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_CurrentWeather__WEBPACK_IMPORTED_MODULE_2__.CurrentWeather, {
-    weather: attributes.todayWeather,
-    title: "\u4ECA\u65E5\u306E\u5929\u6C17",
-    showHoliday: attributes.showHoliday,
-    showPrecipitation: attributes.showPrecipitation,
-    ...commonProps
-  }), attributes.showTomorrowWeather && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_CurrentWeather__WEBPACK_IMPORTED_MODULE_2__.CurrentWeather, {
-    weather: attributes.tomorrowWeather,
-    title: "\u660E\u65E5\u306E\u5929\u6C17",
-    showHoliday: attributes.showHoliday,
-    showPrecipitation: attributes.showPrecipitation,
-    ...commonProps
-  })), attributes.showWeeklyWeather && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_WeekWeather__WEBPACK_IMPORTED_MODULE_3__["default"], {
-    weather: attributes.weeklyWeather,
+  }, showTodayWeather && renderCurrentWeather(todayWeather, '今日の天気'), showTomorrowWeather && renderCurrentWeather(tomorrowWeather, '明日の天気')), showWeeklyWeather && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_WeekWeather__WEBPACK_IMPORTED_MODULE_3__["default"], {
+    weather: weeklyWeather,
     ...commonProps
   })));
 }

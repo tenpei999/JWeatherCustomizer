@@ -10,7 +10,7 @@ export default function BorderControlGroup({ attributes, setAttributes }) {
         onChangeBorder,
         handleRangeChange: originalHandleRangeChange,
         handleUnitChange: originalHandleUnitChange,
-        borderColors, // ここを変更しました
+        borderColors, 
         units
     } = useBorderControl(attributes, setAttributes);
 

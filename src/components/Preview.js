@@ -3,7 +3,36 @@ import { CurrentWeather } from './CurrentWeather';
 import WeekWeather from './WeekWeather';
 import { isApiError } from '../objects/weatherObject';
 import ManagedError from './ManegedError';
+
 export default function Preview({ attributes, commonProps }) {
+  const {
+    showTodayWeather,
+    showTomorrowWeather,
+    showWeeklyWeather,
+    todayWeather,
+    tomorrowWeather,
+    weeklyWeather,
+    showHoliday,
+    showPrecipitation
+  } = attributes;
+
+  const renderCurrentWeather = (weather, title) => {
+    if (!weather || !weather.day) return null;
+
+    const isHoliday = weather.day.isHoliday || weather.day.isSunday;
+    const textColor = isHoliday ? 'red' : weather.day.isSaturday ? 'blue' : '';
+
+    return (
+      <CurrentWeather
+        weather={weather}
+        title={title}
+        showHoliday={showHoliday}
+        showPrecipitation={showPrecipitation}
+        {...commonProps}
+        textColor={textColor}
+      />
+    );
+  };
 
   return (
     <>
@@ -12,31 +41,10 @@ export default function Preview({ attributes, commonProps }) {
       ) : (
         <div className="layout">
           <div className="today-and-tomorrow weather-layout">
-            {attributes.showTodayWeather && (
-              <CurrentWeather
-                weather={attributes.todayWeather}
-                title="今日の天気"
-                showHoliday={attributes.showHoliday}
-                showPrecipitation={attributes.showPrecipitation}
-                {...commonProps}
-              />
-            )}
-            {attributes.showTomorrowWeather && (
-              <CurrentWeather
-                weather={attributes.tomorrowWeather}
-                title="明日の天気"
-                showHoliday={attributes.showHoliday}
-                showPrecipitation={attributes.showPrecipitation}
-                {...commonProps}
-              />
-            )}
+            {showTodayWeather && renderCurrentWeather(todayWeather, '今日の天気')}
+            {showTomorrowWeather && renderCurrentWeather(tomorrowWeather, '明日の天気')}
           </div>
-          {attributes.showWeeklyWeather && (
-            <WeekWeather
-              weather={attributes.weeklyWeather}
-              {...commonProps}
-            />
-          )}
+          {showWeeklyWeather && <WeekWeather weather={weeklyWeather} {...commonProps} />}
         </div>
       )}
     </>
