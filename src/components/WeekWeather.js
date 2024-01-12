@@ -17,7 +17,7 @@ const WeekWeather = ({
   backgroundColor,
 }) => {
 
-  if (!weather) return null;
+  if (!weather || !Array.isArray(weather)) return null; 
 
   const borderStyles = useBorderStyles(borders);
   const backgroundStyles = useBackgroundStyles(backgroundStyleType, selectedMedia, backgroundColor, backgroundGradient);

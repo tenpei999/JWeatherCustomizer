@@ -1,4 +1,5 @@
 import { CheckboxControl } from '@wordpress/components';
+import PropTypes from 'prop-types'; // プロパティのバリデーションのための追加
 
 const VisibilityControl = ({ settings }) => {
 
@@ -52,6 +53,16 @@ const VisibilityControl = ({ settings }) => {
             </div>
         </div >
     );
+};
+
+VisibilityControl.propTypes = {
+    settings: PropTypes.arrayOf(
+        PropTypes.shape({
+            label: PropTypes.string.isRequired,
+            checked: PropTypes.bool.isRequired,
+            onChange: PropTypes.func.isRequired,
+        })
+    ).isRequired,
 };
 
 export default VisibilityControl;

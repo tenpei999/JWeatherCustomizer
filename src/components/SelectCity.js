@@ -1,4 +1,5 @@
 import { SelectControl } from '@wordpress/components';
+import PropTypes from 'prop-types'; // プロパティのバリデーションのための追加
 
 const SelectCity = ({ selectedCity, cityOptions, handleCityChange }) => {
 
@@ -26,6 +27,20 @@ const SelectCity = ({ selectedCity, cityOptions, handleCityChange }) => {
       />
     </div>
   );
+};
+
+// プロパティのバリデーション
+SelectCity.propTypes = {
+  selectedCity: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+  }).isRequired,
+  cityOptions: PropTypes.arrayOf(
+    PropTypes.shape({
+      value: PropTypes.string.isRequired,
+      label: PropTypes.string.isRequired,
+    })
+  ).isRequired,
+  handleCityChange: PropTypes.func.isRequired,
 };
 
 export default SelectCity;

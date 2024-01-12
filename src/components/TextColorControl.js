@@ -9,7 +9,6 @@ function TextColorControl({ textColor, setTextColor, setAttributes }) {
 
   const formStyle = {
     width: '100%',
-    textAlign: 'center',
     textAlign: 'left',
     paddingTop: '15px',
   }
