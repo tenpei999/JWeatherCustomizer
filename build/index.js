@@ -339,9 +339,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Temp__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Temp */ "./src/components/Temp.js");
 /* harmony import */ var _TimeZone__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./TimeZone */ "./src/components/TimeZone.js");
 /* harmony import */ var _functions_useBorderStyles__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../functions/useBorderStyles */ "./src/functions/useBorderStyles.js");
-/* harmony import */ var _functions_useBackgroundStyles__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../functions/useBackgroundStyles */ "./src/functions/useBackgroundStyles.js");
-/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../style.scss */ "./src/style.scss");
-
+/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../style.scss */ "./src/style.scss");
 
 
 
@@ -372,7 +370,17 @@ const CurrentWeather = ({
     textColor = "blue";
   }
   const borderStyles = (0,_functions_useBorderStyles__WEBPACK_IMPORTED_MODULE_3__["default"])(borders);
-  const backgroundStyles = (0,_functions_useBackgroundStyles__WEBPACK_IMPORTED_MODULE_4__["default"])(backgroundStyleType, selectedMedia, backgroundColor, backgroundGradient);
+  let backgroundStyles = {};
+  if (backgroundStyleType === 'image' && selectedMedia) {
+    backgroundStyles.backgroundImage = `url('${selectedMedia}')`;
+    backgroundStyles.backgroundSize = 'cover';
+    backgroundStyles.backgroundRepeat = 'no-repeat';
+    backgroundStyles.backgroundPosition = 'center';
+  } else if (backgroundStyleType === 'color' && backgroundColor) {
+    backgroundStyles.backgroundColor = backgroundColor;
+  } else if (backgroundStyleType === 'gradient' && backgroundGradient) {
+    backgroundStyles.background = backgroundGradient;
+  }
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("article", {
     className: `block--current ${styleVariant}`,
     style: {
@@ -1021,10 +1029,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _Temp__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Temp */ "./src/components/Temp.js");
 /* harmony import */ var _functions_useBorderStyles__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../functions/useBorderStyles */ "./src/functions/useBorderStyles.js");
-/* harmony import */ var _functions_useBackgroundStyles__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../functions/useBackgroundStyles */ "./src/functions/useBackgroundStyles.js");
-/* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../editor.scss */ "./src/editor.scss");
-/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../style.scss */ "./src/style.scss");
-
+/* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../editor.scss */ "./src/editor.scss");
+/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../style.scss */ "./src/style.scss");
 
 
 
@@ -1044,7 +1050,17 @@ const WeekWeather = ({
 }) => {
   if (!weather || !Array.isArray(weather)) return null;
   const borderStyles = (0,_functions_useBorderStyles__WEBPACK_IMPORTED_MODULE_2__["default"])(borders);
-  const backgroundStyles = (0,_functions_useBackgroundStyles__WEBPACK_IMPORTED_MODULE_3__["default"])(backgroundStyleType, selectedMedia, backgroundColor, backgroundGradient);
+  let backgroundStyles = {};
+  if (backgroundStyleType === 'image' && selectedMedia) {
+    backgroundStyles.backgroundImage = `url('${selectedMedia}')`;
+    backgroundStyles.backgroundSize = 'cover';
+    backgroundStyles.backgroundRepeat = 'no-repeat';
+    backgroundStyles.backgroundPosition = 'center';
+  } else if (backgroundStyleType === 'color' && backgroundColor) {
+    backgroundStyles.backgroundColor = backgroundColor;
+  } else if (backgroundStyleType === 'gradient' && backgroundGradient) {
+    backgroundStyles.background = backgroundGradient;
+  }
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("ul", {
     className: `block--weekly weather-layout ${styleVariant}`,
     style: {
@@ -1359,57 +1375,6 @@ function Edit({
     commonProps: commonProps
   })));
 }
-
-/***/ }),
-
-/***/ "./src/functions/useBackgroundStyles.js":
-/*!**********************************************!*\
-  !*** ./src/functions/useBackgroundStyles.js ***!
-  \**********************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-// useBackgroundStyles.js
-
-function useBackgroundStyles(backgroundStyleType, selectedMedia, backgroundColor, backgroundGradient) {
-  const [backgroundStyles, setBackgroundStyles] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({});
-  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
-    switch (backgroundStyleType) {
-      case 'image':
-        if (selectedMedia) {
-          setBackgroundStyles({
-            backgroundImage: `url('${selectedMedia}')`,
-            backgroundSize: 'cover',
-            backgroundRepeat: 'no-repeat',
-            backgroundPosition: 'center'
-          });
-        }
-        break;
-      case 'color':
-        if (backgroundColor) {
-          setBackgroundStyles({
-            background: backgroundColor
-          });
-        }
-        break;
-      case 'gradient':
-        if (backgroundGradient) {
-          setBackgroundStyles({
-            background: backgroundGradient
-          });
-        }
-        break;
-      default:
-        // 他のスタイルタイプやデフォルトの処理をここに追加できます。
-        break;
-    }
-  }, [backgroundStyleType, selectedMedia, backgroundColor, backgroundGradient]);
-  return backgroundStyles;
-}
-/* harmony default export */ __webpack_exports__["default"] = (useBackgroundStyles);
 
 /***/ }),
 

@@ -1,7 +1,6 @@
 import Temp from "./Temp";
 import TimeZone from "./TimeZone";
 import useBorderStyles from "../functions/useBorderStyles";
-import useBackgroundStyles from "../functions/useBackgroundStyles";
 import '../style.scss';
 
 const CurrentWeather = ({
@@ -32,7 +31,18 @@ const CurrentWeather = ({
   }
 
   const borderStyles = useBorderStyles(borders);
-  const backgroundStyles = useBackgroundStyles(backgroundStyleType, selectedMedia, backgroundColor, backgroundGradient);
+  let backgroundStyles = {};
+  if (backgroundStyleType === 'image' && selectedMedia) {
+    backgroundStyles.backgroundImage = `url('${selectedMedia}')`;
+    backgroundStyles.backgroundSize = 'cover';
+    backgroundStyles.backgroundRepeat = 'no-repeat';
+    backgroundStyles.backgroundPosition = 'center';
+  } else if (backgroundStyleType === 'color' && backgroundColor) {
+    backgroundStyles.backgroundColor = backgroundColor;
+  } else if (backgroundStyleType === 'gradient' && backgroundGradient) {
+    backgroundStyles.background = backgroundGradient;
+  }
+
 
   return (
     <article className={`block--current ${styleVariant}`} style={{
