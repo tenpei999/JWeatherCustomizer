@@ -261,18 +261,9 @@ function BorderControlGroup({
     handleRangeChange: originalHandleRangeChange,
     handleUnitChange: originalHandleUnitChange,
     borderColors,
-    units
+    units,
+    errorMessage
   } = (0,_functions_useBorderControl__WEBPACK_IMPORTED_MODULE_3__.useBorderControl)(attributes, setAttributes);
-  const handleRangeChange = value => {
-    if (!Number.isNaN(value) && value >= 0 && value <= 100) {
-      originalHandleRangeChange(value);
-    }
-  };
-  const handleUnitChange = unit => {
-    if (units.some(option => option.value === unit)) {
-      originalHandleUnitChange(unit);
-    }
-  };
   const borderMainStyle = {
     width: '83.5%',
     alignSelf: 'end',
@@ -292,6 +283,11 @@ function BorderControlGroup({
   const unitStyle = {
     width: '10%'
   };
+  const validErrorStyle = {
+    color: 'red',
+    transform: 'translateX(23%)'
+  };
+  console.log(errorMessage);
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "jwc-border-main",
     style: borderMainStyle
@@ -301,7 +297,9 @@ function BorderControlGroup({
     label: '枠線の色と形',
     onChange: onChangeBorder,
     value: borders
-  })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }), errorMessage && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    style: validErrorStyle
+  }, errorMessage)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "jwc-border-radius",
     style: radiusStyle
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -309,16 +307,20 @@ function BorderControlGroup({
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {
     label: "\u4E38\u307F",
     value: parseInt(attributes.borderRadiusValue, 10),
-    onChange: handleRangeChange,
+    onChange: originalHandleRangeChange,
     min: 0,
     max: attributes.borderRadiusValue && attributes.borderRadiusValue.includes('px') ? 100 : 100
-  })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }), errorMessage && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    style: validErrorStyle
+  }, errorMessage)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     style: unitStyle
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
     value: attributes.borderRadiusValue && attributes.borderRadiusValue.replace(/[0-9]/g, ''),
     options: units,
-    onChange: handleUnitChange
-  }))));
+    onChange: originalHandleUnitChange
+  }), errorMessage && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    style: validErrorStyle
+  }, errorMessage))));
 }
 
 /***/ }),
@@ -1387,11 +1389,34 @@ function Edit({
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   isValidBorder: function() { return /* binding */ isValidBorder; },
+/* harmony export */   isValidBorderStyle: function() { return /* binding */ isValidBorderStyle; },
+/* harmony export */   isValidBorderWidth: function() { return /* binding */ isValidBorderWidth; },
+/* harmony export */   isValidColor: function() { return /* binding */ isValidColor; },
 /* harmony export */   useBorderControl: function() { return /* binding */ useBorderControl; }
 /* harmony export */ });
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
 
+
+// バリデーション関数をモジュールの外部に移動
+function isValidColor(color) {
+  return /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(color);
+}
+function isValidBorderStyle(style) {
+  return ['solid', 'dashed', 'dotted'].includes(style);
+}
+function isValidBorderWidth(width) {
+  return /^[\d.]+(px|%)?$/.test(width);
+}
+function isValidBorder(border) {
+  console.log(border);
+  if (!border || typeof border !== 'object') {
+    console.error('Invalid border object: ', border); // エラー情報をコンソールに出力
+    throw new Error('Invalid border object');
+  }
+  return isValidColor(border.color) && isValidBorderStyle(border.style) && isValidBorderWidth(border.width);
+}
 function useBorderControl(attributes, setAttributes) {
   const borderColors = [{
     name: 'Blue 20',
@@ -1415,42 +1440,49 @@ function useBorderControl(attributes, setAttributes) {
     label: '%',
     value: '%'
   }];
-  const onChangeBorder = newBorders => {
-    const updatedBorders = {
-      top: {
-        ...borders.top,
-        ...newBorders,
-        width: newBorders.width || '0px',
-        color: newBorders.color || '#72AEE6',
-        style: newBorders.style || 'dashed'
-      },
-      right: {
-        ...borders.right,
-        ...newBorders,
-        width: newBorders.width || '0px',
-        color: newBorders.color || '#72AEE6',
-        style: newBorders.style || 'dashed'
-      },
-      bottom: {
-        ...borders.bottom,
-        ...newBorders,
-        width: newBorders.width || '0px',
-        color: newBorders.color || '#72AEE6',
-        style: newBorders.style || 'dashed'
-      },
-      left: {
-        ...borders.left,
-        ...newBorders,
-        width: newBorders.width || '0px',
-        color: newBorders.color || '#72AEE6',
-        style: newBorders.style || 'dashed'
+  const [errorMessage, setErrorMessage] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
+  const newBorderSet = {
+    color: '#72aee6',
+    style: 'dashed',
+    width: '4px'
+  };
+  const onChangeBorder = newBorderSet => {
+    try {
+      if (isValidBorder(newBorderSet)) {
+        const updatedBorders = {
+          top: {
+            ...borders.top,
+            ...newBorderSet
+          },
+          right: {
+            ...borders.right,
+            ...newBorderSet
+          },
+          bottom: {
+            ...borders.bottom,
+            ...newBorderSet
+          },
+          left: {
+            ...borders.left,
+            ...newBorderSet
+          }
+        };
+        setAttributes({
+          ...attributes,
+          borders: updatedBorders
+        });
+        setBorders(updatedBorders);
+        setErrorMessage(null);
+      } else {
+        const errorMessage = '無効なボーダープロパティ1';
+        console.error(errorMessage);
+        setErrorMessage(errorMessage);
       }
-    };
-    setAttributes({
-      ...attributes,
-      borders: updatedBorders
-    });
-    setBorders(updatedBorders);
+    } catch (error) {
+      const errorMessage = '無効なボーダープロパティ2';
+      console.error(error);
+      setErrorMessage(errorMessage);
+    }
   };
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     if (attributes.borders) {
@@ -1459,27 +1491,38 @@ function useBorderControl(attributes, setAttributes) {
   }, [attributes.borders]);
   const handleRangeChange = newValue => {
     const currentUnit = attributes.borderRadiusValue?.replace(/[0-9]/g, '') || 'px';
-    if (!isNaN(newValue)) {
+    if (!isNaN(newValue) && newValue >= 0 && newValue <= 100) {
       setAttributes({
         ...attributes,
         borderRadiusValue: `${newValue}${currentUnit}`
       });
+      setErrorMessage(null); // バリデーション成功時にエラーメッセージをクリア
+    } else {
+      setErrorMessage('有効な範囲ではありません'); // バリデーション失敗時にエラーメッセージを設定
     }
   };
+
   const handleUnitChange = newUnit => {
-    const currentValue = parseInt(attributes.borderRadiusValue || '0', 10);
-    setAttributes({
-      ...attributes,
-      borderRadiusValue: `${currentValue}${newUnit}`
-    });
+    if (units.some(option => option.value === newUnit)) {
+      const currentValue = parseInt(attributes.borderRadiusValue || '0', 10);
+      setAttributes({
+        ...attributes,
+        borderRadiusValue: `${currentValue}${newUnit}`
+      });
+      setErrorMessage(null); // バリデーション成功時にエラーメッセージをクリア
+    } else {
+      setErrorMessage('無効な単位です'); // バリデーション失敗時にエラーメッセージを設定
+    }
   };
+
   return {
     borders,
     onChangeBorder,
     handleRangeChange,
     handleUnitChange,
     borderColors,
-    units
+    units,
+    errorMessage
   };
 }
 
