@@ -8,11 +8,13 @@ export default function BorderControlGroup({ attributes, setAttributes }) {
     const {
         borders,
         onChangeBorder,
-        handleRangeChange: originalHandleRangeChange,
-        handleUnitChange: originalHandleUnitChange,
+        handleRangeChange,
+        handleUnitChange,
         borderColors,
         units,
-        errorMessage,
+        newBorderSetErrorMessage, // newBorderSet 用のエラーメッセージ
+        handleRangeChangeErrorMessage, // handleRangeChange 用のエラーメッセージ
+        handleUnitChangeErrorMessage, // handleUnitChange 用のエラーメッセージ
     } = useBorderControl(attributes, setAttributes);
 
     const borderMainStyle = {
@@ -43,8 +45,6 @@ export default function BorderControlGroup({ attributes, setAttributes }) {
         transform: 'translateX(23%)'
     }
 
-    console.log(errorMessage)
-
     return (
         <>
             <div className='jwc-border-main' style={borderMainStyle}>
@@ -54,26 +54,26 @@ export default function BorderControlGroup({ attributes, setAttributes }) {
                     onChange={onChangeBorder}
                     value={borders}
                 />
-                {errorMessage && <p style={validErrorStyle}>{errorMessage}</p>}
+                {newBorderSetErrorMessage && <p style={validErrorStyle}>{newBorderSetErrorMessage}</p>}
             </div>
             <div className='jwc-border-radius' style={radiusStyle}>
                 <div style={valueStyle}>
                     <RangeControl
                         label="丸み"
                         value={parseInt(attributes.borderRadiusValue, 10)}
-                        onChange={originalHandleRangeChange} 
+                        onChange={handleRangeChange}
                         min={0}
                         max={(attributes.borderRadiusValue && attributes.borderRadiusValue.includes('px')) ? 100 : 100}
                     />
-                    {errorMessage && <p style={validErrorStyle}>{errorMessage}</p>}
+                    {handleRangeChangeErrorMessage && <p style={validErrorStyle}>{handleRangeChangeErrorMessage}</p>}
                 </div>
                 <div style={unitStyle}>
                     <SelectControl
                         value={attributes.borderRadiusValue && attributes.borderRadiusValue.replace(/[0-9]/g, '')}
                         options={units}
-                        onChange={originalHandleUnitChange} 
+                        onChange={handleUnitChange}
                     />
-                    {errorMessage && <p style={validErrorStyle}>{errorMessage}</p>}
+                    {handleUnitChangeErrorMessage && <p style={validErrorStyle}>{handleUnitChangeErrorMessage}</p>}
                 </div>
             </div>
         </>

@@ -27,6 +27,10 @@ export function isValidBorder(border) {
 }
 
 export function useBorderControl(attributes, setAttributes) {
+
+  const [newBorderSetErrorMessage, setNewBorderSetErrorMessage] = useState(null);
+  const [handleRangeChangeErrorMessage, setHandleRangeChangeErrorMessage] = useState(null);
+  const [handleUnitChangeErrorMessage, setHandleUnitChangeErrorMessage] = useState(null);
   const borderColors = [
     { name: 'Blue 20', color: '#72aee6' },
   ];
@@ -47,50 +51,41 @@ export function useBorderControl(attributes, setAttributes) {
     { label: '%', value: '%' },
   ];
 
-  const [errorMessage, setErrorMessage] = useState(null);const newBorderSet = {
-    color: '#72aee6',
-    style: 'dashed',
-    width: '4px',
-  };
-  
   const onChangeBorder = (newBorderSet) => {
     try {
       if (
         isValidBorder(newBorderSet)
       ) {
+        setNewBorderSetErrorMessage(null);
         const updatedBorders = {
           top: {
             ...borders.top,
-            ...newBorderSet, 
+            ...newBorderSet,
           },
           right: {
             ...borders.right,
-            ...newBorderSet, 
+            ...newBorderSet,
           },
           bottom: {
             ...borders.bottom,
-            ...newBorderSet, 
+            ...newBorderSet,
           },
           left: {
             ...borders.left,
-            ...newBorderSet, 
+            ...newBorderSet,
           }
         };
         setAttributes({ ...attributes, borders: updatedBorders });
         setBorders(updatedBorders);
         setErrorMessage(null);
       } else {
-        const errorMessage = '無効なボーダープロパティ1';
-        console.error(errorMessage);
-        setErrorMessage(errorMessage);
+        setNewBorderSetErrorMessage('無効なボーダープロパティ');
       }
     } catch (error) {
-      const errorMessage = '無効なボーダープロパティ2';
-      console.error(error);
-      setErrorMessage(errorMessage);
+      setNewBorderSetErrorMessage('無効なボーダープロパティ');
     }
   };
-  
+
 
   useEffect(() => {
     if (attributes.borders) {
@@ -98,13 +93,14 @@ export function useBorderControl(attributes, setAttributes) {
     }
   }, [attributes.borders]);
 
+
   const handleRangeChange = (newValue) => {
     const currentUnit = attributes.borderRadiusValue?.replace(/[0-9]/g, '') || 'px';
     if (!isNaN(newValue) && newValue >= 0 && newValue <= 100) {
       setAttributes({ ...attributes, borderRadiusValue: `${newValue}${currentUnit}` });
-      setErrorMessage(null); // バリデーション成功時にエラーメッセージをクリア
+      setHandleRangeChangeErrorMessage(null);
     } else {
-      setErrorMessage('有効な範囲ではありません'); // バリデーション失敗時にエラーメッセージを設定
+      setHandleRangeChangeErrorMessage('有効な範囲ではありません');
     }
   };
 
@@ -112,9 +108,9 @@ export function useBorderControl(attributes, setAttributes) {
     if (units.some(option => option.value === newUnit)) {
       const currentValue = parseInt(attributes.borderRadiusValue || '0', 10);
       setAttributes({ ...attributes, borderRadiusValue: `${currentValue}${newUnit}` });
-      setErrorMessage(null); // バリデーション成功時にエラーメッセージをクリア
+      setHandleUnitChangeErrorMessage(null);
     } else {
-      setErrorMessage('無効な単位です'); // バリデーション失敗時にエラーメッセージを設定
+      setHandleUnitChangeErrorMessage('無効な単位です');
     }
   };
 
@@ -125,6 +121,8 @@ export function useBorderControl(attributes, setAttributes) {
     handleUnitChange,
     borderColors,
     units,
-    errorMessage,
+    newBorderSetErrorMessage, // newBorderSet 用のエラーメッセージ
+    handleRangeChangeErrorMessage, // handleRangeChange 用のエラーメッセージ
+    handleUnitChangeErrorMessage, // handleUnitChange 用のエラーメッセージ
   };
 }
