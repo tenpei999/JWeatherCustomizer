@@ -1415,7 +1415,7 @@ function isValidBorderWidth(width) {
 function isValidBorder(border) {
   console.log(border);
   if (!border || typeof border !== 'object') {
-    console.error('Invalid border object: ', border); // エラー情報をコンソールに出力
+    console.error('Invalid border object: ', border);
     throw new Error('Invalid border object');
   }
   return isValidColor(border.color) && isValidBorderStyle(border.style) && isValidBorderWidth(border.width);
@@ -1447,6 +1447,7 @@ function useBorderControl(attributes, setAttributes) {
     value: '%'
   }];
   const onChangeBorder = newBorderSet => {
+    console.log(newBorderSet);
     try {
       if (isValidBorder(newBorderSet)) {
         setNewBorderSetErrorMessage(null);
@@ -1473,12 +1474,13 @@ function useBorderControl(attributes, setAttributes) {
           borders: updatedBorders
         });
         setBorders(updatedBorders);
-        setErrorMessage(null);
+        setNewBorderSetErrorMessage(null);
       } else {
-        setNewBorderSetErrorMessage('無効なボーダープロパティ');
+        setNewBorderSetErrorMessage('無効なボーダープロパティ2');
       }
     } catch (error) {
-      setNewBorderSetErrorMessage('無効なボーダープロパティ');
+      console.log(error);
+      setNewBorderSetErrorMessage('無効なボーダープロパティ1');
     }
   };
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
@@ -1499,7 +1501,9 @@ function useBorderControl(attributes, setAttributes) {
     }
   };
   const handleUnitChange = newUnit => {
-    if (units.some(option => option.value === newUnit)) {
+    const validUnits = units.map(option => option.value); // 有効な単位の一覧を取得
+    if (validUnits.includes(newUnit)) {
+      // 新しい単位が有効な単位の中に含まれているかチェック
       const currentValue = parseInt(attributes.borderRadiusValue || '0', 10);
       setAttributes({
         ...attributes,

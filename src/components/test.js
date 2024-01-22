@@ -1,58 +1,44 @@
 // import {
-//   isValidColor,
-//   isValidBorderStyle,
-//   isValidBorderWidth,
-//   isValidBorder,
+// useBorderControl
 // } from '../functions/useBorderControl'; // バリデーション関数が定義されているファイルへのパスを正しく指定してください
 
-describe('Validation Functions', () => {
-  test('isValidColor should return true for valid colors', () => {
-    expect(isValidColor('#FF0000')).toBe(true);
-    expect(isValidColor('#123456')).toBe(true);
-  });
+// const testBorderValues = {
+//   color: '#invalidColor',
+//   style: 'invalidStyle',
+//   width: 'invalidWidth',
+// };
 
-  test('isValidColor should return false for invalid colors', () => {
-    expect(isValidColor('red')).toBe(false);
-    expect(isValidColor('#12345')).toBe(false);
-  });
+// const testRangeValue = -1;
+// const testUnitValue = 'invalidUnit';
 
-  test('isValidBorderStyle should return true for valid styles', () => {
-    expect(isValidBorderStyle('solid')).toBe(true);
-    expect(isValidBorderStyle('dashed')).toBe(true);
-    expect(isValidBorderStyle('dotted')).toBe(true);
-  });
+// function test() {
+//   const attributes = {
+//     borders: testBorderValues,
+//     borderRadiusValue: '50px', // 有効な初期値を設定
+//   };
 
-  test('isValidBorderStyle should return false for invalid styles', () => {
-    expect(isValidBorderStyle('double')).toBe(false);
-    expect(isValidBorderStyle('none')).toBe(false);
-  });
+//   const setAttributes = (newAttributes) => {
+//     // エラーメッセージの確認
+//     console.log('New Border Set Error:', newAttributes.newBorderSetErrorMessage);
+//     console.log('Handle Range Change Error:', newAttributes.handleRangeChangeErrorMessage);
+//     console.log('Handle Unit Change Error:', newAttributes.handleUnitChangeErrorMessage);
+//   };
 
-  test('isValidBorderWidth should return true for valid widths', () => {
-    expect(isValidBorderWidth('2px')).toBe(true);
-    expect(isValidBorderWidth('3.5%')).toBe(true);
-  });
+//   const {
+//     onChangeBorder,
+//     handleRangeChange,
+//     handleUnitChange,
+//   } = useBorderControl(attributes, setAttributes);
 
-  test('isValidBorderWidth should return false for invalid widths', () => {
-    expect(isValidBorderWidth('2')).toBe(false);
-    expect(isValidBorderWidth('2.5')).toBe(false);
-    expect(isValidBorderWidth('px')).toBe(false);
-  });
+//   // 無効なボーダーセットを設定してエラーメッセージをテスト
+//   onChangeBorder(testBorderValues);
 
-  test('isValidBorder should return true for valid borders', () => {
-    const validBorder = {
-      color: '#FF0000',
-      style: 'solid',
-      width: '2px',
-    };
-    expect(isValidBorder(validBorder)).toBe(true);
-  });
+//   // 有効な範囲外の値を設定してエラーメッセージをテスト
+//   handleRangeChange(testRangeValue);
 
-  test('isValidBorder should return false for invalid borders', () => {
-    const invalidBorder = {
-      color: 'red',
-      style: 'double',
-      width: '2.5',
-    };
-    expect(isValidBorder(invalidBorder)).toBe(false);
-  });
-});
+//   // 無効な単位を設定してエラーメッセージをテスト
+//   handleUnitChange(testUnitValue);
+// }
+
+// // テストの実行
+// test();

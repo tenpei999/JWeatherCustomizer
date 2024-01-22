@@ -16,7 +16,7 @@ export function isValidBorderWidth(width) {
 export function isValidBorder(border) {
   console.log(border)
   if (!border || typeof border !== 'object') {
-    console.error('Invalid border object: ', border); // エラー情報をコンソールに出力
+    console.error('Invalid border object: ', border);
     throw new Error('Invalid border object');
   }
   return (
@@ -52,6 +52,7 @@ export function useBorderControl(attributes, setAttributes) {
   ];
 
   const onChangeBorder = (newBorderSet) => {
+    console.log(newBorderSet)
     try {
       if (
         isValidBorder(newBorderSet)
@@ -77,12 +78,13 @@ export function useBorderControl(attributes, setAttributes) {
         };
         setAttributes({ ...attributes, borders: updatedBorders });
         setBorders(updatedBorders);
-        setErrorMessage(null);
+        setNewBorderSetErrorMessage(null);
       } else {
-        setNewBorderSetErrorMessage('無効なボーダープロパティ');
+        setNewBorderSetErrorMessage('無効なボーダープロパティ2');
       }
     } catch (error) {
-      setNewBorderSetErrorMessage('無効なボーダープロパティ');
+      console.log(error)
+      setNewBorderSetErrorMessage('無効なボーダープロパティ1');
     }
   };
 
@@ -92,7 +94,6 @@ export function useBorderControl(attributes, setAttributes) {
       setBorders(attributes.borders);
     }
   }, [attributes.borders]);
-
 
   const handleRangeChange = (newValue) => {
     const currentUnit = attributes.borderRadiusValue?.replace(/[0-9]/g, '') || 'px';
@@ -105,7 +106,9 @@ export function useBorderControl(attributes, setAttributes) {
   };
 
   const handleUnitChange = (newUnit) => {
-    if (units.some(option => option.value === newUnit)) {
+    
+    const validUnits = units.map(option => option.value); // 有効な単位の一覧を取得
+    if (validUnits.includes(newUnit)) { // 新しい単位が有効な単位の中に含まれているかチェック
       const currentValue = parseInt(attributes.borderRadiusValue || '0', 10);
       setAttributes({ ...attributes, borderRadiusValue: `${currentValue}${newUnit}` });
       setHandleUnitChangeErrorMessage(null);
