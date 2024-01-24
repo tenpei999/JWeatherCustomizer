@@ -427,20 +427,21 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__);
 
-// FontFamilyControl.js
+
 
 function FontFamilyControl({
   fontFamily,
   setFontFamily
 }) {
   const allowedFonts = ["NotoSans, sans-serif", "NotoSerif, serif", "MPLUS1, sans-serif", "KosugiMaru, sans-serif", "SawarabiGothic, sans-serif"];
+  const [fontFamilyChangeErrorMessage, setFontFamilyChangeErrorMessage] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
   const handleOnChange = newFontFamily => {
-    // フォントが許可リストに含まれているか確認
     if (allowedFonts.includes(newFontFamily)) {
       setFontFamily(newFontFamily);
+      setFontFamilyChangeErrorMessage(null);
     } else {
       // 不正なフォントが選択された場合の処理を追加
-      // 例: エラーメッセージを表示するなど
+      setFontFamilyChangeErrorMessage('無効なフォントが選択されました');
     }
   };
   const formStyle = {
@@ -448,13 +449,17 @@ function FontFamilyControl({
     textAlign: 'left',
     paddingTop: '15px'
   };
+  const validErrorStyle = {
+    color: 'red',
+    transform: 'translateX(23%)'
+  };
   const changeFontLavel = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     style: {
       display: 'block',
       transform: 'translateX(33%)'
     }
   }, " \u30D5\u30A9\u30F3\u30C8\u3092\u9078\u629E");
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     style: formStyle,
     className: "jwc-change-font"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
@@ -477,7 +482,9 @@ function FontFamilyControl({
       value: "SawarabiGothic, sans-serif"
     }],
     onChange: handleOnChange
-  }));
+  })), fontFamilyChangeErrorMessage && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    style: validErrorStyle
+  }, fontFamilyChangeErrorMessage));
 }
 /* harmony default export */ __webpack_exports__["default"] = (FontFamilyControl);
 
@@ -775,18 +782,28 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__);
 
-// TextColorControl.js
+
 
 function TextColorControl({
   textColor,
   setTextColor,
   setAttributes
 }) {
+  const [textColorChangeErrorMessage, setTextColorChangeErrorMessage] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
   const handleOnChange = newTextColor => {
-    setTextColor(newTextColor);
-    setAttributes({
-      textColor: newTextColor
-    });
+    const allowedColors = ['black', 'white'];
+    if (allowedColors.includes(newTextColor)) {
+      setTextColor(newTextColor);
+      setAttributes({
+        textColor: newTextColor
+      });
+
+      // エラーメッセージをクリア
+      setTextColorChangeErrorMessage(null);
+    } else {
+      // 不正なテキストの色が選択された場合の処理
+      setTextColorChangeErrorMessage('無効なテキストの色が選択されました');
+    }
   };
   const formStyle = {
     width: '100%',
@@ -799,7 +816,7 @@ function TextColorControl({
       transform: 'translateX(33%)'
     }
   }, " \u30C6\u30AD\u30B9\u30C8\u306E\u8272");
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     style: formStyle,
     className: "jwc-text-color-control"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
@@ -813,7 +830,9 @@ function TextColorControl({
       value: 'white'
     }],
     onChange: handleOnChange
-  }));
+  })), textColorChangeErrorMessage && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    style: validErrorStyle
+  }, textColorChangeErrorMessage));
 }
 /* harmony default export */ __webpack_exports__["default"] = (TextColorControl);
 
