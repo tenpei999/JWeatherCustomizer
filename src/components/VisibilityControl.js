@@ -3,13 +3,15 @@ import PropTypes from 'prop-types'; // プロパティのバリデーション�
 
 const VisibilityControl = ({ settings }) => {
 
-    const group1 = settings.slice(0, 4); // 最初の3つ
-    const group2 = settings.slice(4);    // 残りの2つ
+    const group1 = settings.slice(0, 3); // 最初の3つ
+    const group2 = settings.slice(3);    // 残りの2つ
 
     const handleVisibilityChange = (index, isChecked) => {
         const updatedSettings = [...settings];
         updatedSettings[index].checked = isChecked;
         updatedSettings[index].onChange(isChecked);
+        const group1Settings = updatedSettings.slice(0, 3); 
+console.log(group1Settings)
     };
 
     const boxStyle = {
@@ -46,7 +48,7 @@ const VisibilityControl = ({ settings }) => {
                             key={index + group1.length} // インデックスを調整
                             label={setting.label}
                             checked={setting.checked}
-                            onChange={(isChecked) => handleVisibilityChange(index + group1.length, isChecked)}
+                            onChange={(isChecked) => handleVisibilityChange(index + group2.length, isChecked)}
                         />
                     ))}
                 </div>

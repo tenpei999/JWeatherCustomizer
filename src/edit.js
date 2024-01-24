@@ -102,6 +102,7 @@ export default function Edit({ attributes, setAttributes }) {
 	};
 
 	console.log(attributes)
+	console.log(visibilitySettings)
 
 	return (
 		<div {...blockProps}  >

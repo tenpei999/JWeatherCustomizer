@@ -23,7 +23,7 @@ export const createVisibilitySettings = ({ attributes, setAttributes }) => {
         // 'showTodayWeather' 属性を更新
         updateAttribute('showTodayWeather', isChecked);
       },
-    }, ,
+    },
     {
       label: '明日の天気を表示',
       checked: attributes.showTomorrowWeather,
