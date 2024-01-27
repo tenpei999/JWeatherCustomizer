@@ -24,6 +24,11 @@ function TextColorControl({ textColor, setTextColor, setAttributes }) {
     paddingTop: '15px',
   }
 
+  const validErrorStyle = {
+    color: 'red',
+    transform: 'translateX(23%)'
+  }
+  
   const textColorControlLabel = (
     <span style={{ display: 'block', transform: 'translateX(33%)' }}> テキストの色</span>
   )

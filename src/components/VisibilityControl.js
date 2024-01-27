@@ -1,18 +1,50 @@
 import { CheckboxControl } from '@wordpress/components';
 import PropTypes from 'prop-types'; // プロパティのバリデーションのための追加
+import { useState, useEffect } from '@wordpress/element';
 
 const VisibilityControl = ({ settings }) => {
-
+    const [localSettings, setLocalSettings] = useState(settings);
+    const [isSpecialCheckboxClicked, setIsSpecialCheckboxClicked] = useState(false);
+    const [clickedCheckboxIndex, setClickedCheckboxIndex] = useState(null);
     const group1 = settings.slice(0, 3); // 最初の3つ
     const group2 = settings.slice(3);    // 残りの2つ
+    const onCountGroup1 = group1.filter(setting => setting.checked).length; 
+
+    useEffect(() => {
+        setLocalSettings(settings);
+    }, [settings]);
+
+
+    useEffect(() => {
+        if (isSpecialCheckboxClicked) {
+            const timer = setTimeout(() => {
+                setIsSpecialCheckboxClicked(false);
+            }, 150);
+            return () => clearTimeout(timer);
+        }
+    }, [isSpecialCheckboxClicked]);
 
     const handleVisibilityChange = (index, isChecked) => {
-        const updatedSettings = [...settings];
-        updatedSettings[index].checked = isChecked;
+        const updatedSettings = [...localSettings];
+
+        if (onCountGroup1 === 1 && !isChecked && index < 3) {
+            setClickedCheckboxIndex(index);
+            setIsSpecialCheckboxClicked(true);
+            return;
+        }
+    
+        updatedSettings[index] = { ...updatedSettings[index], checked: isChecked };
+        setLocalSettings(updatedSettings);
         updatedSettings[index].onChange(isChecked);
-        const group1Settings = updatedSettings.slice(0, 3); 
-console.log(group1Settings)
     };
+
+    const getCheckboxWrapperClass = (index) => {
+        if (isSpecialCheckboxClicked && onCountGroup1 === 1 && index === clickedCheckboxIndex) {
+            return 'faded-checkbox';
+        }
+        return '';
+    };
+
 
     const boxStyle = {
         display: 'flex',
@@ -26,20 +58,27 @@ console.log(group1Settings)
         width: '50%',
     }
 
+    const validErrorStyle = {
+        color: 'red',
+        transform: 'translateX(23%)'
+    }
+
     return (
         <div className="jwc-visibility-control" style={boxStyle}>
             <div className='jwc-visibility-control__title'>
                 <p style={{ fontSize: '20px' }}>表示設定</p>
             </div>
             <div style={columnStyle}>
-                <div className="visibility-group" id="group1">
+                <div className="visibility-group"id="group1">
                     {group1.map((setting, index) => (
-                        <CheckboxControl
-                            key={index}
-                            label={setting.label}
-                            checked={setting.checked}
-                            onChange={(isChecked) => handleVisibilityChange(index, isChecked)}
-                        />
+                        <div className={getCheckboxWrapperClass(index)}>
+                            <CheckboxControl
+                                key={index}
+                                label={setting.label}
+                                checked={setting.checked}
+                                onChange={(isChecked) => handleVisibilityChange(index, isChecked)}
+                            />
+                        </div>
                     ))}
                 </div>
                 <div className="visibility-group" id="group2">

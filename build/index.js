@@ -810,6 +810,10 @@ function TextColorControl({
     textAlign: 'left',
     paddingTop: '15px'
   };
+  const validErrorStyle = {
+    color: 'red',
+    transform: 'translateX(23%)'
+  };
   const textColorControlLabel = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     style: {
       display: 'block',
@@ -982,15 +986,42 @@ __webpack_require__.r(__webpack_exports__);
 const VisibilityControl = ({
   settings
 }) => {
+  const [localSettings, setLocalSettings] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(settings);
+  const [isSpecialCheckboxClicked, setIsSpecialCheckboxClicked] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
+  const [clickedCheckboxIndex, setClickedCheckboxIndex] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
   const group1 = settings.slice(0, 3); // 最初の3つ
   const group2 = settings.slice(3); // 残りの2つ
-
+  const onCountGroup1 = group1.filter(setting => setting.checked).length;
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    setLocalSettings(settings);
+  }, [settings]);
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    if (isSpecialCheckboxClicked) {
+      const timer = setTimeout(() => {
+        setIsSpecialCheckboxClicked(false);
+      }, 150);
+      return () => clearTimeout(timer);
+    }
+  }, [isSpecialCheckboxClicked]);
   const handleVisibilityChange = (index, isChecked) => {
-    const updatedSettings = [...settings];
-    updatedSettings[index].checked = isChecked;
+    const updatedSettings = [...localSettings];
+    if (onCountGroup1 === 1 && !isChecked && index < 3) {
+      setClickedCheckboxIndex(index);
+      setIsSpecialCheckboxClicked(true);
+      return;
+    }
+    updatedSettings[index] = {
+      ...updatedSettings[index],
+      checked: isChecked
+    };
+    setLocalSettings(updatedSettings);
     updatedSettings[index].onChange(isChecked);
-    const group1Settings = updatedSettings.slice(0, 3);
-    console.log(group1Settings);
+  };
+  const getCheckboxWrapperClass = index => {
+    if (isSpecialCheckboxClicked && onCountGroup1 === 1 && index === clickedCheckboxIndex) {
+      return 'faded-checkbox';
+    }
+    return '';
   };
   const boxStyle = {
     display: 'flex',
@@ -1001,6 +1032,10 @@ const VisibilityControl = ({
     display: 'flex',
     gap: '15px',
     width: '50%'
+  };
+  const validErrorStyle = {
+    color: 'red',
+    transform: 'translateX(23%)'
   };
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "jwc-visibility-control",
@@ -1016,12 +1051,14 @@ const VisibilityControl = ({
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "visibility-group",
     id: "group1"
-  }, group1.map((setting, index) => (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.CheckboxControl, {
+  }, group1.map((setting, index) => (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: getCheckboxWrapperClass(index)
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.CheckboxControl, {
     key: index,
     label: setting.label,
     checked: setting.checked,
     onChange: isChecked => handleVisibilityChange(index, isChecked)
-  }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  })))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "visibility-group",
     id: "group2"
   }, group2.map((setting, index) => (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.CheckboxControl, {
