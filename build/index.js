@@ -1,5 +1,4 @@
 /******/ (function() { // webpackBootstrap
-/******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
 /***/ "./src/components/BackgroundSelector.js":
@@ -8,6 +7,7 @@
   \**********************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
@@ -18,6 +18,24 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
+// 選択された画像のurlが不正でないか検証
+const isValidUrl = url => {
+  try {
+    new URL(url);
+    return true;
+  } catch (_) {
+    return false;
+  }
+};
+
+//入力されたカラーコードが不正でないか検証
+const isValidColor = color => /^#[0-9A-F]{6}$/i.test(color);
+
+//入力されたliner-gradientが不正でないか検証
+const isValidGradient = gradient => {
+  return /^linear-gradient\((.+)\)$/i.test(gradient);
+};
 const BackgroundSelector = ({
   attributes,
   setAttributes
@@ -26,7 +44,7 @@ const BackgroundSelector = ({
     backgroundStyleType
   } = attributes;
   const handleMediaSelect = media => {
-    if (!media) {
+    if (!media || !isValidUrl(media.url)) {
       setAttributes({
         backgroundImage: null,
         selectedMedia: null
@@ -40,12 +58,17 @@ const BackgroundSelector = ({
     });
   };
   const handleColorChange = color => {
-    // setBackgroundColor(color);
+    if (!isValidColor(color)) {
+      return;
+    }
     setAttributes({
       backgroundColor: color
     });
   };
   const handleGradientChange = newGradient => {
+    if (!isValidGradient(newGradient)) {
+      return;
+    }
     setAttributes({
       backgroundGradient: newGradient
     });
@@ -56,8 +79,39 @@ const BackgroundSelector = ({
       backgroundStyleType: newStyleType
     });
   };
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
-    label: "\u80CC\u666F\u30B9\u30BF\u30A4\u30EB",
+  const formStyle = {
+    width: '100%',
+    textAlign: 'center',
+    textAlign: 'left',
+    paddingTop: '15px'
+  };
+  const flexCol = {
+    display: 'flex',
+    flexDirection: 'column'
+  };
+  const selectorStyle = {
+    width: '83%',
+    alignSelf: 'end',
+    paddingTop: '10px'
+  };
+  const imageUploadButton = {
+    textAlign: 'center',
+    width: '50%'
+  };
+  const backgroundControlLabel = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    style: {
+      display: 'block',
+      transform: 'translateX(33%)'
+    }
+  }, "\u80CC\u666F");
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    style: flexCol,
+    className: "jwc-back-ground--wrapper"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "jwc-back-ground",
+    style: formStyle
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
+    label: backgroundControlLabel,
     value: attributes.backgroundStyleType // 現在の値をattributesから取得
     ,
     options: [{
@@ -71,19 +125,26 @@ const BackgroundSelector = ({
       value: 'gradient'
     }],
     onChange: handleBackgroundStyleChange // ここで新しい関数を使用します
-  }), backgroundStyleType === 'image' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.MediaUploadCheck, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.MediaUpload, {
+  })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    style: {
+      ...selectorStyle,
+      ...imageUploadButton
+    },
+    className: "jwc-back-ground__image"
+  }, backgroundStyleType === 'image' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.MediaUploadCheck, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.MediaUpload, {
     onSelect: handleMediaSelect,
     allowedTypes: ['image'],
     value: attributes.backgroundImage,
     render: ({
       open
     }) => (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
+      className: "button-insert",
       onClick: open
-    }, "Open Media Library")
+    }, "\u30E1\u30C7\u30A3\u30A2\u30E9\u30A4\u30D6\u30E9\u30EA\u3092\u958B\u3044\u3066\u753B\u50CF\u3092\u9078\u629E")
   })), backgroundStyleType === 'color' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ColorPalette, {
     onChange: handleColorChange,
     value: attributes.backgroundColor
-  }), backgroundStyleType === 'gradient' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.GradientPicker, {
+  }), backgroundStyleType === 'gradient' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.GradientPicker, {
     value: attributes.backgroundGradient,
     onChange: handleGradientChange,
     gradients: [{
@@ -99,9 +160,70 @@ const BackgroundSelector = ({
       gradient: 'linear-gradient(135deg,#1E9600 0%, #FFF200 0%, #FF0000 100%)',
       slug: 'rastafari'
     }]
-  }));
+  }))));
 };
 /* harmony default export */ __webpack_exports__["default"] = (BackgroundSelector);
+
+/***/ }),
+
+/***/ "./src/components/BalanceControl.js":
+/*!******************************************!*\
+  !*** ./src/components/BalanceControl.js ***!
+  \******************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__);
+
+
+const BalanceControl = ({
+  selectedOption,
+  setSelectedOption,
+  fontBalanceOptions
+}) => {
+  const formStyle = {
+    width: '100%',
+    textAlign: 'center',
+    textAlign: 'left',
+    paddingTop: '15px'
+  };
+  const balanceControlLabel = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    style: {
+      display: 'block',
+      transform: 'translateX(33%)'
+    }
+  }, " \u30D0\u30E9\u30F3\u30B9");
+  const handleOptionChange = label => {
+    // 選択されたラベルに対応するオプションを見つけます
+    const option = fontBalanceOptions.find(opt => opt.label === label);
+
+    // 正しいオプションが見つかった場合のみ、状態を更新します
+    if (option) {
+      setSelectedOption(option);
+    } else {
+      console.error('選択されたオプションが見つかりません。');
+      // 必要に応じて、適切なデフォルト値やエラーハンドリングをここに追加します
+    }
+  };
+
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "jwc-font-balance",
+    style: formStyle
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
+    label: balanceControlLabel,
+    value: selectedOption.label,
+    options: fontBalanceOptions.map(opt => ({
+      label: opt.label,
+      value: opt.label
+    })),
+    onChange: handleOptionChange
+  }));
+};
+/* harmony default export */ __webpack_exports__["default"] = (BalanceControl);
 
 /***/ }),
 
@@ -111,6 +233,7 @@ const BackgroundSelector = ({
   \**********************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": function() { return /* binding */ BorderControlGroup; }
@@ -138,8 +261,12 @@ function BorderControlGroup({
     handleRangeChange,
     handleUnitChange,
     borderColors,
-    // ここを変更しました
-    units
+    units,
+    newBorderSetErrorMessage,
+    // newBorderSet 用のエラーメッセージ
+    handleRangeChangeErrorMessage,
+    // handleRangeChange 用のエラーメッセージ
+    handleUnitChangeErrorMessage // handleUnitChange 用のエラーメッセージ
   } = (0,_functions_useBorderControl__WEBPACK_IMPORTED_MODULE_3__.useBorderControl)(attributes, setAttributes);
   const borderMainStyle = {
     width: '83.5%',
@@ -160,6 +287,10 @@ function BorderControlGroup({
   const unitStyle = {
     width: '10%'
   };
+  const validErrorStyle = {
+    color: 'red',
+    transform: 'translateX(23%)'
+  };
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "jwc-border-main",
     style: borderMainStyle
@@ -169,7 +300,9 @@ function BorderControlGroup({
     label: '枠線の色と形',
     onChange: onChangeBorder,
     value: borders
-  })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }), newBorderSetErrorMessage && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    style: validErrorStyle
+  }, newBorderSetErrorMessage)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "jwc-border-radius",
     style: radiusStyle
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -180,13 +313,17 @@ function BorderControlGroup({
     onChange: handleRangeChange,
     min: 0,
     max: attributes.borderRadiusValue && attributes.borderRadiusValue.includes('px') ? 100 : 100
-  })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }), handleRangeChangeErrorMessage && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    style: validErrorStyle
+  }, handleRangeChangeErrorMessage)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     style: unitStyle
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
     value: attributes.borderRadiusValue && attributes.borderRadiusValue.replace(/[0-9]/g, ''),
     options: units,
     onChange: handleUnitChange
-  }))));
+  }), handleUnitChangeErrorMessage && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    style: validErrorStyle
+  }, handleUnitChangeErrorMessage))));
 }
 
 /***/ }),
@@ -197,6 +334,7 @@ function BorderControlGroup({
   \******************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   CurrentWeather: function() { return /* binding */ CurrentWeather; }
@@ -206,9 +344,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Temp__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Temp */ "./src/components/Temp.js");
 /* harmony import */ var _TimeZone__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./TimeZone */ "./src/components/TimeZone.js");
 /* harmony import */ var _functions_useBorderStyles__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../functions/useBorderStyles */ "./src/functions/useBorderStyles.js");
-/* harmony import */ var _functions_useBackgroundStyles__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../functions/useBackgroundStyles */ "./src/functions/useBackgroundStyles.js");
-/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../style.scss */ "./src/style.scss");
-
+/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../style.scss */ "./src/style.scss");
 
 
 
@@ -239,7 +375,17 @@ const CurrentWeather = ({
     textColor = "blue";
   }
   const borderStyles = (0,_functions_useBorderStyles__WEBPACK_IMPORTED_MODULE_3__["default"])(borders);
-  const backgroundStyles = (0,_functions_useBackgroundStyles__WEBPACK_IMPORTED_MODULE_4__["default"])(backgroundStyleType, selectedMedia, backgroundColor, backgroundGradient);
+  let backgroundStyles = {};
+  if (backgroundStyleType === 'image' && selectedMedia) {
+    backgroundStyles.backgroundImage = `url('${selectedMedia}')`;
+    backgroundStyles.backgroundSize = 'cover';
+    backgroundStyles.backgroundRepeat = 'no-repeat';
+    backgroundStyles.backgroundPosition = 'center';
+  } else if (backgroundStyleType === 'color' && backgroundColor) {
+    backgroundStyles.backgroundColor = backgroundColor;
+  } else if (backgroundStyleType === 'gradient' && backgroundGradient) {
+    backgroundStyles.background = backgroundGradient;
+  }
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("article", {
     className: `block--current ${styleVariant}`,
     style: {
@@ -274,27 +420,38 @@ const CurrentWeather = ({
   \*********************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__);
 
-// FontFamilyControl.js
+
 
 function FontFamilyControl({
   fontFamily,
   setFontFamily
 }) {
+  const allowedFonts = ["NotoSans, sans-serif", "NotoSerif, serif", "MPLUS1, sans-serif", "KosugiMaru, sans-serif", "SawarabiGothic, sans-serif"];
+  const [fontFamilyChangeErrorMessage, setFontFamilyChangeErrorMessage] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
   const handleOnChange = newFontFamily => {
-    setFontFamily(newFontFamily);
-  };
-  const labelStyle = {
-    width: '50%'
+    if (allowedFonts.includes(newFontFamily)) {
+      setFontFamily(newFontFamily);
+      setFontFamilyChangeErrorMessage(null);
+    } else {
+      // 不正なフォントが選択された場合の処理を追加
+      setFontFamilyChangeErrorMessage('無効なフォントが選択されました');
+    }
   };
   const formStyle = {
     width: '100%',
-    textAlign: 'left'
+    textAlign: 'left',
+    paddingTop: '15px'
+  };
+  const validErrorStyle = {
+    color: 'red',
+    transform: 'translateX(23%)'
   };
   const changeFontLavel = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     style: {
@@ -302,7 +459,7 @@ function FontFamilyControl({
       transform: 'translateX(33%)'
     }
   }, " \u30D5\u30A9\u30F3\u30C8\u3092\u9078\u629E");
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     style: formStyle,
     className: "jwc-change-font"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
@@ -325,7 +482,9 @@ function FontFamilyControl({
       value: "SawarabiGothic, sans-serif"
     }],
     onChange: handleOnChange
-  }));
+  })), fontFamilyChangeErrorMessage && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    style: validErrorStyle
+  }, fontFamilyChangeErrorMessage));
 }
 /* harmony default export */ __webpack_exports__["default"] = (FontFamilyControl);
 
@@ -337,6 +496,7 @@ function FontFamilyControl({
   \****************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
@@ -370,6 +530,7 @@ const ManagedError = () => {
   \***********************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": function() { return /* binding */ Preview; }
@@ -392,26 +553,37 @@ function Preview({
   attributes,
   commonProps
 }) {
+  const {
+    showTodayWeather,
+    showTomorrowWeather,
+    showWeeklyWeather,
+    todayWeather,
+    tomorrowWeather,
+    weeklyWeather,
+    showHoliday,
+    showPrecipitation
+  } = attributes;
+  const renderCurrentWeather = (weather, title) => {
+    if (!weather || !weather.day) return null;
+    const isHoliday = weather.day.isHoliday || weather.day.isSunday;
+    const textColor = isHoliday ? 'red' : weather.day.isSaturday ? 'blue' : '';
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_CurrentWeather__WEBPACK_IMPORTED_MODULE_2__.CurrentWeather, {
+      weather: weather,
+      title: title,
+      showHoliday: showHoliday,
+      showPrecipitation: showPrecipitation,
+      ...commonProps,
+      textColor: textColor
+    });
+  };
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, _objects_weatherObject__WEBPACK_IMPORTED_MODULE_4__.isApiError.isError ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_ManegedError__WEBPACK_IMPORTED_MODULE_5__["default"], {
     isApiError: _objects_weatherObject__WEBPACK_IMPORTED_MODULE_4__.isApiError.statusCode
   }) : (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "layout"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "today-and-tomorrow weather-layout"
-  }, attributes.showTodayWeather && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_CurrentWeather__WEBPACK_IMPORTED_MODULE_2__.CurrentWeather, {
-    weather: attributes.todayWeather,
-    title: "\u4ECA\u65E5\u306E\u5929\u6C17",
-    showHoliday: attributes.showHoliday,
-    showPrecipitation: attributes.showPrecipitation,
-    ...commonProps
-  }), attributes.showTomorrowWeather && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_CurrentWeather__WEBPACK_IMPORTED_MODULE_2__.CurrentWeather, {
-    weather: attributes.tomorrowWeather,
-    title: "\u660E\u65E5\u306E\u5929\u6C17",
-    showHoliday: attributes.showHoliday,
-    showPrecipitation: attributes.showPrecipitation,
-    ...commonProps
-  })), attributes.showWeeklyWeather && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_WeekWeather__WEBPACK_IMPORTED_MODULE_3__["default"], {
-    weather: attributes.weeklyWeather,
+  }, showTodayWeather && renderCurrentWeather(todayWeather, '今日の天気'), showTomorrowWeather && renderCurrentWeather(tomorrowWeather, '明日の天気')), showWeeklyWeather && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_WeekWeather__WEBPACK_IMPORTED_MODULE_3__["default"], {
+    weather: weeklyWeather,
     ...commonProps
   })));
 }
@@ -424,12 +596,17 @@ function Preview({
   \**************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_2__);
 
+
+ // プロパティのバリデーションのための追加
 
 const SelectCity = ({
   selectedCity,
@@ -463,6 +640,18 @@ const SelectCity = ({
     }
   }));
 };
+
+// プロパティのバリデーション
+SelectCity.propTypes = {
+  selectedCity: prop_types__WEBPACK_IMPORTED_MODULE_2___default().shape({
+    name: (prop_types__WEBPACK_IMPORTED_MODULE_2___default().string).isRequired
+  }).isRequired,
+  cityOptions: prop_types__WEBPACK_IMPORTED_MODULE_2___default().arrayOf(prop_types__WEBPACK_IMPORTED_MODULE_2___default().shape({
+    value: (prop_types__WEBPACK_IMPORTED_MODULE_2___default().string).isRequired,
+    label: (prop_types__WEBPACK_IMPORTED_MODULE_2___default().string).isRequired
+  })).isRequired,
+  handleCityChange: (prop_types__WEBPACK_IMPORTED_MODULE_2___default().func).isRequired
+};
 /* harmony default export */ __webpack_exports__["default"] = (SelectCity);
 
 /***/ }),
@@ -473,12 +662,13 @@ const SelectCity = ({
   \****************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _SelectCity__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./SelectCity */ "./src/components/SelectCity.js");
 /* harmony import */ var _VisibilityControl__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./VisibilityControl */ "./src/components/VisibilityControl.js");
-/* harmony import */ var _UICintrolGroup__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./UICintrolGroup */ "./src/components/UICintrolGroup.js");
+/* harmony import */ var _UIControlGroup__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./UIControlGroup */ "./src/components/UIControlGroup.js");
 
 
 
@@ -503,6 +693,9 @@ const SettingGroup = ({
     display: 'flex',
     flexDirection: 'column'
   };
+  const spacing = {
+    transform: 'translateX(-8.15%)'
+  };
   const headingTitle = {
     textAlign: 'center'
   };
@@ -510,13 +703,15 @@ const SettingGroup = ({
     style: wrapperStyle
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h3", {
     style: headingTitle
-  }, "\u8A2D\u5B9A"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_SelectCity__WEBPACK_IMPORTED_MODULE_1__["default"], {
+  }, "\u8A2D\u5B9A"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    style: spacing
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_SelectCity__WEBPACK_IMPORTED_MODULE_1__["default"], {
     selectedCity: selectedCity,
     cityOptions: cityOptions,
     handleCityChange: handleCityChange
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_VisibilityControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
     settings: visibilitySettings
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_UICintrolGroup__WEBPACK_IMPORTED_MODULE_3__["default"], {
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_UIControlGroup__WEBPACK_IMPORTED_MODULE_3__["default"], {
     fontFamily: fontFamily,
     onChangeFontFamily: onChangeFontFamily,
     textColor: textColor,
@@ -526,7 +721,7 @@ const SettingGroup = ({
     fontBalanceOptions: fontBalanceOptions,
     attributes: attributes,
     setAttributes: setAttributes
-  }));
+  })));
 };
 /* harmony default export */ __webpack_exports__["default"] = (SettingGroup);
 
@@ -538,6 +733,7 @@ const SettingGroup = ({
   \********************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
@@ -545,7 +741,10 @@ __webpack_require__.r(__webpack_exports__);
 const Temp = ({
   weather
 }) => {
-  if (!weather) return null;
+  // weather プロパティのバリデーション
+  if (!weather || typeof weather !== 'object') {
+    return null;
+  }
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("ul", {
     className: "temp"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", {
@@ -576,27 +775,56 @@ const Temp = ({
   \********************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__);
 
-// TextColorControl.js
+
 
 function TextColorControl({
   textColor,
   setTextColor,
   setAttributes
 }) {
+  const [textColorChangeErrorMessage, setTextColorChangeErrorMessage] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
   const handleOnChange = newTextColor => {
-    setTextColor(newTextColor);
-    setAttributes({
-      textColor: newTextColor
-    });
+    const allowedColors = ['black', 'white'];
+    if (allowedColors.includes(newTextColor)) {
+      setTextColor(newTextColor);
+      setAttributes({
+        textColor: newTextColor
+      });
+
+      // エラーメッセージをクリア
+      setTextColorChangeErrorMessage(null);
+    } else {
+      // 不正なテキストの色が選択された場合の処理
+      setTextColorChangeErrorMessage('無効なテキストの色が選択されました');
+    }
   };
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
-    label: "\u30C6\u30AD\u30B9\u30C8\u306E\u8272\u3092\u9078\u629E",
+  const formStyle = {
+    width: '100%',
+    textAlign: 'left',
+    paddingTop: '15px'
+  };
+  const validErrorStyle = {
+    color: 'red',
+    transform: 'translateX(23%)'
+  };
+  const textColorControlLabel = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    style: {
+      display: 'block',
+      transform: 'translateX(33%)'
+    }
+  }, " \u30C6\u30AD\u30B9\u30C8\u306E\u8272");
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    style: formStyle,
+    className: "jwc-text-color-control"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
+    label: textColorControlLabel,
     value: textColor,
     options: [{
       label: '黒',
@@ -606,7 +834,9 @@ function TextColorControl({
       value: 'white'
     }],
     onChange: handleOnChange
-  });
+  })), textColorChangeErrorMessage && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    style: validErrorStyle
+  }, textColorChangeErrorMessage));
 }
 /* harmony default export */ __webpack_exports__["default"] = (TextColorControl);
 
@@ -618,6 +848,7 @@ function TextColorControl({
   \************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
@@ -668,21 +899,21 @@ const TimeZone = ({
 
 /***/ }),
 
-/***/ "./src/components/UICintrolGroup.js":
+/***/ "./src/components/UIControlGroup.js":
 /*!******************************************!*\
-  !*** ./src/components/UICintrolGroup.js ***!
+  !*** ./src/components/UIControlGroup.js ***!
   \******************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
-/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _FontFamilyControl__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./FontFamilyControl */ "./src/components/FontFamilyControl.js");
-/* harmony import */ var _TextColorControl__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./TextColorControl */ "./src/components/TextColorControl.js");
-/* harmony import */ var _BackgroundSelector__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./BackgroundSelector */ "./src/components/BackgroundSelector.js");
-/* harmony import */ var _BorderControlGroup__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./BorderControlGroup */ "./src/components/BorderControlGroup.js");
+/* harmony import */ var _FontFamilyControl__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./FontFamilyControl */ "./src/components/FontFamilyControl.js");
+/* harmony import */ var _TextColorControl__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./TextColorControl */ "./src/components/TextColorControl.js");
+/* harmony import */ var _BackgroundSelector__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./BackgroundSelector */ "./src/components/BackgroundSelector.js");
+/* harmony import */ var _BorderControlGroup__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./BorderControlGroup */ "./src/components/BorderControlGroup.js");
+/* harmony import */ var _BalanceControl__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./BalanceControl */ "./src/components/BalanceControl.js");
 
 
 
@@ -700,32 +931,32 @@ const UIControlGroup = ({
   attributes,
   setAttributes
 }) => {
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_BorderControlGroup__WEBPACK_IMPORTED_MODULE_5__["default"], {
+  const wrapperStyle = {
+    display: 'flex',
+    flexDirection: 'column'
+  };
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "detail-settings",
+    style: wrapperStyle
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_BorderControlGroup__WEBPACK_IMPORTED_MODULE_4__["default"], {
     attributes: attributes,
     setAttributes: setAttributes
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_FontFamilyControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_FontFamilyControl__WEBPACK_IMPORTED_MODULE_1__["default"], {
     fontFamily: fontFamily || attributes.fontFamily,
     setFontFamily: onChangeFontFamily
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_TextColorControl__WEBPACK_IMPORTED_MODULE_3__["default"], {
-    textColor: textColor,
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_TextColorControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
+    textColor: textColor || attributes.textColor,
     setTextColor: value => {
       setTextColor(value);
       setAttributes({
         textColor: value
       });
     }
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
-    label: "Font Balance",
-    value: selectedOption.label,
-    options: fontBalanceOptions.map(opt => ({
-      label: opt.label,
-      value: opt.label
-    })),
-    onChange: label => {
-      const option = fontBalanceOptions.find(opt => opt.label === label);
-      setSelectedOption(option);
-    }
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_BackgroundSelector__WEBPACK_IMPORTED_MODULE_4__["default"], {
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_BalanceControl__WEBPACK_IMPORTED_MODULE_5__["default"], {
+    selectedOption: selectedOption,
+    setSelectedOption: setSelectedOption,
+    fontBalanceOptions: fontBalanceOptions
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_BackgroundSelector__WEBPACK_IMPORTED_MODULE_3__["default"], {
     attributes: attributes,
     setAttributes: setAttributes
   }));
@@ -740,23 +971,57 @@ const UIControlGroup = ({
   \*********************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_2__);
 
+
+ // プロパティのバリデーションのための追加
 
 const VisibilityControl = ({
   settings
 }) => {
-  const group1 = settings.slice(0, 4); // 最初の3つ
-  const group2 = settings.slice(4); // 残りの2つ
-
+  const [localSettings, setLocalSettings] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(settings);
+  const [isSpecialCheckboxClicked, setIsSpecialCheckboxClicked] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
+  const [clickedCheckboxIndex, setClickedCheckboxIndex] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
+  const group1 = settings.slice(0, 3); // 最初の3つ
+  const group2 = settings.slice(3); // 残りの2つ
+  const onCountGroup1 = group1.filter(setting => setting.checked).length;
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    setLocalSettings(settings);
+  }, [settings]);
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    if (isSpecialCheckboxClicked) {
+      const timer = setTimeout(() => {
+        setIsSpecialCheckboxClicked(false);
+      }, 150);
+      return () => clearTimeout(timer);
+    }
+  }, [isSpecialCheckboxClicked]);
   const handleVisibilityChange = (index, isChecked) => {
-    const updatedSettings = [...settings];
-    updatedSettings[index].checked = isChecked;
+    const updatedSettings = [...localSettings];
+    if (onCountGroup1 === 1 && !isChecked && index < 3) {
+      setClickedCheckboxIndex(index);
+      setIsSpecialCheckboxClicked(true);
+      return;
+    }
+    updatedSettings[index] = {
+      ...updatedSettings[index],
+      checked: isChecked
+    };
+    setLocalSettings(updatedSettings);
     updatedSettings[index].onChange(isChecked);
+  };
+  const getCheckboxWrapperClass = index => {
+    if (isSpecialCheckboxClicked && onCountGroup1 === 1 && index === clickedCheckboxIndex) {
+      return 'faded-checkbox';
+    }
+    return '';
   };
   const boxStyle = {
     display: 'flex',
@@ -767,6 +1032,10 @@ const VisibilityControl = ({
     display: 'flex',
     gap: '15px',
     width: '50%'
+  };
+  const validErrorStyle = {
+    color: 'red',
+    transform: 'translateX(23%)'
   };
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "jwc-visibility-control",
@@ -782,12 +1051,14 @@ const VisibilityControl = ({
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "visibility-group",
     id: "group1"
-  }, group1.map((setting, index) => (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.CheckboxControl, {
+  }, group1.map((setting, index) => (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: getCheckboxWrapperClass(index)
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.CheckboxControl, {
     key: index,
     label: setting.label,
     checked: setting.checked,
     onChange: isChecked => handleVisibilityChange(index, isChecked)
-  }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  })))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "visibility-group",
     id: "group2"
   }, group2.map((setting, index) => (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.CheckboxControl, {
@@ -795,8 +1066,15 @@ const VisibilityControl = ({
     ,
     label: setting.label,
     checked: setting.checked,
-    onChange: isChecked => handleVisibilityChange(index + group1.length, isChecked)
+    onChange: isChecked => handleVisibilityChange(index + group2.length, isChecked)
   })))));
+};
+VisibilityControl.propTypes = {
+  settings: prop_types__WEBPACK_IMPORTED_MODULE_2___default().arrayOf(prop_types__WEBPACK_IMPORTED_MODULE_2___default().shape({
+    label: (prop_types__WEBPACK_IMPORTED_MODULE_2___default().string).isRequired,
+    checked: (prop_types__WEBPACK_IMPORTED_MODULE_2___default().bool).isRequired,
+    onChange: (prop_types__WEBPACK_IMPORTED_MODULE_2___default().func).isRequired
+  })).isRequired
 };
 /* harmony default export */ __webpack_exports__["default"] = (VisibilityControl);
 
@@ -808,15 +1086,14 @@ const VisibilityControl = ({
   \***************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _Temp__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Temp */ "./src/components/Temp.js");
 /* harmony import */ var _functions_useBorderStyles__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../functions/useBorderStyles */ "./src/functions/useBorderStyles.js");
-/* harmony import */ var _functions_useBackgroundStyles__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../functions/useBackgroundStyles */ "./src/functions/useBackgroundStyles.js");
-/* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../editor.scss */ "./src/editor.scss");
-/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../style.scss */ "./src/style.scss");
-
+/* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../editor.scss */ "./src/editor.scss");
+/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../style.scss */ "./src/style.scss");
 
 
 
@@ -834,9 +1111,19 @@ const WeekWeather = ({
   backgroundGradient,
   backgroundColor
 }) => {
-  if (!weather) return null;
+  if (!weather || !Array.isArray(weather)) return null;
   const borderStyles = (0,_functions_useBorderStyles__WEBPACK_IMPORTED_MODULE_2__["default"])(borders);
-  const backgroundStyles = (0,_functions_useBackgroundStyles__WEBPACK_IMPORTED_MODULE_3__["default"])(backgroundStyleType, selectedMedia, backgroundColor, backgroundGradient);
+  let backgroundStyles = {};
+  if (backgroundStyleType === 'image' && selectedMedia) {
+    backgroundStyles.backgroundImage = `url('${selectedMedia}')`;
+    backgroundStyles.backgroundSize = 'cover';
+    backgroundStyles.backgroundRepeat = 'no-repeat';
+    backgroundStyles.backgroundPosition = 'center';
+  } else if (backgroundStyleType === 'color' && backgroundColor) {
+    backgroundStyles.backgroundColor = backgroundColor;
+  } else if (backgroundStyleType === 'gradient' && backgroundGradient) {
+    backgroundStyles.background = backgroundGradient;
+  }
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("ul", {
     className: `block--weekly weather-layout ${styleVariant}`,
     style: {
@@ -884,6 +1171,7 @@ const WeekWeather = ({
   \************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /**
 * WMOのweatherCodeに対応する、天候名とアイコンを返す
@@ -903,7 +1191,7 @@ __webpack_require__.r(__webpack_exports__);
 */
 
 const getWeatherInfo = weatherCode => {
-  const pluginImagePaths = myPluginData.pluginImagePath;
+  const pluginImagePaths = JWeatherCustomizerData.pluginImagePath;
 
   // 0 : Clear Sky
   if (weatherCode === 0) {
@@ -997,6 +1285,7 @@ const getWeatherInfo = weatherCode => {
   \*********************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": function() { return /* binding */ Edit; }
@@ -1033,15 +1322,12 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-// import { SelectControl } from '@wordpress/components';
 
 
 
 
-// import UIControlGroup from './components/UICintrolGroup';
 
 
-// import VisibilityControl from './components/VisibilityControl';
 
 
 
@@ -1129,6 +1415,7 @@ function Edit({
     backgroundColor: attributes.backgroundColor
   };
   console.log(attributes);
+  console.log(visibilitySettings);
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     ...blockProps
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -1155,70 +1442,47 @@ function Edit({
 
 /***/ }),
 
-/***/ "./src/functions/useBackgroundStyles.js":
-/*!**********************************************!*\
-  !*** ./src/functions/useBackgroundStyles.js ***!
-  \**********************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-// useBackgroundStyles.js
-
-function useBackgroundStyles(backgroundStyleType, selectedMedia, backgroundColor, backgroundGradient) {
-  const [backgroundStyles, setBackgroundStyles] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({});
-  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
-    switch (backgroundStyleType) {
-      case 'image':
-        if (selectedMedia) {
-          setBackgroundStyles({
-            backgroundImage: `url('${selectedMedia}')`,
-            backgroundSize: 'cover',
-            backgroundRepeat: 'no-repeat',
-            backgroundPosition: 'center'
-          });
-        }
-        break;
-      case 'color':
-        if (backgroundColor) {
-          setBackgroundStyles({
-            background: backgroundColor
-          });
-        }
-        break;
-      case 'gradient':
-        if (backgroundGradient) {
-          setBackgroundStyles({
-            background: backgroundGradient
-          });
-        }
-        break;
-      default:
-        // 他のスタイルタイプやデフォルトの処理をここに追加できます。
-        break;
-    }
-  }, [backgroundStyleType, selectedMedia, backgroundColor, backgroundGradient]);
-  return backgroundStyles;
-}
-/* harmony default export */ __webpack_exports__["default"] = (useBackgroundStyles);
-
-/***/ }),
-
 /***/ "./src/functions/useBorderControl.js":
 /*!*******************************************!*\
   !*** ./src/functions/useBorderControl.js ***!
   \*******************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   isValidBorder: function() { return /* binding */ isValidBorder; },
+/* harmony export */   isValidBorderStyle: function() { return /* binding */ isValidBorderStyle; },
+/* harmony export */   isValidBorderWidth: function() { return /* binding */ isValidBorderWidth; },
+/* harmony export */   isValidColor: function() { return /* binding */ isValidColor; },
 /* harmony export */   useBorderControl: function() { return /* binding */ useBorderControl; }
 /* harmony export */ });
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
 
+
+// バリデーション関数をモジュールの外部に移動
+function isValidColor(color) {
+  return /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(color);
+}
+function isValidBorderStyle(style) {
+  return ['solid', 'dashed', 'dotted'].includes(style);
+}
+function isValidBorderWidth(width) {
+  return /^[\d.]+(px|%)?$/.test(width);
+}
+function isValidBorder(border) {
+  console.log(border);
+  if (!border || typeof border !== 'object') {
+    console.error('Invalid border object: ', border);
+    throw new Error('Invalid border object');
+  }
+  return isValidColor(border.color) && isValidBorderStyle(border.style) && isValidBorderWidth(border.width);
+}
 function useBorderControl(attributes, setAttributes) {
+  const [newBorderSetErrorMessage, setNewBorderSetErrorMessage] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
+  const [handleRangeChangeErrorMessage, setHandleRangeChangeErrorMessage] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
+  const [handleUnitChangeErrorMessage, setHandleUnitChangeErrorMessage] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
   const borderColors = [{
     name: 'Blue 20',
     color: '#72aee6'
@@ -1241,42 +1505,42 @@ function useBorderControl(attributes, setAttributes) {
     label: '%',
     value: '%'
   }];
-  const onChangeBorder = newBorders => {
-    const updatedBorders = {
-      top: {
-        ...borders.top,
-        ...newBorders,
-        width: newBorders.width || '0px',
-        color: newBorders.color || '#72AEE6',
-        style: newBorders.style || 'dashed'
-      },
-      right: {
-        ...borders.right,
-        ...newBorders,
-        width: newBorders.width || '0px',
-        color: newBorders.color || '#72AEE6',
-        style: newBorders.style || 'dashed'
-      },
-      bottom: {
-        ...borders.bottom,
-        ...newBorders,
-        width: newBorders.width || '0px',
-        color: newBorders.color || '#72AEE6',
-        style: newBorders.style || 'dashed'
-      },
-      left: {
-        ...borders.left,
-        ...newBorders,
-        width: newBorders.width || '0px',
-        color: newBorders.color || '#72AEE6',
-        style: newBorders.style || 'dashed'
+  const onChangeBorder = newBorderSet => {
+    console.log(newBorderSet);
+    try {
+      if (isValidBorder(newBorderSet)) {
+        setNewBorderSetErrorMessage(null);
+        const updatedBorders = {
+          top: {
+            ...borders.top,
+            ...newBorderSet
+          },
+          right: {
+            ...borders.right,
+            ...newBorderSet
+          },
+          bottom: {
+            ...borders.bottom,
+            ...newBorderSet
+          },
+          left: {
+            ...borders.left,
+            ...newBorderSet
+          }
+        };
+        setAttributes({
+          ...attributes,
+          borders: updatedBorders
+        });
+        setBorders(updatedBorders);
+        setNewBorderSetErrorMessage(null);
+      } else {
+        setNewBorderSetErrorMessage('無効なボーダープロパティ2');
       }
-    };
-    setAttributes({
-      ...attributes,
-      borders: updatedBorders
-    });
-    setBorders(updatedBorders);
+    } catch (error) {
+      console.log(error);
+      setNewBorderSetErrorMessage('無効なボーダープロパティ1');
+    }
   };
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     if (attributes.borders) {
@@ -1285,19 +1549,29 @@ function useBorderControl(attributes, setAttributes) {
   }, [attributes.borders]);
   const handleRangeChange = newValue => {
     const currentUnit = attributes.borderRadiusValue?.replace(/[0-9]/g, '') || 'px';
-    if (!isNaN(newValue)) {
+    if (!isNaN(newValue) && newValue >= 0 && newValue <= 100) {
       setAttributes({
         ...attributes,
         borderRadiusValue: `${newValue}${currentUnit}`
       });
+      setHandleRangeChangeErrorMessage(null);
+    } else {
+      setHandleRangeChangeErrorMessage('有効な範囲ではありません');
     }
   };
   const handleUnitChange = newUnit => {
-    const currentValue = parseInt(attributes.borderRadiusValue || '0', 10);
-    setAttributes({
-      ...attributes,
-      borderRadiusValue: `${currentValue}${newUnit}`
-    });
+    const validUnits = units.map(option => option.value); // 有効な単位の一覧を取得
+    if (validUnits.includes(newUnit)) {
+      // 新しい単位が有効な単位の中に含まれているかチェック
+      const currentValue = parseInt(attributes.borderRadiusValue || '0', 10);
+      setAttributes({
+        ...attributes,
+        borderRadiusValue: `${currentValue}${newUnit}`
+      });
+      setHandleUnitChangeErrorMessage(null);
+    } else {
+      setHandleUnitChangeErrorMessage('無効な単位です');
+    }
   };
   return {
     borders,
@@ -1305,7 +1579,12 @@ function useBorderControl(attributes, setAttributes) {
     handleRangeChange,
     handleUnitChange,
     borderColors,
-    units
+    units,
+    newBorderSetErrorMessage,
+    // newBorderSet 用のエラーメッセージ
+    handleRangeChangeErrorMessage,
+    // handleRangeChange 用のエラーメッセージ
+    handleUnitChangeErrorMessage // handleUnitChange 用のエラーメッセージ
   };
 }
 
@@ -1317,6 +1596,7 @@ function useBorderControl(attributes, setAttributes) {
   \******************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
@@ -1345,6 +1625,7 @@ function useBorderStyles(borders) {
   \*******************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   useChangeBalance: function() { return /* binding */ useChangeBalance; }
@@ -1403,6 +1684,7 @@ function useChangeBalance(initialOption, setAttributes) {
   \****************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   useChangeCity: function() { return /* binding */ useChangeCity; }
@@ -1458,6 +1740,7 @@ function useChangeCity(selectedCity) {
   \***********************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   useFontFamilyControl: function() { return /* binding */ useFontFamilyControl; }
@@ -1490,6 +1773,7 @@ function useFontFamilyControl(attributes, setAttributes) {
   \******************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
@@ -1540,6 +1824,7 @@ function useBlockSelection() {
   \**********************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/blocks */ "@wordpress/blocks");
 /* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__);
@@ -1593,13 +1878,32 @@ if (!(0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__.getBlockType)(_block_json
   \***************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 const dayWithHoliday = async (addBreak = false) => {
-  async function getHolidays() {
-    const response = await fetch('https://holidays-jp.github.io/api/v1/date.json');
-    const holidays = await response.json();
-    return holidays;
-  }
+  const cache = {};
+  const fetchHolidays = async () => {
+    const url = 'https://holidays-jp.github.io/api/v1/date.json';
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error fetching holidays:', error);
+      return {}; // 空のオブジェクトを返し、処理を続行
+    }
+  };
+
+  const getHolidays = async () => {
+    const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD形式
+    if (!cache[today]) {
+      cache[today] = await fetchHolidays();
+    }
+    return cache[today];
+  };
   function getDateRangeArray(startDate, endDate) {
     const dateArray = [];
     let currentDate = new Date(startDate);
@@ -1652,6 +1956,7 @@ const dayWithHoliday = async (addBreak = false) => {
   \**************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   responseErrorMessage: function() { return /* binding */ responseErrorMessage; }
@@ -1675,69 +1980,71 @@ const responseErrorMessage = {
   \***************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   cities: function() { return /* binding */ cities; }
 /* harmony export */ });
+const apiBaseUrl = 'https://api.open-meteo.com/v1/forecast';
+const createCityWeatherUrl = (latitude, longitude) => {
+  return `${apiBaseUrl}?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m,precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14`;
+};
 const cities = {
-  // https://open-meteo.com/en/docs
-  // Daily Weather Variables Weathercode / Maximum Temperature (2 m) / Minimum Temperature (2 m) / Past days 1
-
   札幌: {
     name: '札幌',
-    url: 'https://api.open-meteo.com/v1/forecast?latitude=43.0667&longitude=141.35&hourly=temperature_2m,precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14'
+    url: createCityWeatherUrl(43.0667, 141.35)
   },
   秋田: {
     name: '秋田',
-    url: 'https://api.open-meteo.com/v1/forecast?latitude=39.7167&longitude=140.1167&hourly=temperature_2m,precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14'
+    url: createCityWeatherUrl(39.7167, 140.1167)
   },
   金沢: {
     name: '金沢',
-    url: 'https://api.open-meteo.com/v1/forecast?latitude=36.6&longitude=136.6167&hourly=temperature_2m,precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14'
+    url: createCityWeatherUrl(36.6, 136.6167)
   },
   東京: {
     name: '東京',
-    url: 'https://api.open-meteo.com/v1/forecast?latitude=35.6895&longitude=139.6917&hourly=precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14'
+    url: createCityWeatherUrl(35.6895, 139.6917)
   },
   大宮: {
     name: '大宮',
-    url: 'https://api.open-meteo.com/v1/forecast?latitude=35.9635&longitude=139.8305&hourly=temperature_2m,precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14'
+    url: createCityWeatherUrl(35.9635, 139.8305)
   },
   名古屋: {
     name: '名古屋',
-    url: 'https://api.open-meteo.com/v1/forecast?latitude=35.1815&longitude=136.9064&hourly=temperature_2m,precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14'
+    url: createCityWeatherUrl(35.1815, 136.9064)
   },
   南堀江: {
     name: '南堀江',
-    url: 'https://api.open-meteo.com/v1/forecast?latitude=34.6711&longitude=135.4942&hourly=temperature_2m,precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14'
+    url: createCityWeatherUrl(34.6711, 135.4942)
   },
   八尾: {
     name: '八尾',
-    url: 'https://api.open-meteo.com/v1/forecast?latitude=34.6167&longitude=135.6&hourly=temperature_2m,precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14'
+    url: createCityWeatherUrl(34.6167, 135.6)
   },
   奈良: {
     name: '奈良',
-    url: 'https://api.open-meteo.com/v1/forecast?latitude=34.685&longitude=135.8049&hourly=temperature_2m,precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14'
+    url: createCityWeatherUrl(34.685, 135.8049)
   },
   朝来: {
     name: '朝来',
-    url: 'https://api.open-meteo.com/v1/forecast?latitude=35.2591&longitude=134.8139&hourly=temperature_2m,precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14'
+    url: createCityWeatherUrl(35.2591, 134.8139)
   },
   福岡: {
     name: '福岡',
-    url: 'https://api.open-meteo.com/v1/forecast?latitude=33.6&longitude=130.4167&hourly=temperature_2m,precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14'
+    url: createCityWeatherUrl(33.6, 130.4167)
   },
   佐世保: {
     name: '佐世保',
-    url: 'https://api.open-meteo.com/v1/forecast?latitude=33.1683&longitude=129.725&hourly=temperature_2m,precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14'
+    url: createCityWeatherUrl(33.1683, 129.725)
   },
   諸塚: {
     name: '諸塚',
-    url: 'https://api.open-meteo.com/v1/forecast?latitude=32.5601&longitude=131.3198&hourly=temperature_2m,precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14'
+    url: createCityWeatherUrl(32.5601, 131.3198)
   },
   パリ: {
     name: 'パリ',
-    url: 'https://api.open-meteo.com/v1/forecast?latitude=48.8534&longitude=2.3488&hourly=temperature_2m,precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14'
+    url: createCityWeatherUrl(48.8534, 2.3488)
   }
 };
 
@@ -1749,6 +2056,7 @@ const cities = {
   \*******************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   createVisibilitySettings: function() { return /* binding */ createVisibilitySettings; }
@@ -1764,49 +2072,48 @@ const createVisibilitySettings = ({
     showHoliday,
     showPrecipitation
   } = attributes;
+  const updateAttribute = (attributeName, value) => {
+    if (typeof value === 'boolean') {
+      setAttributes({
+        [attributeName]: value
+      });
+    } else {
+      console.error('Invalid value type for visibility setting');
+    }
+  };
   return [{
     label: "今日の天気を表示",
     checked: attributes.showTodayWeather,
     // 属性から現在の値を取得
     onChange: isChecked => {
       // 'showTodayWeather' 属性を更新
-      setAttributes({
-        showTodayWeather: isChecked
-      });
+      updateAttribute('showTodayWeather', isChecked);
     }
-  },, {
+  }, {
     label: '明日の天気を表示',
     checked: attributes.showTomorrowWeather,
     onChange: isChecked => {
       // 'showTodayWeather' 属性を更新
-      setAttributes({
-        showTomorrowWeather: isChecked
-      });
+      updateAttribute('showTomorrowWeather', isChecked);
     }
   }, {
     label: '週間天気を表示',
     checked: attributes.showWeeklyWeather,
     onChange: isChecked => {
       // 'showTodayWeather' 属性を更新
-      setAttributes({
-        showWeeklyWeather: isChecked
-      });
+      updateAttribute('showWeeklyWeather', isChecked);
     }
   }, {
     label: '祝日を表示',
     checked: attributes.showHoliday,
-    onChange: checked => {
-      setAttributes({
-        showHoliday: checked
-      });
+    onChange: isChecked => {
+      updateAttribute('showHoliday', isChecked);
     }
   }, {
     label: '降水確率を表示',
     checked: attributes.showPrecipitation,
-    onChange: checked => {
-      setAttributes({
-        showPrecipitation: checked
-      });
+    onChange: isChecked => {
+      updateAttribute('showPrecipitation', isChecked);
     }
   }];
 };
@@ -1819,6 +2126,7 @@ const createVisibilitySettings = ({
   \**************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   isApiError: function() { return /* binding */ isApiError; },
@@ -1834,15 +2142,41 @@ let isApiError = {
   statusCode: null
 };
 let apiRequestCount = 0;
+const isValidUrl = url => {
+  try {
+    const validBaseUrl = "https://api.open-meteo.com/v1";
+    const parsedUrl = new URL(url);
+    return parsedUrl.href.startsWith(validBaseUrl);
+  } catch (e) {
+    return false;
+  }
+};
 const weatherObject = async (cityurl, setTodayWeather, setTomorrowWeather, setWeeklyWeather, addBreak = false) => {
   try {
-    if (!cityurl) {
+    if (!cityurl || !isValidUrl(cityurl)) {
       throw new Error(`City "${cityurl}" does not exist in the city object.`);
     }
-    const apiUrl = myPluginData.siteUrl + '/wp-json/j-weather-customizer/save-data/';
+    const apiUrl = JWeatherCustomizerData.siteUrl + '/wp-json/j-weather-customizer/save-data/';
 
     // console.log('Making request to weather API for city:', cityurl); // API呼び出し前のログ
 
+    const validateWeatherData = data => {
+      // 天気データの構造を検証する関数
+      return data && data.daily && Array.isArray(data.daily.weathercode) && Array.isArray(data.daily.temperature_2m_max);
+    };
+    const sanitizeImageUrl = url => {
+      // 画像URLをサニタイズする関数。不正なURLを除去または修正
+      try {
+        return new URL(url).toString();
+      } catch (e) {
+        return ''; // 不正なURLは空文字列に置き換える
+      }
+    };
+
+    const validateTemperature = temperature => {
+      // 温度データが数値であることを検証
+      return !isNaN(temperature) && isFinite(temperature);
+    };
     apiRequestCount++;
     console.log(`リクエスト回数: ${apiRequestCount}`);
     const response = await fetch(cityurl);
@@ -1858,6 +2192,9 @@ const weatherObject = async (cityurl, setTodayWeather, setTomorrowWeather, setWe
       isApiError.statusCode = null;
     }
     const data2 = await response.json();
+    if (!validateWeatherData(data2)) {
+      throw new Error("Invalid weather data format.");
+    }
     if (!data2 || !data2.daily) {
       throw new Error("Unexpected data format received from the weather API.");
     }
@@ -1869,9 +2206,9 @@ const weatherObject = async (cityurl, setTodayWeather, setTomorrowWeather, setWe
 
     // 天気コードを天気名に変換
     const weatherNamesForWeek = weatherCodesForWeek.map(code => (0,_data_getWeatherInfo__WEBPACK_IMPORTED_MODULE_0__["default"])(code).label);
-    const weatherImageForWeek = weatherCodesForWeek.map(code => (0,_data_getWeatherInfo__WEBPACK_IMPORTED_MODULE_0__["default"])(code).icon);
-    const highestTemperatureForWeek = data2.daily.temperature_2m_max; // 昨日から6日後までの天気コード
-    const lowestTemperatureForWeek = data2.daily.temperature_2m_min; // 昨日から6日後までの天気コード
+    const weatherImageForWeek = weatherCodesForWeek.map(code => sanitizeImageUrl((0,_data_getWeatherInfo__WEBPACK_IMPORTED_MODULE_0__["default"])(code).icon));
+    const highestTemperatureForWeek = data2.daily.temperature_2m_max.map(temp => validateTemperature(temp) ? temp : null);
+    const lowestTemperatureForWeek = data2.daily.temperature_2m_min.map(temp => validateTemperature(temp) ? temp : null);
     const highestTemperatureDifferencesForWeek = [];
     for (let i = -1; i < highestTemperatureForWeek.length; i++) {
       const todayMaxTemperature = highestTemperatureForWeek[i + 1];
@@ -1909,20 +2246,6 @@ const weatherObject = async (cityurl, setTodayWeather, setTomorrowWeather, setWe
       lowestTemperatureComparison: lowestTemperatureDifferencesForWeek[index + 1],
       rainProbability: rainProbability1[index + 1]
     }));
-    const postResponse = await fetch(apiUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-WP-Nonce': myPluginData.nonce // nonceをヘッダーに追加
-      },
-
-      body: JSON.stringify({
-        dailyData: dailyData
-      })
-    });
-    if (!postResponse.ok) {
-      throw new Error(`Failed to post data to ${apiUrl}. Status: ${postResponse.status}`);
-    }
     if (typeof setTodayWeather !== 'function') {
       throw new Error('setTodayWeather is not a function.');
     }
@@ -1964,6 +2287,7 @@ const weatherObject = async (cityurl, setTodayWeather, setTomorrowWeather, setWe
   \*************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
@@ -1976,8 +2300,1112 @@ __webpack_require__.r(__webpack_exports__);
   \************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
+/***/ "./node_modules/object-assign/index.js":
+/*!*********************************************!*\
+  !*** ./node_modules/object-assign/index.js ***!
+  \*********************************************/
+/***/ (function(module) {
+
+"use strict";
+/*
+object-assign
+(c) Sindre Sorhus
+@license MIT
+*/
+
+
+/* eslint-disable no-unused-vars */
+var getOwnPropertySymbols = Object.getOwnPropertySymbols;
+var hasOwnProperty = Object.prototype.hasOwnProperty;
+var propIsEnumerable = Object.prototype.propertyIsEnumerable;
+
+function toObject(val) {
+	if (val === null || val === undefined) {
+		throw new TypeError('Object.assign cannot be called with null or undefined');
+	}
+
+	return Object(val);
+}
+
+function shouldUseNative() {
+	try {
+		if (!Object.assign) {
+			return false;
+		}
+
+		// Detect buggy property enumeration order in older V8 versions.
+
+		// https://bugs.chromium.org/p/v8/issues/detail?id=4118
+		var test1 = new String('abc');  // eslint-disable-line no-new-wrappers
+		test1[5] = 'de';
+		if (Object.getOwnPropertyNames(test1)[0] === '5') {
+			return false;
+		}
+
+		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
+		var test2 = {};
+		for (var i = 0; i < 10; i++) {
+			test2['_' + String.fromCharCode(i)] = i;
+		}
+		var order2 = Object.getOwnPropertyNames(test2).map(function (n) {
+			return test2[n];
+		});
+		if (order2.join('') !== '0123456789') {
+			return false;
+		}
+
+		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
+		var test3 = {};
+		'abcdefghijklmnopqrst'.split('').forEach(function (letter) {
+			test3[letter] = letter;
+		});
+		if (Object.keys(Object.assign({}, test3)).join('') !==
+				'abcdefghijklmnopqrst') {
+			return false;
+		}
+
+		return true;
+	} catch (err) {
+		// We don't expect any of the above to throw, but better to be safe.
+		return false;
+	}
+}
+
+module.exports = shouldUseNative() ? Object.assign : function (target, source) {
+	var from;
+	var to = toObject(target);
+	var symbols;
+
+	for (var s = 1; s < arguments.length; s++) {
+		from = Object(arguments[s]);
+
+		for (var key in from) {
+			if (hasOwnProperty.call(from, key)) {
+				to[key] = from[key];
+			}
+		}
+
+		if (getOwnPropertySymbols) {
+			symbols = getOwnPropertySymbols(from);
+			for (var i = 0; i < symbols.length; i++) {
+				if (propIsEnumerable.call(from, symbols[i])) {
+					to[symbols[i]] = from[symbols[i]];
+				}
+			}
+		}
+	}
+
+	return to;
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/prop-types/checkPropTypes.js":
+/*!***************************************************!*\
+  !*** ./node_modules/prop-types/checkPropTypes.js ***!
+  \***************************************************/
+/***/ (function(module, __unused_webpack_exports, __webpack_require__) {
+
+"use strict";
+/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+
+
+var printWarning = function() {};
+
+if (true) {
+  var ReactPropTypesSecret = __webpack_require__(/*! ./lib/ReactPropTypesSecret */ "./node_modules/prop-types/lib/ReactPropTypesSecret.js");
+  var loggedTypeFailures = {};
+  var has = __webpack_require__(/*! ./lib/has */ "./node_modules/prop-types/lib/has.js");
+
+  printWarning = function(text) {
+    var message = 'Warning: ' + text;
+    if (typeof console !== 'undefined') {
+      console.error(message);
+    }
+    try {
+      // --- Welcome to debugging React ---
+      // This error was thrown as a convenience so that you can use this stack
+      // to find the callsite that caused this warning to fire.
+      throw new Error(message);
+    } catch (x) { /**/ }
+  };
+}
+
+/**
+ * Assert that the values match with the type specs.
+ * Error messages are memorized and will only be shown once.
+ *
+ * @param {object} typeSpecs Map of name to a ReactPropType
+ * @param {object} values Runtime values that need to be type-checked
+ * @param {string} location e.g. "prop", "context", "child context"
+ * @param {string} componentName Name of the component for error messages.
+ * @param {?Function} getStack Returns the component stack.
+ * @private
+ */
+function checkPropTypes(typeSpecs, values, location, componentName, getStack) {
+  if (true) {
+    for (var typeSpecName in typeSpecs) {
+      if (has(typeSpecs, typeSpecName)) {
+        var error;
+        // Prop type validation may throw. In case they do, we don't want to
+        // fail the render phase where it didn't fail before. So we log it.
+        // After these have been cleaned up, we'll let them throw.
+        try {
+          // This is intentionally an invariant that gets caught. It's the same
+          // behavior as without this statement except with a better message.
+          if (typeof typeSpecs[typeSpecName] !== 'function') {
+            var err = Error(
+              (componentName || 'React class') + ': ' + location + ' type `' + typeSpecName + '` is invalid; ' +
+              'it must be a function, usually from the `prop-types` package, but received `' + typeof typeSpecs[typeSpecName] + '`.' +
+              'This often happens because of typos such as `PropTypes.function` instead of `PropTypes.func`.'
+            );
+            err.name = 'Invariant Violation';
+            throw err;
+          }
+          error = typeSpecs[typeSpecName](values, typeSpecName, componentName, location, null, ReactPropTypesSecret);
+        } catch (ex) {
+          error = ex;
+        }
+        if (error && !(error instanceof Error)) {
+          printWarning(
+            (componentName || 'React class') + ': type specification of ' +
+            location + ' `' + typeSpecName + '` is invalid; the type checker ' +
+            'function must return `null` or an `Error` but returned a ' + typeof error + '. ' +
+            'You may have forgotten to pass an argument to the type checker ' +
+            'creator (arrayOf, instanceOf, objectOf, oneOf, oneOfType, and ' +
+            'shape all require an argument).'
+          );
+        }
+        if (error instanceof Error && !(error.message in loggedTypeFailures)) {
+          // Only monitor this failure once because there tends to be a lot of the
+          // same error.
+          loggedTypeFailures[error.message] = true;
+
+          var stack = getStack ? getStack() : '';
+
+          printWarning(
+            'Failed ' + location + ' type: ' + error.message + (stack != null ? stack : '')
+          );
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Resets warning cache when testing.
+ *
+ * @private
+ */
+checkPropTypes.resetWarningCache = function() {
+  if (true) {
+    loggedTypeFailures = {};
+  }
+}
+
+module.exports = checkPropTypes;
+
+
+/***/ }),
+
+/***/ "./node_modules/prop-types/factoryWithTypeCheckers.js":
+/*!************************************************************!*\
+  !*** ./node_modules/prop-types/factoryWithTypeCheckers.js ***!
+  \************************************************************/
+/***/ (function(module, __unused_webpack_exports, __webpack_require__) {
+
+"use strict";
+/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+
+
+var ReactIs = __webpack_require__(/*! react-is */ "./node_modules/prop-types/node_modules/react-is/index.js");
+var assign = __webpack_require__(/*! object-assign */ "./node_modules/object-assign/index.js");
+
+var ReactPropTypesSecret = __webpack_require__(/*! ./lib/ReactPropTypesSecret */ "./node_modules/prop-types/lib/ReactPropTypesSecret.js");
+var has = __webpack_require__(/*! ./lib/has */ "./node_modules/prop-types/lib/has.js");
+var checkPropTypes = __webpack_require__(/*! ./checkPropTypes */ "./node_modules/prop-types/checkPropTypes.js");
+
+var printWarning = function() {};
+
+if (true) {
+  printWarning = function(text) {
+    var message = 'Warning: ' + text;
+    if (typeof console !== 'undefined') {
+      console.error(message);
+    }
+    try {
+      // --- Welcome to debugging React ---
+      // This error was thrown as a convenience so that you can use this stack
+      // to find the callsite that caused this warning to fire.
+      throw new Error(message);
+    } catch (x) {}
+  };
+}
+
+function emptyFunctionThatReturnsNull() {
+  return null;
+}
+
+module.exports = function(isValidElement, throwOnDirectAccess) {
+  /* global Symbol */
+  var ITERATOR_SYMBOL = typeof Symbol === 'function' && Symbol.iterator;
+  var FAUX_ITERATOR_SYMBOL = '@@iterator'; // Before Symbol spec.
+
+  /**
+   * Returns the iterator method function contained on the iterable object.
+   *
+   * Be sure to invoke the function with the iterable as context:
+   *
+   *     var iteratorFn = getIteratorFn(myIterable);
+   *     if (iteratorFn) {
+   *       var iterator = iteratorFn.call(myIterable);
+   *       ...
+   *     }
+   *
+   * @param {?object} maybeIterable
+   * @return {?function}
+   */
+  function getIteratorFn(maybeIterable) {
+    var iteratorFn = maybeIterable && (ITERATOR_SYMBOL && maybeIterable[ITERATOR_SYMBOL] || maybeIterable[FAUX_ITERATOR_SYMBOL]);
+    if (typeof iteratorFn === 'function') {
+      return iteratorFn;
+    }
+  }
+
+  /**
+   * Collection of methods that allow declaration and validation of props that are
+   * supplied to React components. Example usage:
+   *
+   *   var Props = require('ReactPropTypes');
+   *   var MyArticle = React.createClass({
+   *     propTypes: {
+   *       // An optional string prop named "description".
+   *       description: Props.string,
+   *
+   *       // A required enum prop named "category".
+   *       category: Props.oneOf(['News','Photos']).isRequired,
+   *
+   *       // A prop named "dialog" that requires an instance of Dialog.
+   *       dialog: Props.instanceOf(Dialog).isRequired
+   *     },
+   *     render: function() { ... }
+   *   });
+   *
+   * A more formal specification of how these methods are used:
+   *
+   *   type := array|bool|func|object|number|string|oneOf([...])|instanceOf(...)
+   *   decl := ReactPropTypes.{type}(.isRequired)?
+   *
+   * Each and every declaration produces a function with the same signature. This
+   * allows the creation of custom validation functions. For example:
+   *
+   *  var MyLink = React.createClass({
+   *    propTypes: {
+   *      // An optional string or URI prop named "href".
+   *      href: function(props, propName, componentName) {
+   *        var propValue = props[propName];
+   *        if (propValue != null && typeof propValue !== 'string' &&
+   *            !(propValue instanceof URI)) {
+   *          return new Error(
+   *            'Expected a string or an URI for ' + propName + ' in ' +
+   *            componentName
+   *          );
+   *        }
+   *      }
+   *    },
+   *    render: function() {...}
+   *  });
+   *
+   * @internal
+   */
+
+  var ANONYMOUS = '<<anonymous>>';
+
+  // Important!
+  // Keep this list in sync with production version in `./factoryWithThrowingShims.js`.
+  var ReactPropTypes = {
+    array: createPrimitiveTypeChecker('array'),
+    bigint: createPrimitiveTypeChecker('bigint'),
+    bool: createPrimitiveTypeChecker('boolean'),
+    func: createPrimitiveTypeChecker('function'),
+    number: createPrimitiveTypeChecker('number'),
+    object: createPrimitiveTypeChecker('object'),
+    string: createPrimitiveTypeChecker('string'),
+    symbol: createPrimitiveTypeChecker('symbol'),
+
+    any: createAnyTypeChecker(),
+    arrayOf: createArrayOfTypeChecker,
+    element: createElementTypeChecker(),
+    elementType: createElementTypeTypeChecker(),
+    instanceOf: createInstanceTypeChecker,
+    node: createNodeChecker(),
+    objectOf: createObjectOfTypeChecker,
+    oneOf: createEnumTypeChecker,
+    oneOfType: createUnionTypeChecker,
+    shape: createShapeTypeChecker,
+    exact: createStrictShapeTypeChecker,
+  };
+
+  /**
+   * inlined Object.is polyfill to avoid requiring consumers ship their own
+   * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is
+   */
+  /*eslint-disable no-self-compare*/
+  function is(x, y) {
+    // SameValue algorithm
+    if (x === y) {
+      // Steps 1-5, 7-10
+      // Steps 6.b-6.e: +0 != -0
+      return x !== 0 || 1 / x === 1 / y;
+    } else {
+      // Step 6.a: NaN == NaN
+      return x !== x && y !== y;
+    }
+  }
+  /*eslint-enable no-self-compare*/
+
+  /**
+   * We use an Error-like object for backward compatibility as people may call
+   * PropTypes directly and inspect their output. However, we don't use real
+   * Errors anymore. We don't inspect their stack anyway, and creating them
+   * is prohibitively expensive if they are created too often, such as what
+   * happens in oneOfType() for any type before the one that matched.
+   */
+  function PropTypeError(message, data) {
+    this.message = message;
+    this.data = data && typeof data === 'object' ? data: {};
+    this.stack = '';
+  }
+  // Make `instanceof Error` still work for returned errors.
+  PropTypeError.prototype = Error.prototype;
+
+  function createChainableTypeChecker(validate) {
+    if (true) {
+      var manualPropTypeCallCache = {};
+      var manualPropTypeWarningCount = 0;
+    }
+    function checkType(isRequired, props, propName, componentName, location, propFullName, secret) {
+      componentName = componentName || ANONYMOUS;
+      propFullName = propFullName || propName;
+
+      if (secret !== ReactPropTypesSecret) {
+        if (throwOnDirectAccess) {
+          // New behavior only for users of `prop-types` package
+          var err = new Error(
+            'Calling PropTypes validators directly is not supported by the `prop-types` package. ' +
+            'Use `PropTypes.checkPropTypes()` to call them. ' +
+            'Read more at http://fb.me/use-check-prop-types'
+          );
+          err.name = 'Invariant Violation';
+          throw err;
+        } else if ( true && typeof console !== 'undefined') {
+          // Old behavior for people using React.PropTypes
+          var cacheKey = componentName + ':' + propName;
+          if (
+            !manualPropTypeCallCache[cacheKey] &&
+            // Avoid spamming the console because they are often not actionable except for lib authors
+            manualPropTypeWarningCount < 3
+          ) {
+            printWarning(
+              'You are manually calling a React.PropTypes validation ' +
+              'function for the `' + propFullName + '` prop on `' + componentName + '`. This is deprecated ' +
+              'and will throw in the standalone `prop-types` package. ' +
+              'You may be seeing this warning due to a third-party PropTypes ' +
+              'library. See https://fb.me/react-warning-dont-call-proptypes ' + 'for details.'
+            );
+            manualPropTypeCallCache[cacheKey] = true;
+            manualPropTypeWarningCount++;
+          }
+        }
+      }
+      if (props[propName] == null) {
+        if (isRequired) {
+          if (props[propName] === null) {
+            return new PropTypeError('The ' + location + ' `' + propFullName + '` is marked as required ' + ('in `' + componentName + '`, but its value is `null`.'));
+          }
+          return new PropTypeError('The ' + location + ' `' + propFullName + '` is marked as required in ' + ('`' + componentName + '`, but its value is `undefined`.'));
+        }
+        return null;
+      } else {
+        return validate(props, propName, componentName, location, propFullName);
+      }
+    }
+
+    var chainedCheckType = checkType.bind(null, false);
+    chainedCheckType.isRequired = checkType.bind(null, true);
+
+    return chainedCheckType;
+  }
+
+  function createPrimitiveTypeChecker(expectedType) {
+    function validate(props, propName, componentName, location, propFullName, secret) {
+      var propValue = props[propName];
+      var propType = getPropType(propValue);
+      if (propType !== expectedType) {
+        // `propValue` being instance of, say, date/regexp, pass the 'object'
+        // check, but we can offer a more precise error message here rather than
+        // 'of type `object`'.
+        var preciseType = getPreciseType(propValue);
+
+        return new PropTypeError(
+          'Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + preciseType + '` supplied to `' + componentName + '`, expected ') + ('`' + expectedType + '`.'),
+          {expectedType: expectedType}
+        );
+      }
+      return null;
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createAnyTypeChecker() {
+    return createChainableTypeChecker(emptyFunctionThatReturnsNull);
+  }
+
+  function createArrayOfTypeChecker(typeChecker) {
+    function validate(props, propName, componentName, location, propFullName) {
+      if (typeof typeChecker !== 'function') {
+        return new PropTypeError('Property `' + propFullName + '` of component `' + componentName + '` has invalid PropType notation inside arrayOf.');
+      }
+      var propValue = props[propName];
+      if (!Array.isArray(propValue)) {
+        var propType = getPropType(propValue);
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected an array.'));
+      }
+      for (var i = 0; i < propValue.length; i++) {
+        var error = typeChecker(propValue, i, componentName, location, propFullName + '[' + i + ']', ReactPropTypesSecret);
+        if (error instanceof Error) {
+          return error;
+        }
+      }
+      return null;
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createElementTypeChecker() {
+    function validate(props, propName, componentName, location, propFullName) {
+      var propValue = props[propName];
+      if (!isValidElement(propValue)) {
+        var propType = getPropType(propValue);
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected a single ReactElement.'));
+      }
+      return null;
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createElementTypeTypeChecker() {
+    function validate(props, propName, componentName, location, propFullName) {
+      var propValue = props[propName];
+      if (!ReactIs.isValidElementType(propValue)) {
+        var propType = getPropType(propValue);
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected a single ReactElement type.'));
+      }
+      return null;
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createInstanceTypeChecker(expectedClass) {
+    function validate(props, propName, componentName, location, propFullName) {
+      if (!(props[propName] instanceof expectedClass)) {
+        var expectedClassName = expectedClass.name || ANONYMOUS;
+        var actualClassName = getClassName(props[propName]);
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + actualClassName + '` supplied to `' + componentName + '`, expected ') + ('instance of `' + expectedClassName + '`.'));
+      }
+      return null;
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createEnumTypeChecker(expectedValues) {
+    if (!Array.isArray(expectedValues)) {
+      if (true) {
+        if (arguments.length > 1) {
+          printWarning(
+            'Invalid arguments supplied to oneOf, expected an array, got ' + arguments.length + ' arguments. ' +
+            'A common mistake is to write oneOf(x, y, z) instead of oneOf([x, y, z]).'
+          );
+        } else {
+          printWarning('Invalid argument supplied to oneOf, expected an array.');
+        }
+      }
+      return emptyFunctionThatReturnsNull;
+    }
+
+    function validate(props, propName, componentName, location, propFullName) {
+      var propValue = props[propName];
+      for (var i = 0; i < expectedValues.length; i++) {
+        if (is(propValue, expectedValues[i])) {
+          return null;
+        }
+      }
+
+      var valuesString = JSON.stringify(expectedValues, function replacer(key, value) {
+        var type = getPreciseType(value);
+        if (type === 'symbol') {
+          return String(value);
+        }
+        return value;
+      });
+      return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of value `' + String(propValue) + '` ' + ('supplied to `' + componentName + '`, expected one of ' + valuesString + '.'));
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createObjectOfTypeChecker(typeChecker) {
+    function validate(props, propName, componentName, location, propFullName) {
+      if (typeof typeChecker !== 'function') {
+        return new PropTypeError('Property `' + propFullName + '` of component `' + componentName + '` has invalid PropType notation inside objectOf.');
+      }
+      var propValue = props[propName];
+      var propType = getPropType(propValue);
+      if (propType !== 'object') {
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected an object.'));
+      }
+      for (var key in propValue) {
+        if (has(propValue, key)) {
+          var error = typeChecker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret);
+          if (error instanceof Error) {
+            return error;
+          }
+        }
+      }
+      return null;
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createUnionTypeChecker(arrayOfTypeCheckers) {
+    if (!Array.isArray(arrayOfTypeCheckers)) {
+       true ? printWarning('Invalid argument supplied to oneOfType, expected an instance of array.') : 0;
+      return emptyFunctionThatReturnsNull;
+    }
+
+    for (var i = 0; i < arrayOfTypeCheckers.length; i++) {
+      var checker = arrayOfTypeCheckers[i];
+      if (typeof checker !== 'function') {
+        printWarning(
+          'Invalid argument supplied to oneOfType. Expected an array of check functions, but ' +
+          'received ' + getPostfixForTypeWarning(checker) + ' at index ' + i + '.'
+        );
+        return emptyFunctionThatReturnsNull;
+      }
+    }
+
+    function validate(props, propName, componentName, location, propFullName) {
+      var expectedTypes = [];
+      for (var i = 0; i < arrayOfTypeCheckers.length; i++) {
+        var checker = arrayOfTypeCheckers[i];
+        var checkerResult = checker(props, propName, componentName, location, propFullName, ReactPropTypesSecret);
+        if (checkerResult == null) {
+          return null;
+        }
+        if (checkerResult.data && has(checkerResult.data, 'expectedType')) {
+          expectedTypes.push(checkerResult.data.expectedType);
+        }
+      }
+      var expectedTypesMessage = (expectedTypes.length > 0) ? ', expected one of type [' + expectedTypes.join(', ') + ']': '';
+      return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` supplied to ' + ('`' + componentName + '`' + expectedTypesMessage + '.'));
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createNodeChecker() {
+    function validate(props, propName, componentName, location, propFullName) {
+      if (!isNode(props[propName])) {
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` supplied to ' + ('`' + componentName + '`, expected a ReactNode.'));
+      }
+      return null;
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function invalidValidatorError(componentName, location, propFullName, key, type) {
+    return new PropTypeError(
+      (componentName || 'React class') + ': ' + location + ' type `' + propFullName + '.' + key + '` is invalid; ' +
+      'it must be a function, usually from the `prop-types` package, but received `' + type + '`.'
+    );
+  }
+
+  function createShapeTypeChecker(shapeTypes) {
+    function validate(props, propName, componentName, location, propFullName) {
+      var propValue = props[propName];
+      var propType = getPropType(propValue);
+      if (propType !== 'object') {
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type `' + propType + '` ' + ('supplied to `' + componentName + '`, expected `object`.'));
+      }
+      for (var key in shapeTypes) {
+        var checker = shapeTypes[key];
+        if (typeof checker !== 'function') {
+          return invalidValidatorError(componentName, location, propFullName, key, getPreciseType(checker));
+        }
+        var error = checker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret);
+        if (error) {
+          return error;
+        }
+      }
+      return null;
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createStrictShapeTypeChecker(shapeTypes) {
+    function validate(props, propName, componentName, location, propFullName) {
+      var propValue = props[propName];
+      var propType = getPropType(propValue);
+      if (propType !== 'object') {
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type `' + propType + '` ' + ('supplied to `' + componentName + '`, expected `object`.'));
+      }
+      // We need to check all keys in case some are required but missing from props.
+      var allKeys = assign({}, props[propName], shapeTypes);
+      for (var key in allKeys) {
+        var checker = shapeTypes[key];
+        if (has(shapeTypes, key) && typeof checker !== 'function') {
+          return invalidValidatorError(componentName, location, propFullName, key, getPreciseType(checker));
+        }
+        if (!checker) {
+          return new PropTypeError(
+            'Invalid ' + location + ' `' + propFullName + '` key `' + key + '` supplied to `' + componentName + '`.' +
+            '\nBad object: ' + JSON.stringify(props[propName], null, '  ') +
+            '\nValid keys: ' + JSON.stringify(Object.keys(shapeTypes), null, '  ')
+          );
+        }
+        var error = checker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret);
+        if (error) {
+          return error;
+        }
+      }
+      return null;
+    }
+
+    return createChainableTypeChecker(validate);
+  }
+
+  function isNode(propValue) {
+    switch (typeof propValue) {
+      case 'number':
+      case 'string':
+      case 'undefined':
+        return true;
+      case 'boolean':
+        return !propValue;
+      case 'object':
+        if (Array.isArray(propValue)) {
+          return propValue.every(isNode);
+        }
+        if (propValue === null || isValidElement(propValue)) {
+          return true;
+        }
+
+        var iteratorFn = getIteratorFn(propValue);
+        if (iteratorFn) {
+          var iterator = iteratorFn.call(propValue);
+          var step;
+          if (iteratorFn !== propValue.entries) {
+            while (!(step = iterator.next()).done) {
+              if (!isNode(step.value)) {
+                return false;
+              }
+            }
+          } else {
+            // Iterator will provide entry [k,v] tuples rather than values.
+            while (!(step = iterator.next()).done) {
+              var entry = step.value;
+              if (entry) {
+                if (!isNode(entry[1])) {
+                  return false;
+                }
+              }
+            }
+          }
+        } else {
+          return false;
+        }
+
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  function isSymbol(propType, propValue) {
+    // Native Symbol.
+    if (propType === 'symbol') {
+      return true;
+    }
+
+    // falsy value can't be a Symbol
+    if (!propValue) {
+      return false;
+    }
+
+    // 19.4.3.5 Symbol.prototype[@@toStringTag] === 'Symbol'
+    if (propValue['@@toStringTag'] === 'Symbol') {
+      return true;
+    }
+
+    // Fallback for non-spec compliant Symbols which are polyfilled.
+    if (typeof Symbol === 'function' && propValue instanceof Symbol) {
+      return true;
+    }
+
+    return false;
+  }
+
+  // Equivalent of `typeof` but with special handling for array and regexp.
+  function getPropType(propValue) {
+    var propType = typeof propValue;
+    if (Array.isArray(propValue)) {
+      return 'array';
+    }
+    if (propValue instanceof RegExp) {
+      // Old webkits (at least until Android 4.0) return 'function' rather than
+      // 'object' for typeof a RegExp. We'll normalize this here so that /bla/
+      // passes PropTypes.object.
+      return 'object';
+    }
+    if (isSymbol(propType, propValue)) {
+      return 'symbol';
+    }
+    return propType;
+  }
+
+  // This handles more types than `getPropType`. Only used for error messages.
+  // See `createPrimitiveTypeChecker`.
+  function getPreciseType(propValue) {
+    if (typeof propValue === 'undefined' || propValue === null) {
+      return '' + propValue;
+    }
+    var propType = getPropType(propValue);
+    if (propType === 'object') {
+      if (propValue instanceof Date) {
+        return 'date';
+      } else if (propValue instanceof RegExp) {
+        return 'regexp';
+      }
+    }
+    return propType;
+  }
+
+  // Returns a string that is postfixed to a warning about an invalid type.
+  // For example, "undefined" or "of type array"
+  function getPostfixForTypeWarning(value) {
+    var type = getPreciseType(value);
+    switch (type) {
+      case 'array':
+      case 'object':
+        return 'an ' + type;
+      case 'boolean':
+      case 'date':
+      case 'regexp':
+        return 'a ' + type;
+      default:
+        return type;
+    }
+  }
+
+  // Returns class name of the object, if any.
+  function getClassName(propValue) {
+    if (!propValue.constructor || !propValue.constructor.name) {
+      return ANONYMOUS;
+    }
+    return propValue.constructor.name;
+  }
+
+  ReactPropTypes.checkPropTypes = checkPropTypes;
+  ReactPropTypes.resetWarningCache = checkPropTypes.resetWarningCache;
+  ReactPropTypes.PropTypes = ReactPropTypes;
+
+  return ReactPropTypes;
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/prop-types/index.js":
+/*!******************************************!*\
+  !*** ./node_modules/prop-types/index.js ***!
+  \******************************************/
+/***/ (function(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+if (true) {
+  var ReactIs = __webpack_require__(/*! react-is */ "./node_modules/prop-types/node_modules/react-is/index.js");
+
+  // By explicitly using `prop-types` you are opting into new development behavior.
+  // http://fb.me/prop-types-in-prod
+  var throwOnDirectAccess = true;
+  module.exports = __webpack_require__(/*! ./factoryWithTypeCheckers */ "./node_modules/prop-types/factoryWithTypeCheckers.js")(ReactIs.isElement, throwOnDirectAccess);
+} else {}
+
+
+/***/ }),
+
+/***/ "./node_modules/prop-types/lib/ReactPropTypesSecret.js":
+/*!*************************************************************!*\
+  !*** ./node_modules/prop-types/lib/ReactPropTypesSecret.js ***!
+  \*************************************************************/
+/***/ (function(module) {
+
+"use strict";
+/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+
+
+var ReactPropTypesSecret = 'SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED';
+
+module.exports = ReactPropTypesSecret;
+
+
+/***/ }),
+
+/***/ "./node_modules/prop-types/lib/has.js":
+/*!********************************************!*\
+  !*** ./node_modules/prop-types/lib/has.js ***!
+  \********************************************/
+/***/ (function(module) {
+
+module.exports = Function.call.bind(Object.prototype.hasOwnProperty);
+
+
+/***/ }),
+
+/***/ "./node_modules/prop-types/node_modules/react-is/cjs/react-is.development.js":
+/*!***********************************************************************************!*\
+  !*** ./node_modules/prop-types/node_modules/react-is/cjs/react-is.development.js ***!
+  \***********************************************************************************/
+/***/ (function(__unused_webpack_module, exports) {
+
+"use strict";
+/** @license React v16.13.1
+ * react-is.development.js
+ *
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+
+
+
+
+if (true) {
+  (function() {
+'use strict';
+
+// The Symbol used to tag the ReactElement-like types. If there is no native Symbol
+// nor polyfill, then a plain number is used for performance.
+var hasSymbol = typeof Symbol === 'function' && Symbol.for;
+var REACT_ELEMENT_TYPE = hasSymbol ? Symbol.for('react.element') : 0xeac7;
+var REACT_PORTAL_TYPE = hasSymbol ? Symbol.for('react.portal') : 0xeaca;
+var REACT_FRAGMENT_TYPE = hasSymbol ? Symbol.for('react.fragment') : 0xeacb;
+var REACT_STRICT_MODE_TYPE = hasSymbol ? Symbol.for('react.strict_mode') : 0xeacc;
+var REACT_PROFILER_TYPE = hasSymbol ? Symbol.for('react.profiler') : 0xead2;
+var REACT_PROVIDER_TYPE = hasSymbol ? Symbol.for('react.provider') : 0xeacd;
+var REACT_CONTEXT_TYPE = hasSymbol ? Symbol.for('react.context') : 0xeace; // TODO: We don't use AsyncMode or ConcurrentMode anymore. They were temporary
+// (unstable) APIs that have been removed. Can we remove the symbols?
+
+var REACT_ASYNC_MODE_TYPE = hasSymbol ? Symbol.for('react.async_mode') : 0xeacf;
+var REACT_CONCURRENT_MODE_TYPE = hasSymbol ? Symbol.for('react.concurrent_mode') : 0xeacf;
+var REACT_FORWARD_REF_TYPE = hasSymbol ? Symbol.for('react.forward_ref') : 0xead0;
+var REACT_SUSPENSE_TYPE = hasSymbol ? Symbol.for('react.suspense') : 0xead1;
+var REACT_SUSPENSE_LIST_TYPE = hasSymbol ? Symbol.for('react.suspense_list') : 0xead8;
+var REACT_MEMO_TYPE = hasSymbol ? Symbol.for('react.memo') : 0xead3;
+var REACT_LAZY_TYPE = hasSymbol ? Symbol.for('react.lazy') : 0xead4;
+var REACT_BLOCK_TYPE = hasSymbol ? Symbol.for('react.block') : 0xead9;
+var REACT_FUNDAMENTAL_TYPE = hasSymbol ? Symbol.for('react.fundamental') : 0xead5;
+var REACT_RESPONDER_TYPE = hasSymbol ? Symbol.for('react.responder') : 0xead6;
+var REACT_SCOPE_TYPE = hasSymbol ? Symbol.for('react.scope') : 0xead7;
+
+function isValidElementType(type) {
+  return typeof type === 'string' || typeof type === 'function' || // Note: its typeof might be other than 'symbol' or 'number' if it's a polyfill.
+  type === REACT_FRAGMENT_TYPE || type === REACT_CONCURRENT_MODE_TYPE || type === REACT_PROFILER_TYPE || type === REACT_STRICT_MODE_TYPE || type === REACT_SUSPENSE_TYPE || type === REACT_SUSPENSE_LIST_TYPE || typeof type === 'object' && type !== null && (type.$$typeof === REACT_LAZY_TYPE || type.$$typeof === REACT_MEMO_TYPE || type.$$typeof === REACT_PROVIDER_TYPE || type.$$typeof === REACT_CONTEXT_TYPE || type.$$typeof === REACT_FORWARD_REF_TYPE || type.$$typeof === REACT_FUNDAMENTAL_TYPE || type.$$typeof === REACT_RESPONDER_TYPE || type.$$typeof === REACT_SCOPE_TYPE || type.$$typeof === REACT_BLOCK_TYPE);
+}
+
+function typeOf(object) {
+  if (typeof object === 'object' && object !== null) {
+    var $$typeof = object.$$typeof;
+
+    switch ($$typeof) {
+      case REACT_ELEMENT_TYPE:
+        var type = object.type;
+
+        switch (type) {
+          case REACT_ASYNC_MODE_TYPE:
+          case REACT_CONCURRENT_MODE_TYPE:
+          case REACT_FRAGMENT_TYPE:
+          case REACT_PROFILER_TYPE:
+          case REACT_STRICT_MODE_TYPE:
+          case REACT_SUSPENSE_TYPE:
+            return type;
+
+          default:
+            var $$typeofType = type && type.$$typeof;
+
+            switch ($$typeofType) {
+              case REACT_CONTEXT_TYPE:
+              case REACT_FORWARD_REF_TYPE:
+              case REACT_LAZY_TYPE:
+              case REACT_MEMO_TYPE:
+              case REACT_PROVIDER_TYPE:
+                return $$typeofType;
+
+              default:
+                return $$typeof;
+            }
+
+        }
+
+      case REACT_PORTAL_TYPE:
+        return $$typeof;
+    }
+  }
+
+  return undefined;
+} // AsyncMode is deprecated along with isAsyncMode
+
+var AsyncMode = REACT_ASYNC_MODE_TYPE;
+var ConcurrentMode = REACT_CONCURRENT_MODE_TYPE;
+var ContextConsumer = REACT_CONTEXT_TYPE;
+var ContextProvider = REACT_PROVIDER_TYPE;
+var Element = REACT_ELEMENT_TYPE;
+var ForwardRef = REACT_FORWARD_REF_TYPE;
+var Fragment = REACT_FRAGMENT_TYPE;
+var Lazy = REACT_LAZY_TYPE;
+var Memo = REACT_MEMO_TYPE;
+var Portal = REACT_PORTAL_TYPE;
+var Profiler = REACT_PROFILER_TYPE;
+var StrictMode = REACT_STRICT_MODE_TYPE;
+var Suspense = REACT_SUSPENSE_TYPE;
+var hasWarnedAboutDeprecatedIsAsyncMode = false; // AsyncMode should be deprecated
+
+function isAsyncMode(object) {
+  {
+    if (!hasWarnedAboutDeprecatedIsAsyncMode) {
+      hasWarnedAboutDeprecatedIsAsyncMode = true; // Using console['warn'] to evade Babel and ESLint
+
+      console['warn']('The ReactIs.isAsyncMode() alias has been deprecated, ' + 'and will be removed in React 17+. Update your code to use ' + 'ReactIs.isConcurrentMode() instead. It has the exact same API.');
+    }
+  }
+
+  return isConcurrentMode(object) || typeOf(object) === REACT_ASYNC_MODE_TYPE;
+}
+function isConcurrentMode(object) {
+  return typeOf(object) === REACT_CONCURRENT_MODE_TYPE;
+}
+function isContextConsumer(object) {
+  return typeOf(object) === REACT_CONTEXT_TYPE;
+}
+function isContextProvider(object) {
+  return typeOf(object) === REACT_PROVIDER_TYPE;
+}
+function isElement(object) {
+  return typeof object === 'object' && object !== null && object.$$typeof === REACT_ELEMENT_TYPE;
+}
+function isForwardRef(object) {
+  return typeOf(object) === REACT_FORWARD_REF_TYPE;
+}
+function isFragment(object) {
+  return typeOf(object) === REACT_FRAGMENT_TYPE;
+}
+function isLazy(object) {
+  return typeOf(object) === REACT_LAZY_TYPE;
+}
+function isMemo(object) {
+  return typeOf(object) === REACT_MEMO_TYPE;
+}
+function isPortal(object) {
+  return typeOf(object) === REACT_PORTAL_TYPE;
+}
+function isProfiler(object) {
+  return typeOf(object) === REACT_PROFILER_TYPE;
+}
+function isStrictMode(object) {
+  return typeOf(object) === REACT_STRICT_MODE_TYPE;
+}
+function isSuspense(object) {
+  return typeOf(object) === REACT_SUSPENSE_TYPE;
+}
+
+exports.AsyncMode = AsyncMode;
+exports.ConcurrentMode = ConcurrentMode;
+exports.ContextConsumer = ContextConsumer;
+exports.ContextProvider = ContextProvider;
+exports.Element = Element;
+exports.ForwardRef = ForwardRef;
+exports.Fragment = Fragment;
+exports.Lazy = Lazy;
+exports.Memo = Memo;
+exports.Portal = Portal;
+exports.Profiler = Profiler;
+exports.StrictMode = StrictMode;
+exports.Suspense = Suspense;
+exports.isAsyncMode = isAsyncMode;
+exports.isConcurrentMode = isConcurrentMode;
+exports.isContextConsumer = isContextConsumer;
+exports.isContextProvider = isContextProvider;
+exports.isElement = isElement;
+exports.isForwardRef = isForwardRef;
+exports.isFragment = isFragment;
+exports.isLazy = isLazy;
+exports.isMemo = isMemo;
+exports.isPortal = isPortal;
+exports.isProfiler = isProfiler;
+exports.isStrictMode = isStrictMode;
+exports.isSuspense = isSuspense;
+exports.isValidElementType = isValidElementType;
+exports.typeOf = typeOf;
+  })();
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/prop-types/node_modules/react-is/index.js":
+/*!****************************************************************!*\
+  !*** ./node_modules/prop-types/node_modules/react-is/index.js ***!
+  \****************************************************************/
+/***/ (function(module, __unused_webpack_exports, __webpack_require__) {
+
+"use strict";
+
+
+if (false) {} else {
+  module.exports = __webpack_require__(/*! ./cjs/react-is.development.js */ "./node_modules/prop-types/node_modules/react-is/cjs/react-is.development.js");
+}
 
 
 /***/ }),
@@ -1988,6 +3416,7 @@ __webpack_require__.r(__webpack_exports__);
   \************************/
 /***/ (function(module) {
 
+"use strict";
 module.exports = window["React"];
 
 /***/ }),
@@ -1998,6 +3427,7 @@ module.exports = window["React"];
   \*************************************/
 /***/ (function(module) {
 
+"use strict";
 module.exports = window["wp"]["blockEditor"];
 
 /***/ }),
@@ -2008,6 +3438,7 @@ module.exports = window["wp"]["blockEditor"];
   \********************************/
 /***/ (function(module) {
 
+"use strict";
 module.exports = window["wp"]["blocks"];
 
 /***/ }),
@@ -2018,6 +3449,7 @@ module.exports = window["wp"]["blocks"];
   \************************************/
 /***/ (function(module) {
 
+"use strict";
 module.exports = window["wp"]["components"];
 
 /***/ }),
@@ -2028,6 +3460,7 @@ module.exports = window["wp"]["components"];
   \******************************/
 /***/ (function(module) {
 
+"use strict";
 module.exports = window["wp"]["data"];
 
 /***/ }),
@@ -2038,6 +3471,7 @@ module.exports = window["wp"]["data"];
   \*********************************/
 /***/ (function(module) {
 
+"use strict";
 module.exports = window["wp"]["element"];
 
 /***/ }),
@@ -2048,6 +3482,7 @@ module.exports = window["wp"]["element"];
   \******************************/
 /***/ (function(module) {
 
+"use strict";
 module.exports = window["wp"]["i18n"];
 
 /***/ }),
@@ -2058,7 +3493,8 @@ module.exports = window["wp"]["i18n"];
   \************************/
 /***/ (function(module) {
 
-module.exports = JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"create-block/j-weather-customizer","version":"1.0","title":"JWeatherCustomizer","category":"text","icon":"flag","description":"A plugin that allows you to display a weather forecast of your choice on your website.","attributes":{"selectedCity":{"type":"object","default":{"name":"東京","url":"https://api.open-meteo.com/v1/forecast?latitude=35.6895&longitude=139.6917&hourly=precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14"}},"showTomorrowWeather":{"type":"boolean","default":true},"showWeeklyWeather":{"type":"boolean","default":true},"showTodayWeather":{"type":"boolean","default":true},"showHoliday":{"type":"boolean","default":true},"showPrecipitation":{"type":"boolean","default":true},"tomorrowWeather":{"type":"object","default":{}},"weeklyWeather":{"type":"array","default":[]},"todayWeather":{"type":"object","default":{}},"borderRadiusValue":{"type":"string","default":"0px"},"borders":{"type":"object","default":{"top":{"color":"#72aee6","style":"dashed","width":"1px"},"right":{"color":"#72aee6","style":"dashed","width":"1px"},"bottom":{"color":"#72aee6","style":"dashed","width":"1px"},"left":{"color":"#72aee6","style":"dashed","width":"1px"}}},"fontFamily":{"type":"string","default":"Noto Sans JP, sans-serif"},"textColor":{"type":"string","default":"black"},"backgroundStyleType":{"type":"string","default":"color"},"backgroundImage":{"type":"string","default":"http://hoge.local/wp-content/uploads/2023/10/IMG_5308-scaled.jpeg"},"backgroundGradient":{"type":"string","default":"linear-gradient(135deg,#1E9600 0%, #FFF200 0%, #FF0000 100%)"},"backgroundColor":{"type":"string","default":"#fff"},"balanceOption":{"type":"string","default":"EmphasizeTheWeather"}},"supports":{"html":false},"textdomain":"j-weather-customizer","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css"}');
+"use strict";
+module.exports = JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"create-block/j-weather-customizer","version":"1.0","title":"JWeatherCustomizer","category":"text","icon":"flag","description":"A plugin that allows you to display a weather forecast of your choice on your website.","attributes":{"selectedCity":{"type":"object","default":{"name":"東京","url":"https://api.open-meteo.com/v1/forecast?latitude=35.6895&longitude=139.6917&hourly=precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14"}},"showTomorrowWeather":{"type":"boolean","default":true},"showWeeklyWeather":{"type":"boolean","default":true},"showTodayWeather":{"type":"boolean","default":true},"showHoliday":{"type":"boolean","default":true},"showPrecipitation":{"type":"boolean","default":true},"todayWeather":{"type":"object","default":{}},"tomorrowWeather":{"type":"object","default":{}},"weeklyWeather":{"type":"array","default":[]},"borderRadiusValue":{"type":"string","default":"0px"},"borders":{"type":"object","default":{"top":{"color":"#72aee6","style":"dashed","width":"1px"},"right":{"color":"#72aee6","style":"dashed","width":"1px"},"bottom":{"color":"#72aee6","style":"dashed","width":"1px"},"left":{"color":"#72aee6","style":"dashed","width":"1px"}}},"fontFamily":{"type":"string","default":"Noto Sans JP, sans-serif"},"textColor":{"type":"string","default":"black"},"backgroundStyleType":{"type":"string","default":"color"},"backgroundImage":{"type":"string","default":"http://hoge.local/wp-content/uploads/2023/10/IMG_5308-scaled.jpeg"},"backgroundGradient":{"type":"string","default":"linear-gradient(135deg,#1E9600 0%, #FFF200 0%, #FF0000 100%)"},"backgroundColor":{"type":"string","default":"#fff"},"balanceOption":{"type":"string","default":"EmphasizeTheWeather"}},"supports":{"html":false},"textdomain":"j-weather-customizer","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css"}');
 
 /***/ })
 

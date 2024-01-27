@@ -13,15 +13,12 @@
 import { useBlockProps } from '@wordpress/block-editor';
 import { __ } from '@wordpress/i18n';
 import { useState, useRef, useEffect } from '@wordpress/element';
-// import { SelectControl } from '@wordpress/components';
 import './editor.scss';
 import './style.scss';
 import SettingGroup from './components/SettingGroup';
 import { useChangeCity } from './functions/useChangeCity';
-// import UIControlGroup from './components/UICintrolGroup';
 import useBlockSelection from './functions/useOutsideClick';
 import { createVisibilitySettings } from './objects/visibilitySettings';
-// import VisibilityControl from './components/VisibilityControl';
 import { cities } from './objects/getSpotWeather';
 import { useFontFamilyControl } from './functions/useFontFamilyControl';
 import { useChangeBalance } from './functions/useChangeBalance';
@@ -105,6 +102,7 @@ export default function Edit({ attributes, setAttributes }) {
 	};
 
 	console.log(attributes)
+	console.log(visibilitySettings)
 
 	return (
 		<div {...blockProps}  >

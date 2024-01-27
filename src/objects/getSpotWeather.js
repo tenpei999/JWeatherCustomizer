@@ -1,61 +1,65 @@
+const apiBaseUrl = 'https://api.open-meteo.com/v1/forecast';
+
+const createCityWeatherUrl = (latitude, longitude) => {
+  return `${apiBaseUrl}?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m,precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14`;
+};
+
 export const cities = {
-  // https://open-meteo.com/en/docs
-  // Daily Weather Variables Weathercode / Maximum Temperature (2 m) / Minimum Temperature (2 m) / Past days 1
 
   札幌: {
     name: '札幌',
-    url: 'https://api.open-meteo.com/v1/forecast?latitude=43.0667&longitude=141.35&hourly=temperature_2m,precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14'
+    url: createCityWeatherUrl(43.0667, 141.35),
   },
   秋田: {
     name: '秋田',
-    url: 'https://api.open-meteo.com/v1/forecast?latitude=39.7167&longitude=140.1167&hourly=temperature_2m,precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14',
+    url: createCityWeatherUrl(39.7167, 140.1167),
   },
   金沢: {
     name: '金沢',
-    url: 'https://api.open-meteo.com/v1/forecast?latitude=36.6&longitude=136.6167&hourly=temperature_2m,precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14'
+    url: createCityWeatherUrl(36.6, 136.6167),
   },
   東京: {
     name: '東京',
-    url: 'https://api.open-meteo.com/v1/forecast?latitude=35.6895&longitude=139.6917&hourly=precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14'
+    url: createCityWeatherUrl(35.6895, 139.6917),
   },
   大宮: {
     name: '大宮',
-    url: 'https://api.open-meteo.com/v1/forecast?latitude=35.9635&longitude=139.8305&hourly=temperature_2m,precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14'
+    url: createCityWeatherUrl(35.9635, 139.8305),
   },
   名古屋: {
     name: '名古屋',
-    url: 'https://api.open-meteo.com/v1/forecast?latitude=35.1815&longitude=136.9064&hourly=temperature_2m,precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14'
+    url: createCityWeatherUrl(35.1815, 136.9064),
   },
   南堀江: {
     name: '南堀江',
-    url: 'https://api.open-meteo.com/v1/forecast?latitude=34.6711&longitude=135.4942&hourly=temperature_2m,precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14',
+    url: createCityWeatherUrl(34.6711, 135.4942),
   },
   八尾: {
     name: '八尾',
-    url: 'https://api.open-meteo.com/v1/forecast?latitude=34.6167&longitude=135.6&hourly=temperature_2m,precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14'
+    url: createCityWeatherUrl(34.6167, 135.6),
   },
   奈良: {
     name: '奈良',
-    url: 'https://api.open-meteo.com/v1/forecast?latitude=34.685&longitude=135.8049&hourly=temperature_2m,precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14'
+    url: createCityWeatherUrl(34.685, 135.8049),
   },
   朝来: {
     name: '朝来',
-    url: 'https://api.open-meteo.com/v1/forecast?latitude=35.2591&longitude=134.8139&hourly=temperature_2m,precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14'
+    url: createCityWeatherUrl(35.2591, 134.8139),
   },
   福岡: {
     name: '福岡',
-    url: 'https://api.open-meteo.com/v1/forecast?latitude=33.6&longitude=130.4167&hourly=temperature_2m,precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14'
+    url: createCityWeatherUrl(33.6, 130.4167),
   },
   佐世保: {
     name: '佐世保',
-    url: 'https://api.open-meteo.com/v1/forecast?latitude=33.1683&longitude=129.725&hourly=temperature_2m,precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14'
+    url: createCityWeatherUrl(33.1683, 129.725),
   },
   諸塚: {
     name: '諸塚',
-    url: 'https://api.open-meteo.com/v1/forecast?latitude=32.5601&longitude=131.3198&hourly=temperature_2m,precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14',
+    url: createCityWeatherUrl(32.5601, 131.3198),
   },
   パリ: {
     name: 'パリ',
-    url: 'https://api.open-meteo.com/v1/forecast?latitude=48.8534&longitude=2.3488&hourly=temperature_2m,precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14'
+    url: createCityWeatherUrl(48.8534, 2.3488),
   },
 }

@@ -1,6 +1,5 @@
 import Temp from './Temp';
 import useBorderStyles from '../functions/useBorderStyles';
-import useBackgroundStyles from '../functions/useBackgroundStyles';
 import '../editor.scss';
 import '../style.scss';
 
@@ -17,10 +16,20 @@ const WeekWeather = ({
   backgroundColor,
 }) => {
 
-  if (!weather) return null;
+  if (!weather || !Array.isArray(weather)) return null; 
 
   const borderStyles = useBorderStyles(borders);
-  const backgroundStyles = useBackgroundStyles(backgroundStyleType, selectedMedia, backgroundColor, backgroundGradient);
+  let backgroundStyles = {};
+  if (backgroundStyleType === 'image' && selectedMedia) {
+    backgroundStyles.backgroundImage = `url('${selectedMedia}')`;
+    backgroundStyles.backgroundSize = 'cover';
+    backgroundStyles.backgroundRepeat = 'no-repeat';
+    backgroundStyles.backgroundPosition = 'center';
+  } else if (backgroundStyleType === 'color' && backgroundColor) {
+    backgroundStyles.backgroundColor = backgroundColor;
+  } else if (backgroundStyleType === 'gradient' && backgroundGradient) {
+    backgroundStyles.background = backgroundGradient;
+  }
 
   return (
     <ul className={`block--weekly weather-layout ${styleVariant}`}

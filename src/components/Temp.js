@@ -1,6 +1,9 @@
 const Temp = ({ weather }) => {
 
-  if (!weather) return null;
+    // weather プロパティのバリデーション
+    if (!weather || typeof weather !== 'object') {
+      return null;
+    }
 
   return (
     <ul className="temp">

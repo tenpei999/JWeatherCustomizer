@@ -10,8 +10,11 @@ export default function BorderControlGroup({ attributes, setAttributes }) {
         onChangeBorder,
         handleRangeChange,
         handleUnitChange,
-        borderColors, // ここを変更しました
-        units
+        borderColors,
+        units,
+        newBorderSetErrorMessage, // newBorderSet 用のエラーメッセージ
+        handleRangeChangeErrorMessage, // handleRangeChange 用のエラーメッセージ
+        handleUnitChangeErrorMessage, // handleUnitChange 用のエラーメッセージ
     } = useBorderControl(attributes, setAttributes);
 
     const borderMainStyle = {
@@ -37,6 +40,11 @@ export default function BorderControlGroup({ attributes, setAttributes }) {
         width: '10%',
     }
 
+    const validErrorStyle = {
+        color: 'red',
+        transform: 'translateX(23%)'
+    }
+
     return (
         <>
             <div className='jwc-border-main' style={borderMainStyle}>
@@ -46,6 +54,7 @@ export default function BorderControlGroup({ attributes, setAttributes }) {
                     onChange={onChangeBorder}
                     value={borders}
                 />
+                {newBorderSetErrorMessage && <p style={validErrorStyle}>{newBorderSetErrorMessage}</p>}
             </div>
             <div className='jwc-border-radius' style={radiusStyle}>
                 <div style={valueStyle}>
@@ -56,6 +65,7 @@ export default function BorderControlGroup({ attributes, setAttributes }) {
                         min={0}
                         max={(attributes.borderRadiusValue && attributes.borderRadiusValue.includes('px')) ? 100 : 100}
                     />
+                    {handleRangeChangeErrorMessage && <p style={validErrorStyle}>{handleRangeChangeErrorMessage}</p>}
                 </div>
                 <div style={unitStyle}>
                     <SelectControl
@@ -63,6 +73,7 @@ export default function BorderControlGroup({ attributes, setAttributes }) {
                         options={units}
                         onChange={handleUnitChange}
                     />
+                    {handleUnitChangeErrorMessage && <p style={validErrorStyle}>{handleUnitChangeErrorMessage}</p>}
                 </div>
             </div>
         </>

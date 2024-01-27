@@ -1,8 +1,8 @@
-import { SelectControl } from '@wordpress/components';
 import FontFamilyControl from './FontFamilyControl';
 import TextColorControl from './TextColorControl';
 import BackgroundSelector from './BackgroundSelector';
 import BorderControlGroup from './BorderControlGroup';
+import BalanceControl from './BalanceControl';
 
 const UIControlGroup = ({
   fontFamily,
@@ -13,10 +13,16 @@ const UIControlGroup = ({
   setSelectedOption,
   fontBalanceOptions,
   attributes,
-  setAttributes,
+  setAttributes, 
 }) => {
+
+  const wrapperStyle = {
+    display: 'flex',
+    flexDirection: 'column',
+  };
+
   return (
-    <div className="detail-settings">
+    <div className="detail-settings" style={wrapperStyle}>
       <BorderControlGroup
         attributes={attributes}
         setAttributes={setAttributes}
@@ -32,14 +38,10 @@ const UIControlGroup = ({
           setAttributes({ textColor: value });
         }}
       />
-      <SelectControl
-        label="Font Balance"
-        value={selectedOption.label}
-        options={fontBalanceOptions.map((opt) => ({ label: opt.label, value: opt.label }))}
-        onChange={(label) => {
-          const option = fontBalanceOptions.find((opt) => opt.label === label);
-          setSelectedOption(option);
-        }}
+      <BalanceControl
+        selectedOption={selectedOption}
+        setSelectedOption={setSelectedOption}
+        fontBalanceOptions={fontBalanceOptions}
       />
       <BackgroundSelector attributes={attributes} setAttributes={setAttributes} />
     </div>

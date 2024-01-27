@@ -14,7 +14,7 @@
  * @package           create-block
  */
 
-function create_block_gutenpride_block_init()
+function create_block_JWeatherCustomizer_block_init()
 {
 	register_block_type(
 		__DIR__ . '/build',
@@ -24,17 +24,20 @@ function create_block_gutenpride_block_init()
 	);
 }
 
-add_action('init', 'create_block_gutenpride_block_init');
+add_action('init', 'create_block_JWeatherCustomizer_block_init');
 
 
-function enqueue_my_plugin_script()
+function test_rest_url()
 {
-	// スクリプトを登録します。ここでの 'my-plugin-script' はあなたのスクリプトハンドルです。
-	wp_register_script('my-plugin-script', plugins_url('build/index.js', __FILE__), array('wp-blocks'), '1.0.0', true);
+	$url = rest_url('j-weather-customizer/save-data/');
+}
+add_action('init', 'test_rest_url');
 
+function enqueue_jWeatherCustomizer_script()
+{
 	// ブロックエディタ用のスクリプトを登録
 	wp_register_script(
-		'my-plugin-script',
+		'j-weather-customizer-script',
 		plugins_url('build/index.js', __FILE__),
 		array('wp-blocks'), // 必要に応じて依存関係を記述
 		'1.0.0',
@@ -50,13 +53,13 @@ function enqueue_my_plugin_script()
 	);
 
 	// ローカライズスクリプト
-	wp_localize_script('my-plugin-script', 'myPluginData', $plugin_data);
+	wp_localize_script('j-weather-customizer-script', 'JWeatherCustomizerData', $plugin_data);
 
 	// スクリプトをエンキューします。
-	wp_enqueue_script('my-plugin-script');
+	wp_enqueue_script('j-weather-customizer-script');
 }
 
-add_action('admin_enqueue_scripts', 'enqueue_my_plugin_script');
+add_action('admin_enqueue_scripts', 'enqueue_jWeatherCustomizer_script');
 
 include dirname(__FILE__) . '/render-blocks.php';
 
@@ -65,7 +68,6 @@ add_action('rest_api_init', function () {
 		'methods' => 'POST',
 		'callback' => 'save_weather_data',
 		'permission_callback' => function () {
-
 			return current_user_can('edit_posts');
 		}
 	));
@@ -76,33 +78,5 @@ function save_weather_data(WP_REST_Request $request)
 	$nonce = $request->get_header('X-WP-Nonce');
 	if (!wp_verify_nonce($nonce, 'wp_rest')) {
 		return new WP_Error('rest_forbidden', esc_html__('You do not have permission to save data.', 'JWeatherCustomizer'), array('status' => 401));
-	}
-
-	$data = $request->get_param('dailyData');
-
-	if (!$data) {
-		return new WP_REST_Response('Error: No data provided', 400);
-	}
-
-	if (!is_array($data)) {
-		return new WP_REST_Response('Error: Invalid data format', 400);
-	}
-
-	foreach ($data as $day => $value) {
-		if (!is_string($value)) {
-			if (is_array($value)) {
-				$sanitized_value = array_map('sanitize_text_field', $value);
-			} else {
-				return new WP_REST_Response('Error: Each item of dailyData must be a JSON string or an array.', 400);
-			}
-		} else {
-			$decoded_value = json_decode($value, true);
-			if (json_last_error() === JSON_ERROR_NONE) {
-				$sanitized_value = array_map('sanitize_text_field', $decoded_value);
-			} else {
-				return new WP_REST_Response('Error: Invalid JSON string provided for day ' . $day, 400);
-			}
-		}
-		$data[$day] = $sanitized_value;
 	}
 }

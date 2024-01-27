@@ -20,7 +20,10 @@
   }
 
   &-select-city,
-  &-change-font {
+  &-change-font,
+  &-text-color-control,
+  &-font-balance,
+  &-back-ground {
     .components-flex {
       display: flex;
       flex-direction: row;
@@ -34,6 +37,32 @@
         &.components-text {
           font-size: 20px;
         }
+      }
+    }
+  }
+
+  &-back-ground {
+    &--wrapper {
+
+      .components-circular-option-picker__custom-clear-wrapper {
+        margin-top: -12px;
+      }
+    }
+
+    &__selector {
+      display: flex;
+      flex-direction: row-reverse;
+      width: 50%;
+    }
+
+    &__image {
+      text-align: right;
+      .button-insert {
+        font-size: 13px;
+        border: 0.5px solid;
+        width: 100%;
+        margin: auto;
+        display: block;
       }
     }
   }
@@ -52,4 +81,13 @@
   }
 }
 
+.faded-checkbox .components-checkbox-control__input-container input[type="checkbox"] {
+  opacity: 0.5;
+  animation: fadein 0.3s;
+}
+
+@keyframes fadein {
+  from { opacity: 1; }
+  to { opacity: 0.5; }
+}
 // components-border-box-control
