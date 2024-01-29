@@ -15,27 +15,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _functions_useCommonValid__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../functions/useCommonValid */ "./src/functions/useCommonValid.js");
+/* harmony import */ var _objects_validationRules__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../objects/validationRules */ "./src/objects/validationRules.js");
 
 
 
 
-// 選択された画像のurlが不正でないか検証
-const isValidUrl = url => {
-  try {
-    new URL(url);
-    return true;
-  } catch (_) {
-    return false;
-  }
-};
 
-//入力されたカラーコードが不正でないか検証
-const isValidColor = color => /^#[0-9A-F]{6}$/i.test(color);
-
-//入力されたliner-gradientが不正でないか検証
-const isValidGradient = gradient => {
-  return /^linear-gradient\((.+)\)$/i.test(gradient);
-};
 const BackgroundSelector = ({
   attributes,
   setAttributes
@@ -43,8 +29,19 @@ const BackgroundSelector = ({
   const {
     backgroundStyleType
   } = attributes;
+  const validUrl = (0,_functions_useCommonValid__WEBPACK_IMPORTED_MODULE_3__["default"])(_objects_validationRules__WEBPACK_IMPORTED_MODULE_4__["default"].url.validate, _objects_validationRules__WEBPACK_IMPORTED_MODULE_4__["default"].url.errorMessage);
+  const validColor = (0,_functions_useCommonValid__WEBPACK_IMPORTED_MODULE_3__["default"])(_objects_validationRules__WEBPACK_IMPORTED_MODULE_4__["default"].color.validate, _objects_validationRules__WEBPACK_IMPORTED_MODULE_4__["default"].color.errorMessage);
+  const validGradient = (0,_functions_useCommonValid__WEBPACK_IMPORTED_MODULE_3__["default"])(_objects_validationRules__WEBPACK_IMPORTED_MODULE_4__["default"].gradient.validate, _objects_validationRules__WEBPACK_IMPORTED_MODULE_4__["default"].gradient.errorMessage);
+  const handleAttributeChange = (value, validator, attributeKey) => {
+    if (!validator.validate(value)) {
+      return;
+    }
+    setAttributes({
+      [attributeKey]: value
+    });
+  };
   const handleMediaSelect = media => {
-    if (!media || !isValidUrl(media.url)) {
+    if (!media || !validUrl.validate(media.url)) {
       setAttributes({
         backgroundImage: null,
         selectedMedia: null
@@ -58,20 +55,10 @@ const BackgroundSelector = ({
     });
   };
   const handleColorChange = color => {
-    if (!isValidColor(color)) {
-      return;
-    }
-    setAttributes({
-      backgroundColor: color
-    });
+    handleAttributeChange(color, validColor, 'backgroundColor');
   };
   const handleGradientChange = newGradient => {
-    if (!isValidGradient(newGradient)) {
-      return;
-    }
-    setAttributes({
-      backgroundGradient: newGradient
-    });
+    handleAttributeChange(newGradient, validGradient, 'backgroundGradient');
   };
   const handleBackgroundStyleChange = newStyleType => {
     setAttributes({
@@ -97,6 +84,10 @@ const BackgroundSelector = ({
   const imageUploadButton = {
     textAlign: 'center',
     width: '50%'
+  };
+  const validErrorStyle = {
+    color: 'red',
+    transform: 'translateX(23%)'
   };
   const backgroundControlLabel = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     style: {
@@ -125,13 +116,19 @@ const BackgroundSelector = ({
       value: 'gradient'
     }],
     onChange: handleBackgroundStyleChange // ここで新しい関数を使用します
-  })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }), validUrl.error && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    style: validErrorStyle
+  }, validUrl.error), validColor.error && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    style: validErrorStyle
+  }, validColor.error), validGradient.error && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    style: validErrorStyle
+  }, validGradient.error)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     style: {
       ...selectorStyle,
       ...imageUploadButton
     },
     className: "jwc-back-ground__image"
-  }, backgroundStyleType === 'image' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.MediaUploadCheck, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.MediaUpload, {
+  }, backgroundStyleType === 'image' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.MediaUploadCheck, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.MediaUpload, {
     onSelect: handleMediaSelect,
     allowedTypes: ['image'],
     value: attributes.backgroundImage,
@@ -141,7 +138,7 @@ const BackgroundSelector = ({
       className: "button-insert",
       onClick: open
     }, "\u30E1\u30C7\u30A3\u30A2\u30E9\u30A4\u30D6\u30E9\u30EA\u3092\u958B\u3044\u3066\u753B\u50CF\u3092\u9078\u629E")
-  })), backgroundStyleType === 'color' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ColorPalette, {
+  }))), backgroundStyleType === 'color' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ColorPalette, {
     onChange: handleColorChange,
     value: attributes.backgroundColor
   }), backgroundStyleType === 'gradient' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.GradientPicker, {
@@ -1414,8 +1411,6 @@ function Edit({
     backgroundGradient: attributes.backgroundGradient,
     backgroundColor: attributes.backgroundColor
   };
-  console.log(attributes);
-  console.log(visibilitySettings);
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     ...blockProps
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -1734,6 +1729,42 @@ function useChangeCity(selectedCity) {
 
 /***/ }),
 
+/***/ "./src/functions/useCommonValid.js":
+/*!*****************************************!*\
+  !*** ./src/functions/useCommonValid.js ***!
+  \*****************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+
+
+// useCommonValid フック
+const useCommonValid = (validationFunction, errorMessage) => {
+  const [isValid, setIsValid] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
+  const [error, setError] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)('');
+  const validate = value => {
+    if (validationFunction(value)) {
+      setIsValid(true);
+      setError('');
+    } else {
+      setIsValid(false);
+      setError(errorMessage);
+    }
+    return isValid;
+  };
+  return {
+    validate,
+    isValid,
+    error
+  };
+};
+/* harmony default export */ __webpack_exports__["default"] = (useCommonValid);
+
+/***/ }),
+
 /***/ "./src/functions/useFontFamilyControl.js":
 /*!***********************************************!*\
   !*** ./src/functions/useFontFamilyControl.js ***!
@@ -2047,6 +2078,39 @@ const cities = {
     url: createCityWeatherUrl(48.8534, 2.3488)
   }
 };
+
+/***/ }),
+
+/***/ "./src/objects/validationRules.js":
+/*!****************************************!*\
+  !*** ./src/objects/validationRules.js ***!
+  \****************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+const validationRules = {
+  url: {
+    validate: url => {
+      try {
+        new URL(url);
+        return true;
+      } catch (_) {
+        return false;
+      }
+    },
+    errorMessage: '不正な画像URLです。'
+  },
+  color: {
+    validate: color => /^#[0-9A-F]{6}$/i.test(color),
+    errorMessage: '不正なカラーコードです。'
+  },
+  gradient: {
+    validate: gradient => /^linear-gradient\((.+)\)$/i.test(gradient),
+    errorMessage: '不正なグラディエントです。'
+  }
+};
+/* harmony default export */ __webpack_exports__["default"] = (validationRules);
 
 /***/ }),
 

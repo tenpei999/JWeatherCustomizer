@@ -101,9 +101,6 @@ export default function Edit({ attributes, setAttributes }) {
 		backgroundColor: attributes.backgroundColor,
 	};
 
-	console.log(attributes)
-	console.log(visibilitySettings)
-
 	return (
 		<div {...blockProps}  >
 			<div onClick={handleLayoutClick} ref={ref}>

@@ -1,29 +1,23 @@
 import { MediaUpload, MediaUploadCheck } from '@wordpress/block-editor';
 import { SelectControl, Button, ColorPalette, GradientPicker } from '@wordpress/components';
-
-// 選択された画像のurlが不正でないか検証
-const isValidUrl = (url) => {
-  try {
-    new URL(url);
-    return true;
-  } catch (_) {
-    return false;
-  }
-};
-
-//入力されたカラーコードが不正でないか検証
-const isValidColor = (color) => /^#[0-9A-F]{6}$/i.test(color);
-
-//入力されたliner-gradientが不正でないか検証
-const isValidGradient = (gradient) => {
-  return /^linear-gradient\((.+)\)$/i.test(gradient);
-};
+import useCommonValid from '../functions/useCommonValid';
+import validationRules from '../objects/validationRules';
 
 const BackgroundSelector = ({ attributes, setAttributes }) => {
   const { backgroundStyleType } = attributes;
+  const validUrl = useCommonValid( validationRules.url.validate, validationRules.url.errorMessage);
+  const validColor = useCommonValid(validationRules.color.validate, validationRules.color.errorMessage);
+  const validGradient = useCommonValid(validationRules.gradient.validate, validationRules.gradient.errorMessage);
+
+  const handleAttributeChange = (value, validator, attributeKey) => {
+    if (!validator.validate(value)) {
+      return;
+    }
+    setAttributes({ [attributeKey]: value });
+  };
 
   const handleMediaSelect = (media) => {
-    if (!media || !isValidUrl(media.url)) {
+    if (!media || !validUrl.validate(media.url)) {
       setAttributes({
         backgroundImage: null,
         selectedMedia: null,
@@ -39,17 +33,11 @@ const BackgroundSelector = ({ attributes, setAttributes }) => {
   };
 
   const handleColorChange = (color) => {
-    if (!isValidColor(color)) {
-      return;
-    }
-    setAttributes({ backgroundColor: color });
+    handleAttributeChange(color, validColor, 'backgroundColor');
   };
 
   const handleGradientChange = (newGradient) => {
-    if (!isValidGradient(newGradient)) {
-      return;
-    }
-    setAttributes({ backgroundGradient: newGradient });
+    handleAttributeChange(newGradient, validGradient, 'backgroundGradient');
   };
 
   const handleBackgroundStyleChange = (newStyleType) => {
@@ -79,6 +67,11 @@ const BackgroundSelector = ({ attributes, setAttributes }) => {
     width: '50%',
   }
 
+  const validErrorStyle = {
+    color: 'red',
+    transform: 'translateX(23%)'
+  }
+
   const backgroundControlLabel = (
     <span style={{ display: 'block', transform: 'translateX(33%)' }}>背景</span>
   )
@@ -96,17 +89,22 @@ const BackgroundSelector = ({ attributes, setAttributes }) => {
           ]}
           onChange={handleBackgroundStyleChange} // ここで新しい関数を使用します
         />
+        {validUrl.error && <p style={validErrorStyle}>{validUrl.error}</p>}
+        {validColor.error && <p style={validErrorStyle}>{validColor.error}</p>}
+        {validGradient.error && <p style={validErrorStyle}>{validGradient.error}</p>}
       </div>
       <div style={{ ...selectorStyle, ...imageUploadButton }} className='jwc-back-ground__image'>
         {backgroundStyleType === 'image' && (
-          <MediaUploadCheck>
-            <MediaUpload
-              onSelect={handleMediaSelect}
-              allowedTypes={['image']}
-              value={attributes.backgroundImage}
-              render={({ open }) => <Button className='button-insert' onClick={open}>メディアライブラリを開いて画像を選択</Button>}
-            />
-          </MediaUploadCheck>
+          <div>
+            <MediaUploadCheck>
+              <MediaUpload
+                onSelect={handleMediaSelect}
+                allowedTypes={['image']}
+                value={attributes.backgroundImage}
+                render={({ open }) => <Button className='button-insert' onClick={open}>メディアライブラリを開いて画像を選択</Button>}
+              />
+            </MediaUploadCheck>
+          </div>
         )}
         {backgroundStyleType === 'color' && (
           <ColorPalette
