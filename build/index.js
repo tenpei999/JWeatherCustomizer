@@ -1469,10 +1469,10 @@ __webpack_require__.r(__webpack_exports__);
 
 // バリデーション関数をモジュールの外部に移動
 function isValidColor(color) {
-  return /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(color);
+  return color === undefined || /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(color);
 }
 function isValidBorderStyle(style) {
-  return ['solid', 'dashed', 'dotted'].includes(style);
+  return ['none', 'solid', 'dashed', 'dotted'].includes(style);
 }
 function isValidBorderWidth(width) {
   return /^[\d.]+(px|%)?$/.test(width);

@@ -2,11 +2,11 @@ import { useState, useEffect } from '@wordpress/element';
 
 // バリデーション関数をモジュールの外部に移動
 export function isValidColor(color) {
-  return /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(color);
+  return color === undefined || /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(color);
 }
 
 export function isValidBorderStyle(style) {
-  return ['solid', 'dashed', 'dotted'].includes(style);
+  return ['none', 'solid', 'dashed', 'dotted'].includes(style);
 }
 
 export function isValidBorderWidth(width) {
