@@ -15,9 +15,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _functions_useCommonValid__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../functions/useCommonValid */ "./src/functions/useCommonValid.js");
-/* harmony import */ var _objects_validationRules__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../objects/validationRules */ "./src/objects/validationRules.js");
-
 
 
 
@@ -29,36 +26,59 @@ const BackgroundSelector = ({
   const {
     backgroundStyleType
   } = attributes;
-  const validUrl = (0,_functions_useCommonValid__WEBPACK_IMPORTED_MODULE_3__["default"])(_objects_validationRules__WEBPACK_IMPORTED_MODULE_4__["default"].url.validate, _objects_validationRules__WEBPACK_IMPORTED_MODULE_4__["default"].url.errorMessage);
-  const validColor = (0,_functions_useCommonValid__WEBPACK_IMPORTED_MODULE_3__["default"])(_objects_validationRules__WEBPACK_IMPORTED_MODULE_4__["default"].color.validate, _objects_validationRules__WEBPACK_IMPORTED_MODULE_4__["default"].color.errorMessage);
-  const validGradient = (0,_functions_useCommonValid__WEBPACK_IMPORTED_MODULE_3__["default"])(_objects_validationRules__WEBPACK_IMPORTED_MODULE_4__["default"].gradient.validate, _objects_validationRules__WEBPACK_IMPORTED_MODULE_4__["default"].gradient.errorMessage);
-  const handleAttributeChange = (value, validator, attributeKey) => {
-    if (!validator.validate(value)) {
-      return;
+
+  // エラーメッセージの状態
+  const [urlError, setUrlError] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)('');
+  const [colorError, setColorError] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)('');
+  const [gradientError, setGradientError] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)('');
+
+  // バリデーションチェック関数
+  const isValidUrl = url => {
+    try {
+      new URL(url);
+      return true;
+    } catch (_) {
+      return false;
     }
-    setAttributes({
-      [attributeKey]: value
-    });
   };
+  const isValidColor = color => /^#[0-9A-F]{6}$/i.test(color);
+  const isValidGradient = gradient => /^linear-gradient\((.+)\)$/i.test(gradient);
+
+  // ハンドラ関数
   const handleMediaSelect = media => {
-    if (!media || !validUrl.validate(media.url)) {
+    if (!media || !isValidUrl(media.url)) {
+      setUrlError('不正な画像URLです。');
       setAttributes({
         backgroundImage: null,
         selectedMedia: null
       });
       return;
     }
-    const selectedMediaUrl = media.url;
+    setUrlError('');
     setAttributes({
-      backgroundImage: selectedMediaUrl,
-      selectedMedia: selectedMediaUrl
+      backgroundImage: media.url,
+      selectedMedia: media.url
     });
   };
   const handleColorChange = color => {
-    handleAttributeChange(color, validColor, 'backgroundColor');
+    if (!isValidColor(color)) {
+      setColorError('不正なカラーコードです。');
+      return;
+    }
+    setColorError('');
+    setAttributes({
+      backgroundColor: color
+    });
   };
   const handleGradientChange = newGradient => {
-    handleAttributeChange(newGradient, validGradient, 'backgroundGradient');
+    if (!isValidGradient(newGradient)) {
+      setGradientError('不正なグラディエントです。');
+      return;
+    }
+    setGradientError('');
+    setAttributes({
+      backgroundGradient: newGradient
+    });
   };
   const handleBackgroundStyleChange = newStyleType => {
     setAttributes({
@@ -116,13 +136,13 @@ const BackgroundSelector = ({
       value: 'gradient'
     }],
     onChange: handleBackgroundStyleChange // ここで新しい関数を使用します
-  }), validUrl.error && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+  }), urlError && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
     style: validErrorStyle
-  }, validUrl.error), validColor.error && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+  }, urlError), colorError && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
     style: validErrorStyle
-  }, validColor.error), validGradient.error && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+  }, colorError), gradientError && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
     style: validErrorStyle
-  }, validGradient.error)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }, gradientError)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     style: {
       ...selectorStyle,
       ...imageUploadButton
@@ -177,16 +197,31 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__);
 
 
+
 const BalanceControl = ({
   selectedOption,
   setSelectedOption,
   fontBalanceOptions
 }) => {
+  const [error, setError] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)('');
+  const handleOptionChange = label => {
+    const option = fontBalanceOptions.find(opt => opt.label === label);
+    if (option) {
+      setSelectedOption(option);
+      setError('');
+    } else {
+      setError('選択されたオプションが見つかりません。');
+    }
+  };
   const formStyle = {
     width: '100%',
     textAlign: 'center',
     textAlign: 'left',
     paddingTop: '15px'
+  };
+  const validErrorStyle = {
+    color: 'red',
+    transform: 'translateX(23%)'
   };
   const balanceControlLabel = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     style: {
@@ -194,19 +229,6 @@ const BalanceControl = ({
       transform: 'translateX(33%)'
     }
   }, " \u30D0\u30E9\u30F3\u30B9");
-  const handleOptionChange = label => {
-    // 選択されたラベルに対応するオプションを見つけます
-    const option = fontBalanceOptions.find(opt => opt.label === label);
-
-    // 正しいオプションが見つかった場合のみ、状態を更新します
-    if (option) {
-      setSelectedOption(option);
-    } else {
-      console.error('選択されたオプションが見つかりません。');
-      // 必要に応じて、適切なデフォルト値やエラーハンドリングをここに追加します
-    }
-  };
-
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "jwc-font-balance",
     style: formStyle
@@ -218,7 +240,9 @@ const BalanceControl = ({
       value: opt.label
     })),
     onChange: handleOptionChange
-  }));
+  }), error && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    style: validErrorStyle
+  }, error));
 };
 /* harmony default export */ __webpack_exports__["default"] = (BalanceControl);
 
@@ -431,14 +455,14 @@ function FontFamilyControl({
   setFontFamily
 }) {
   const allowedFonts = ["NotoSans, sans-serif", "NotoSerif, serif", "MPLUS1, sans-serif", "KosugiMaru, sans-serif", "SawarabiGothic, sans-serif"];
-  const [fontFamilyChangeErrorMessage, setFontFamilyChangeErrorMessage] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
+  const [error, setError] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)('');
+  const isValidFontFamily = font => allowedFonts.includes(font);
   const handleOnChange = newFontFamily => {
-    if (allowedFonts.includes(newFontFamily)) {
+    if (isValidFontFamily(newFontFamily)) {
       setFontFamily(newFontFamily);
-      setFontFamilyChangeErrorMessage(null);
+      setError('');
     } else {
-      // 不正なフォントが選択された場合の処理を追加
-      setFontFamilyChangeErrorMessage('無効なフォントが選択されました');
+      setError('無効なフォントが選択されました');
     }
   };
   const formStyle = {
@@ -479,9 +503,9 @@ function FontFamilyControl({
       value: "SawarabiGothic, sans-serif"
     }],
     onChange: handleOnChange
-  })), fontFamilyChangeErrorMessage && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+  })), error && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
     style: validErrorStyle
-  }, fontFamilyChangeErrorMessage));
+  }, error));
 }
 /* harmony default export */ __webpack_exports__["default"] = (FontFamilyControl);
 
@@ -603,7 +627,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_2__);
 
 
- // プロパティのバリデーションのための追加
 
 const SelectCity = ({
   selectedCity,
@@ -783,23 +806,18 @@ __webpack_require__.r(__webpack_exports__);
 
 function TextColorControl({
   textColor,
-  setTextColor,
   setAttributes
 }) {
-  const [textColorChangeErrorMessage, setTextColorChangeErrorMessage] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
-  const handleOnChange = newTextColor => {
-    const allowedColors = ['black', 'white'];
-    if (allowedColors.includes(newTextColor)) {
-      setTextColor(newTextColor);
+  const [error, setError] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)('');
+  const isValidTextColor = color => ['black', 'white'].includes(color);
+  const handleOnChangeTextColor = newTextColor => {
+    if (isValidTextColor(newTextColor)) {
       setAttributes({
         textColor: newTextColor
       });
-
-      // エラーメッセージをクリア
-      setTextColorChangeErrorMessage(null);
+      setError('');
     } else {
-      // 不正なテキストの色が選択された場合の処理
-      setTextColorChangeErrorMessage('無効なテキストの色が選択されました');
+      setError('無効なテキストの色が選択されました');
     }
   };
   const formStyle = {
@@ -830,10 +848,10 @@ function TextColorControl({
       label: '白',
       value: 'white'
     }],
-    onChange: handleOnChange
-  })), textColorChangeErrorMessage && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    onChange: handleOnChangeTextColor
+  })), error && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
     style: validErrorStyle
-  }, textColorChangeErrorMessage));
+  }, error));
 }
 /* harmony default export */ __webpack_exports__["default"] = (TextColorControl);
 
@@ -920,8 +938,6 @@ __webpack_require__.r(__webpack_exports__);
 const UIControlGroup = ({
   fontFamily,
   onChangeFontFamily,
-  textColor,
-  setTextColor,
   selectedOption,
   setSelectedOption,
   fontBalanceOptions,
@@ -942,13 +958,8 @@ const UIControlGroup = ({
     fontFamily: fontFamily || attributes.fontFamily,
     setFontFamily: onChangeFontFamily
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_TextColorControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
-    textColor: textColor || attributes.textColor,
-    setTextColor: value => {
-      setTextColor(value);
-      setAttributes({
-        textColor: value
-      });
-    }
+    textColor: attributes.textColor,
+    setAttributes: setAttributes
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_BalanceControl__WEBPACK_IMPORTED_MODULE_5__["default"], {
     selectedOption: selectedOption,
     setSelectedOption: setSelectedOption,
@@ -1530,7 +1541,7 @@ function useBorderControl(attributes, setAttributes) {
         setBorders(updatedBorders);
         setNewBorderSetErrorMessage(null);
       } else {
-        setNewBorderSetErrorMessage('無効なボーダープロパティ2');
+        setNewBorderSetErrorMessage('線を0pxにはできません');
       }
     } catch (error) {
       console.log(error);
@@ -1726,42 +1737,6 @@ function useChangeCity(selectedCity) {
   }, [selectedCity]);
   return weatherData;
 }
-
-/***/ }),
-
-/***/ "./src/functions/useCommonValid.js":
-/*!*****************************************!*\
-  !*** ./src/functions/useCommonValid.js ***!
-  \*****************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-
-
-// useCommonValid フック
-const useCommonValid = (validationFunction, errorMessage) => {
-  const [isValid, setIsValid] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
-  const [error, setError] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)('');
-  const validate = value => {
-    if (validationFunction(value)) {
-      setIsValid(true);
-      setError('');
-    } else {
-      setIsValid(false);
-      setError(errorMessage);
-    }
-    return isValid;
-  };
-  return {
-    validate,
-    isValid,
-    error
-  };
-};
-/* harmony default export */ __webpack_exports__["default"] = (useCommonValid);
 
 /***/ }),
 
@@ -2078,39 +2053,6 @@ const cities = {
     url: createCityWeatherUrl(48.8534, 2.3488)
   }
 };
-
-/***/ }),
-
-/***/ "./src/objects/validationRules.js":
-/*!****************************************!*\
-  !*** ./src/objects/validationRules.js ***!
-  \****************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-const validationRules = {
-  url: {
-    validate: url => {
-      try {
-        new URL(url);
-        return true;
-      } catch (_) {
-        return false;
-      }
-    },
-    errorMessage: '不正な画像URLです。'
-  },
-  color: {
-    validate: color => /^#[0-9A-F]{6}$/i.test(color),
-    errorMessage: '不正なカラーコードです。'
-  },
-  gradient: {
-    validate: gradient => /^linear-gradient\((.+)\)$/i.test(gradient),
-    errorMessage: '不正なグラディエントです。'
-  }
-};
-/* harmony default export */ __webpack_exports__["default"] = (validationRules);
 
 /***/ }),
 

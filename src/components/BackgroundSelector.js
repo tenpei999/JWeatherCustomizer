@@ -1,43 +1,60 @@
+import { useState } from '@wordpress/element';
 import { MediaUpload, MediaUploadCheck } from '@wordpress/block-editor';
 import { SelectControl, Button, ColorPalette, GradientPicker } from '@wordpress/components';
-import useCommonValid from '../functions/useCommonValid';
-import validationRules from '../objects/validationRules';
 
 const BackgroundSelector = ({ attributes, setAttributes }) => {
   const { backgroundStyleType } = attributes;
-  const validUrl = useCommonValid( validationRules.url.validate, validationRules.url.errorMessage);
-  const validColor = useCommonValid(validationRules.color.validate, validationRules.color.errorMessage);
-  const validGradient = useCommonValid(validationRules.gradient.validate, validationRules.gradient.errorMessage);
 
-  const handleAttributeChange = (value, validator, attributeKey) => {
-    if (!validator.validate(value)) {
-      return;
+  // エラーメッセージの状態
+  const [urlError, setUrlError] = useState('');
+  const [colorError, setColorError] = useState('');
+  const [gradientError, setGradientError] = useState('');
+
+  // バリデーションチェック関数
+  const isValidUrl = (url) => {
+    try {
+      new URL(url);
+      return true;
+    } catch (_) {
+      return false;
     }
-    setAttributes({ [attributeKey]: value });
   };
+  const isValidColor = (color) => /^#[0-9A-F]{6}$/i.test(color);
+  const isValidGradient = (gradient) => /^linear-gradient\((.+)\)$/i.test(gradient);
 
+  // ハンドラ関数
   const handleMediaSelect = (media) => {
-    if (!media || !validUrl.validate(media.url)) {
+    if (!media || !isValidUrl(media.url)) {
+      setUrlError('不正な画像URLです。');
       setAttributes({
         backgroundImage: null,
         selectedMedia: null,
       });
       return;
     }
-
-    const selectedMediaUrl = media.url;
+    setUrlError('');
     setAttributes({
-      backgroundImage: selectedMediaUrl,
-      selectedMedia: selectedMediaUrl,
+      backgroundImage: media.url,
+      selectedMedia: media.url,
     });
   };
 
   const handleColorChange = (color) => {
-    handleAttributeChange(color, validColor, 'backgroundColor');
+    if (!isValidColor(color)) {
+      setColorError('不正なカラーコードです。');
+      return;
+    }
+    setColorError('');
+    setAttributes({ backgroundColor: color });
   };
 
   const handleGradientChange = (newGradient) => {
-    handleAttributeChange(newGradient, validGradient, 'backgroundGradient');
+    if (!isValidGradient(newGradient)) {
+      setGradientError('不正なグラディエントです。');
+      return;
+    }
+    setGradientError('');
+    setAttributes({ backgroundGradient: newGradient });
   };
 
   const handleBackgroundStyleChange = (newStyleType) => {
@@ -89,9 +106,9 @@ const BackgroundSelector = ({ attributes, setAttributes }) => {
           ]}
           onChange={handleBackgroundStyleChange} // ここで新しい関数を使用します
         />
-        {validUrl.error && <p style={validErrorStyle}>{validUrl.error}</p>}
-        {validColor.error && <p style={validErrorStyle}>{validColor.error}</p>}
-        {validGradient.error && <p style={validErrorStyle}>{validGradient.error}</p>}
+        {urlError && <p style={validErrorStyle}>{urlError}</p>}
+        {colorError && <p style={validErrorStyle}>{colorError}</p>}
+        {gradientError && <p style={validErrorStyle}>{gradientError}</p>}
       </div>
       <div style={{ ...selectorStyle, ...imageUploadButton }} className='jwc-back-ground__image'>
         {backgroundStyleType === 'image' && (

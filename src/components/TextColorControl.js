@@ -1,20 +1,17 @@
 import { useState } from '@wordpress/element';
 import { SelectControl } from '@wordpress/components';
 
-function TextColorControl({ textColor, setTextColor, setAttributes }) {
+function TextColorControl({ textColor, setAttributes }) {
+  const [error, setError] = useState('');
 
-  const [textColorChangeErrorMessage, setTextColorChangeErrorMessage] = useState(null);
-  const handleOnChange = (newTextColor) => {
-    const allowedColors = ['black', 'white'];
-    if (allowedColors.includes(newTextColor)) {
-      setTextColor(newTextColor);
+  const isValidTextColor = (color) => ['black', 'white'].includes(color);
+
+  const handleOnChangeTextColor = (newTextColor) => {
+    if (isValidTextColor(newTextColor)) {
       setAttributes({ textColor: newTextColor });
-      
-      // エラーメッセージをクリア
-      setTextColorChangeErrorMessage(null);
+      setError('');
     } else {
-      // 不正なテキストの色が選択された場合の処理
-      setTextColorChangeErrorMessage('無効なテキストの色が選択されました');
+      setError('無効なテキストの色が選択されました');
     }
   };
 
@@ -43,10 +40,10 @@ function TextColorControl({ textColor, setTextColor, setAttributes }) {
             { label: '黒', value: 'black' },
             { label: '白', value: 'white' },
           ]}
-          onChange={handleOnChange}
+          onChange={handleOnChangeTextColor}
         />
       </div>
-      {textColorChangeErrorMessage && <p style={validErrorStyle}>{textColorChangeErrorMessage}</p>}
+      {error && <p style={validErrorStyle}>{error}</p>}
     </>
   );
 }

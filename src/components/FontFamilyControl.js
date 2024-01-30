@@ -4,15 +4,14 @@ import { SelectControl } from '@wordpress/components';
 function FontFamilyControl({ fontFamily, setFontFamily }) {
 
   const allowedFonts = ["NotoSans, sans-serif", "NotoSerif, serif", "MPLUS1, sans-serif", "KosugiMaru, sans-serif", "SawarabiGothic, sans-serif"];
-
-  const [fontFamilyChangeErrorMessage, setFontFamilyChangeErrorMessage] = useState(null);
+  const [error, setError] = useState('');
+  const isValidFontFamily = (font) => allowedFonts.includes(font);
   const handleOnChange = (newFontFamily) => {
-    if (allowedFonts.includes(newFontFamily)) {
+    if (isValidFontFamily(newFontFamily)) {
       setFontFamily(newFontFamily);
-      setFontFamilyChangeErrorMessage(null);
+      setError('');
     } else {
-      // 不正なフォントが選択された場合の処理を追加
-      setFontFamilyChangeErrorMessage('無効なフォントが選択されました');
+      setError('無効なフォントが選択されました');
     }
   };
 
@@ -47,7 +46,7 @@ function FontFamilyControl({ fontFamily, setFontFamily }) {
           onChange={handleOnChange}
         />
       </div>
-      {fontFamilyChangeErrorMessage && <p style={validErrorStyle}>{fontFamilyChangeErrorMessage}</p>}
+      {error && <p style={validErrorStyle}>{error}</p>}
     </>
   );
 }

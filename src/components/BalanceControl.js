@@ -1,3 +1,4 @@
+import { useState } from '@wordpress/element';
 import { SelectControl } from '@wordpress/components';
 
 const BalanceControl = ({
@@ -5,6 +6,17 @@ const BalanceControl = ({
   setSelectedOption,
   fontBalanceOptions,
 }) => {
+  const [error, setError] = useState('');
+
+  const handleOptionChange = (label) => {
+    const option = fontBalanceOptions.find(opt => opt.label === label);
+    if (option) {
+      setSelectedOption(option);
+      setError('');
+    } else {
+      setError('選択されたオプションが見つかりません。');
+    }
+  };
 
   const formStyle = {
     width: '100%',
@@ -13,22 +25,14 @@ const BalanceControl = ({
     paddingTop: '15px',
   }
 
+  const validErrorStyle = {
+    color: 'red',
+    transform: 'translateX(23%)'
+  }
+
   const balanceControlLabel = (
     <span style={{ display: 'block', transform: 'translateX(33%)' }}> バランス</span>
   )
-
-  const handleOptionChange = (label) => {
-    // 選択されたラベルに対応するオプションを見つけます
-    const option = fontBalanceOptions.find((opt) => opt.label === label);
-
-    // 正しいオプションが見つかった場合のみ、状態を更新します
-    if (option) {
-      setSelectedOption(option);
-    } else {
-      console.error('選択されたオプションが見つかりません。');
-      // 必要に応じて、適切なデフォルト値やエラーハンドリングをここに追加します
-    }
-  };
 
   return (
     <div className="jwc-font-balance" style={formStyle}>
@@ -38,6 +42,7 @@ const BalanceControl = ({
         options={fontBalanceOptions.map((opt) => ({ label: opt.label, value: opt.label }))}
         onChange={handleOptionChange}
       />
+      {error && <p style={validErrorStyle}>{error}</p>}
     </div>
   );
 };

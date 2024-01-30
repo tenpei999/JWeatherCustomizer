@@ -1,6 +1,5 @@
 import { SelectControl } from '@wordpress/components';
-import PropTypes from 'prop-types'; // プロパティのバリデーションのための追加
-
+import PropTypes from 'prop-types'; 
 const SelectCity = ({ selectedCity, cityOptions, handleCityChange }) => {
 
   const labelStyle = {

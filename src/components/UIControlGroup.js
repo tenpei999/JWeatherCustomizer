@@ -7,13 +7,11 @@ import BalanceControl from './BalanceControl';
 const UIControlGroup = ({
   fontFamily,
   onChangeFontFamily,
-  textColor,
-  setTextColor,
   selectedOption,
   setSelectedOption,
   fontBalanceOptions,
   attributes,
-  setAttributes, 
+  setAttributes,
 }) => {
 
   const wrapperStyle = {
@@ -32,11 +30,8 @@ const UIControlGroup = ({
         setFontFamily={onChangeFontFamily}
       />
       <TextColorControl
-        textColor={textColor || attributes.textColor}
-        setTextColor={(value) => {
-          setTextColor(value);
-          setAttributes({ textColor: value });
-        }}
+        textColor={attributes.textColor}
+        setAttributes={setAttributes}
       />
       <BalanceControl
         selectedOption={selectedOption}

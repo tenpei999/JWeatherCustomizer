@@ -80,7 +80,7 @@ export function useBorderControl(attributes, setAttributes) {
         setBorders(updatedBorders);
         setNewBorderSetErrorMessage(null);
       } else {
-        setNewBorderSetErrorMessage('無効なボーダープロパティ2');
+        setNewBorderSetErrorMessage('線を0pxにはできません');
       }
     } catch (error) {
       console.log(error)
