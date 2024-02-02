@@ -48,8 +48,6 @@
 		&--current,
 		&--day {
 			text-align: center;
-			border: solid #888;
-			border-radius: 10px;
 		}
 
 		&--current {
@@ -64,8 +62,7 @@
 			display: flex;
 
 			@media screen and (min-width: $tablet-breakpoint) {
-				border: solid #888;
-				border-radius: 10px;
+
 			}
 		}
 

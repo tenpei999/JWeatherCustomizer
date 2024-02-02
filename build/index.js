@@ -1422,6 +1422,7 @@ function Edit({
     backgroundGradient: attributes.backgroundGradient,
     backgroundColor: attributes.backgroundColor
   };
+  console.log(attributes);
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     ...blockProps
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -1498,11 +1499,20 @@ function useBorderControl(attributes, setAttributes) {
     style: 'dashed',
     width: '1px'
   };
-  const [borders, setBorders] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(attributes.borders || {
-    top: defaultBorder,
-    right: defaultBorder,
-    bottom: defaultBorder,
-    left: defaultBorder
+  const [borders, setBorders] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(() => {
+    // attributes.bordersがSplitモードの構造を持っているかをチェック
+    if (attributes.borders && typeof attributes.borders.top === 'object' && typeof attributes.borders.right === 'object' && typeof attributes.borders.bottom === 'object' && typeof attributes.borders.left === 'object') {
+      // Splitモードの場合はそのまま使用
+      return attributes.borders;
+    }
+
+    // Splitモードの構造がなければ、各辺にデフォルトのFlatモードの設定を適用
+    return {
+      top: defaultBorder,
+      right: defaultBorder,
+      bottom: defaultBorder,
+      left: defaultBorder
+    };
   });
   const units = [{
     label: 'px',
@@ -1511,41 +1521,58 @@ function useBorderControl(attributes, setAttributes) {
     label: '%',
     value: '%'
   }];
+  const isFlatMode = borders => {
+    return borders && typeof borders.color === 'string' && typeof borders.style === 'string' && typeof borders.width === 'string';
+  };
+  const isSplitMode = borders => {
+    return borders && typeof borders.top === 'object' && typeof borders.right === 'object' && typeof borders.bottom === 'object' && typeof borders.left === 'object';
+  };
   const onChangeBorder = newBorderSet => {
     console.log(newBorderSet);
     try {
-      if (isValidBorder(newBorderSet)) {
-        setNewBorderSetErrorMessage(null);
-        const updatedBorders = {
+      let updatedBorders = {};
+      if (isFlatMode(newBorderSet)) {
+        // Flatモードの場合、すべての辺に同じ設定を適用
+        updatedBorders = {
+          top: newBorderSet,
+          right: newBorderSet,
+          bottom: newBorderSet,
+          left: newBorderSet
+        };
+        console.log('flat');
+      } else if (isSplitMode(newBorderSet)) {
+        // Splitモードの場合、各辺を個別に更新
+        updatedBorders = {
           top: {
             ...borders.top,
-            ...newBorderSet
+            ...newBorderSet.top
           },
           right: {
             ...borders.right,
-            ...newBorderSet
+            ...newBorderSet.right
           },
           bottom: {
             ...borders.bottom,
-            ...newBorderSet
+            ...newBorderSet.bottom
           },
           left: {
             ...borders.left,
-            ...newBorderSet
+            ...newBorderSet.left
           }
         };
-        setAttributes({
-          ...attributes,
-          borders: updatedBorders
-        });
-        setBorders(updatedBorders);
-        setNewBorderSetErrorMessage(null);
-      } else {
-        setNewBorderSetErrorMessage('線を0pxにはできません');
+        console.log('split');
       }
+
+      // 更新されたボーダー設定を適用
+      setAttributes({
+        ...attributes,
+        borders: updatedBorders
+      });
+      setBorders(updatedBorders);
+      setNewBorderSetErrorMessage(null);
     } catch (error) {
-      console.log(error);
-      setNewBorderSetErrorMessage('無効なボーダープロパティ1');
+      console.error(error);
+      setNewBorderSetErrorMessage('無効なボーダープロパティ');
     }
   };
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {

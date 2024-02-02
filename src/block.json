@@ -51,31 +51,34 @@
 			"type": "string",
 			"default": "0px"
 		},
-		"borders": {
-			"type": "object",
-			"default": {
-				"top": {
-					"color": "#72aee6",
-					"style": "dashed",
-					"width": "1px"
-				},
-				"right": {
-					"color": "#72aee6",
-					"style": "dashed",
-					"width": "1px"
-				},
-				"bottom": {
-					"color": "#72aee6",
-					"style": "dashed",
-					"width": "1px"
-				},
-				"left": {
-					"color": "#72aee6",
-					"style": "dashed",
-					"width": "1px"
-				}
-			}
+		"borderMode": {
+			"type": "string",
+			"default": "flat"
 		},
+		"borders": {
+      "type": "object",
+      "default": {
+        "top": {
+          "color": "#72aee6",
+          "style": "dashed",
+          "width": "1px"
+        },
+        "right": {
+          "color": "#72aee6",
+          "style": "dashed",
+          "width": "1px"
+        },
+        "bottom": {
+          "color": "#72aee6",
+          "style": "dashed",
+          "width": "1px"
+        },
+        "left": {
+          "color": "#72aee6",
+          "style": "dashed",
+          "width": "1px"
+        }
+      },
 		"fontFamily": {
 			"type": "string",
 			"default": "Noto Sans JP, sans-serif"

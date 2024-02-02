@@ -53,6 +53,7 @@ export default function BorderControlGroup({ attributes, setAttributes }) {
                     label={('枠線の色と形')}
                     onChange={onChangeBorder}
                     value={borders}
+
                 />
                 {newBorderSetErrorMessage && <p style={validErrorStyle}>{newBorderSetErrorMessage}</p>}
             </div>

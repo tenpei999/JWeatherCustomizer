@@ -54,8 +54,6 @@
 }
 .wp-block-create-block-j-weather-customizer .block--current, .wp-block-create-block-j-weather-customizer .block--day {
   text-align: center;
-  border: solid #888;
-  border-radius: 10px;
 }
 .wp-block-create-block-j-weather-customizer .block--current {
   width: 100%;
@@ -67,12 +65,6 @@
 }
 .wp-block-create-block-j-weather-customizer .block--weekly {
   display: flex;
-}
-@media screen and (min-width: 800px) {
-  .wp-block-create-block-j-weather-customizer .block--weekly {
-    border: solid #888;
-    border-radius: 10px;
-  }
 }
 @media screen and (min-width: 800px) {
   .wp-block-create-block-j-weather-customizer .block--day {

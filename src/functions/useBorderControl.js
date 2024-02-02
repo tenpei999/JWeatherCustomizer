@@ -39,11 +39,25 @@ export function useBorderControl(attributes, setAttributes) {
     style: 'dashed',
     width: '1px',
   };
-  const [borders, setBorders] = useState(attributes.borders || {
-    top: defaultBorder,
-    right: defaultBorder,
-    bottom: defaultBorder,
-    left: defaultBorder,
+
+  const [borders, setBorders] = useState(() => {
+    // attributes.bordersがSplitモードの構造を持っているかをチェック
+    if (attributes.borders && 
+        typeof attributes.borders.top === 'object' &&
+        typeof attributes.borders.right === 'object' &&
+        typeof attributes.borders.bottom === 'object' &&
+        typeof attributes.borders.left === 'object') {
+      // Splitモードの場合はそのまま使用
+      return attributes.borders;
+    }
+  
+    // Splitモードの構造がなければ、各辺にデフォルトのFlatモードの設定を適用
+    return {
+      top: defaultBorder,
+      right: defaultBorder,
+      bottom: defaultBorder,
+      left: defaultBorder,
+    };
   });
 
   const units = [
@@ -51,40 +65,53 @@ export function useBorderControl(attributes, setAttributes) {
     { label: '%', value: '%' },
   ];
 
+  const isFlatMode = borders => {
+    return borders && typeof borders.color === 'string' &&
+      typeof borders.style === 'string' &&
+      typeof borders.width === 'string';
+  };
+
+  const isSplitMode = borders => {
+    return borders && typeof borders.top === 'object' &&
+      typeof borders.right === 'object' &&
+      typeof borders.bottom === 'object' &&
+      typeof borders.left === 'object';
+  };
+
+  console.log(borders)
+
   const onChangeBorder = (newBorderSet) => {
     console.log(newBorderSet)
     try {
-      if (
-        isValidBorder(newBorderSet)
-      ) {
-        setNewBorderSetErrorMessage(null);
-        const updatedBorders = {
-          top: {
-            ...borders.top,
-            ...newBorderSet,
-          },
-          right: {
-            ...borders.right,
-            ...newBorderSet,
-          },
-          bottom: {
-            ...borders.bottom,
-            ...newBorderSet,
-          },
-          left: {
-            ...borders.left,
-            ...newBorderSet,
-          }
+      let updatedBorders = {};
+
+      if (isFlatMode(newBorderSet)) {
+        // Flatモードの場合、すべての辺に同じ設定を適用
+        updatedBorders = {
+          top: newBorderSet,
+          right: newBorderSet,
+          bottom: newBorderSet,
+          left: newBorderSet
         };
-        setAttributes({ ...attributes, borders: updatedBorders });
-        setBorders(updatedBorders);
-        setNewBorderSetErrorMessage(null);
-      } else {
-        setNewBorderSetErrorMessage('線を0pxにはできません');
+        console.log('flat')
+      } else if (isSplitMode(newBorderSet)) {
+        // Splitモードの場合、各辺を個別に更新
+        updatedBorders = {
+          top: { ...borders.top, ...newBorderSet.top },
+          right: { ...borders.right, ...newBorderSet.right },
+          bottom: { ...borders.bottom, ...newBorderSet.bottom },
+          left: { ...borders.left, ...newBorderSet.left }
+        };
+        console.log('split')
       }
+
+      // 更新されたボーダー設定を適用
+      setAttributes({ ...attributes, borders: updatedBorders });
+      setBorders(updatedBorders);
+      setNewBorderSetErrorMessage(null);
     } catch (error) {
-      console.log(error)
-      setNewBorderSetErrorMessage('無効なボーダープロパティ1');
+      console.error(error);
+      setNewBorderSetErrorMessage('無効なボーダープロパティ');
     }
   };
 
@@ -106,7 +133,7 @@ export function useBorderControl(attributes, setAttributes) {
   };
 
   const handleUnitChange = (newUnit) => {
-    
+
     const validUnits = units.map(option => option.value); // 有効な単位の一覧を取得
     if (validUnits.includes(newUnit)) { // 新しい単位が有効な単位の中に含まれているかチェック
       const currentValue = parseInt(attributes.borderRadiusValue || '0', 10);
