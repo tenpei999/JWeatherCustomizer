@@ -1,6 +1,8 @@
 import Temp from "./Temp";
 import TimeZone from "./TimeZone";
 import useBorderStyles from "../functions/useBorderStyles";
+import { getBackgroundStyles } from '../functions/getBackgroundStyles';
+import getTextColor from '../functions/getTextColor';
 import '../style.scss';
 
 const CurrentWeather = ({
@@ -19,30 +21,11 @@ const CurrentWeather = ({
   backgroundColor
 }) => {
 
+  const textColor = getTextColor(weather);
   if (!weather || !weather.day) return null; // weather と weather.day の存在を確認
 
-  const isHoliday = weather.day.isHoliday;
-
-  let textColor;
-  if (isHoliday || weather.day.isSunday) {
-    textColor = "red";
-  } else if (weather.day.isSaturday) {
-    textColor = "blue";
-  }
-
   const borderStyles = useBorderStyles(borders);
-  let backgroundStyles = {};
-  if (backgroundStyleType === 'image' && selectedMedia) {
-    backgroundStyles.backgroundImage = `url('${selectedMedia}')`;
-    backgroundStyles.backgroundSize = 'cover';
-    backgroundStyles.backgroundRepeat = 'no-repeat';
-    backgroundStyles.backgroundPosition = 'center';
-  } else if (backgroundStyleType === 'color' && backgroundColor) {
-    backgroundStyles.backgroundColor = backgroundColor;
-  } else if (backgroundStyleType === 'gradient' && backgroundGradient) {
-    backgroundStyles.background = backgroundGradient;
-  }
-
+  const backgroundStyles = getBackgroundStyles({ backgroundStyleType, selectedMedia, backgroundColor, backgroundGradient });
 
   return (
     <article className={`block--current ${styleVariant}`} style={{

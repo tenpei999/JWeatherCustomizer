@@ -1,6 +1,5 @@
 import getWeatherInfo from "../data/getWeatherInfo";
 import dayWithHoliday from "./dayWithHoloday";
-export { isApiError };
 
 let isApiError = {
   isError: false,
@@ -52,21 +51,20 @@ const weatherObject = async (
       return !isNaN(temperature) && isFinite(temperature);
     };
 
+    [setTodayWeather, setTomorrowWeather, setWeeklyWeather].forEach((func) => {
+      if (typeof func !== 'function') {
+        throw new Error("One of the weather setter functions is not a function.");
+      }
+    });
+
+
     apiRequestCount++;
     console.log(`リクエスト回数: ${apiRequestCount}`);
     const response = await fetch(cityurl);
     if (!response.ok) {
       // 429 エラーの場合、APIアクセスが制限されているとみなす
-      isApiError = false;
+      isApiError = true;
       isApiError.statusCode = response.status;
-
-      if (response.status === 429) {
-      } else {
-        throw new Error(`Failed to fetch data for city: ${cityurl}. Status: ${response.status}`);
-      }
-    } else {
-      isApiError.isError = false;
-      isApiError.statusCode = null;
     }
 
     const data2 = await response.json();
@@ -78,6 +76,10 @@ const weatherObject = async (
 
     if (!data2 || !data2.daily) {
       throw new Error("Unexpected data format received from the weather API.");
+    }
+    // Validation for `setTodayWeather`, `setTomorrowWeather`, `setWeeklyWeather`
+    if (typeof setTodayWeather !== 'function' || typeof setTomorrowWeather !== 'function' || typeof setWeeklyWeather !== 'function') {
+      throw new Error('One of the setWeather functions is not a function.');
     }
 
     const datesForWeek = await dayWithHoliday(addBreak);
@@ -166,9 +168,9 @@ const weatherObject = async (
 
     // エラーが発生した場合、isApiError を更新
     isApiError.isError = true;
-    isApiError.statusCode = null; // ここでエラーのステータスコードをクリアするか、必要に応じて設定
+    isApiError.statusCode = error.status || 500; 
 
   }
 }
 
-export { weatherObject };
+export { weatherObject,isApiError };

@@ -1,5 +1,7 @@
 import Temp from './Temp';
 import useBorderStyles from '../functions/useBorderStyles';
+import { getBackgroundStyles } from '../functions/getBackgroundStyles';
+import getTextColor from '../functions/getTextColor';
 import '../editor.scss';
 import '../style.scss';
 
@@ -19,17 +21,7 @@ const WeekWeather = ({
   if (!weather || !Array.isArray(weather)) return null; 
 
   const borderStyles = useBorderStyles(borders);
-  let backgroundStyles = {};
-  if (backgroundStyleType === 'image' && selectedMedia) {
-    backgroundStyles.backgroundImage = `url('${selectedMedia}')`;
-    backgroundStyles.backgroundSize = 'cover';
-    backgroundStyles.backgroundRepeat = 'no-repeat';
-    backgroundStyles.backgroundPosition = 'center';
-  } else if (backgroundStyleType === 'color' && backgroundColor) {
-    backgroundStyles.backgroundColor = backgroundColor;
-  } else if (backgroundStyleType === 'gradient' && backgroundGradient) {
-    backgroundStyles.background = backgroundGradient;
-  }
+  const backgroundStyles = getBackgroundStyles({ backgroundStyleType, selectedMedia, backgroundColor, backgroundGradient });
 
   return (
     <ul className={`block--weekly weather-layout ${styleVariant}`}
@@ -40,35 +32,23 @@ const WeekWeather = ({
         ...backgroundStyles,
         color
       }}>
-      {weather.slice(0, 6).map((dayWeather) => {
+      {weather.slice(0, 6).map((dayWeather, index)  => {
         if (!dayWeather || !dayWeather.day) return null;
-
-        let textColor;
-        if (dayWeather.day.isHoliday || dayWeather.day.isSunday) {
-          textColor = "red";
-        } else if (dayWeather.day.isSaturday) {
-          textColor = "blue";
-        }
+        const textColor = getTextColor(dayWeather);
 
         return (
-          <li className="block--day" key={dayWeather.day.date} >
+          <li className="block--day" key={index} >
             <h4 className="c-title__weather" style={{ color: textColor }}>
               {dayWeather.day.date.month}{dayWeather.day.date.day}<br />{dayWeather.day.date.dayOfWeek}
             </h4>
             {dayWeather.day.isHoliday && (
-              <p>
-                {displayDate}
-              </p>
+              <p>{displayDate}</p>
             )}
-            <p className="weather__name">
-              {dayWeather.name}
-            </p>
+            <p className="weather__name">{dayWeather.name}</p>
             <span className="weather__img">
               <img src={dayWeather.image} alt="Weather Icon" />
             </span>
-            {dayWeather.highestTemperature && dayWeather.lowestTemperature && dayWeather.maximumTemperatureComparison && dayWeather.lowestTemperatureComparison && (
               <Temp weather={dayWeather} />
-            )}
           </li>
         );
       })}

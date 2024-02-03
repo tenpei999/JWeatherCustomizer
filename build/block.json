@@ -51,6 +51,10 @@
       "type": "string",
       "default": "0px"
     },
+    "borderMode": {
+      "type": "string",
+      "default": "flat"
+    },
     "borders": {
       "type": "object",
       "default": {
