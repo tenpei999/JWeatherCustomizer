@@ -1,4 +1,4 @@
-import getWeatherInfo from "../data/getWeatherInfo";
+import getWeatherInfo from "../hooks/getWeatherInfo";
 import dayWithHoliday from "./dayWithHoloday";
 
 let isApiError = {
@@ -59,7 +59,7 @@ const weatherObject = async (
 
 
     apiRequestCount++;
-    console.log(`リクエスト回数: ${apiRequestCount}`);
+    // console.log(`リクエスト回数: ${apiRequestCount}`);
     const response = await fetch(cityurl);
     if (!response.ok) {
       // 429 エラーの場合、APIアクセスが制限されているとみなす

@@ -2,7 +2,7 @@
 import { __ } from '@wordpress/i18n';
 import { RangeControl, SelectControl } from '@wordpress/components';
 import { __experimentalBorderBoxControl as BorderBoxControl } from '@wordpress/components';
-import { useBorderControl } from '../functions/useBorderControl';
+import { useBorderControl } from '../hooks/useBorderControl';
 
 export default function BorderControlGroup({ attributes, setAttributes }) {
     const {

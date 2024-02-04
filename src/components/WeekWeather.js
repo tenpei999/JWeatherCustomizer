@@ -1,7 +1,7 @@
 import Temp from './Temp';
-import useBorderStyles from '../functions/useBorderStyles';
-import { getBackgroundStyles } from '../functions/getBackgroundStyles';
-import getTextColor from '../functions/getTextColor';
+import useBorderStyles from '../hooks/useBorderStyles';
+import { getBackgroundStyles } from '../hooks/getBackgroundStyles';
+import getTextColor from '../hooks/getTextColor';
 import '../editor.scss';
 import '../style.scss';
 
@@ -18,7 +18,7 @@ const WeekWeather = ({
   backgroundColor,
 }) => {
 
-  if (!weather || !Array.isArray(weather)) return null; 
+  if (!weather || !Array.isArray(weather)) return null;
 
   const borderStyles = useBorderStyles(borders);
   const backgroundStyles = getBackgroundStyles({ backgroundStyleType, selectedMedia, backgroundColor, backgroundGradient });
@@ -32,7 +32,7 @@ const WeekWeather = ({
         ...backgroundStyles,
         color
       }}>
-      {weather.slice(0, 6).map((dayWeather, index)  => {
+      {weather.slice(0, 6).map((dayWeather, index) => {
         if (!dayWeather || !dayWeather.day) return null;
         const textColor = getTextColor(dayWeather);
 
@@ -48,7 +48,7 @@ const WeekWeather = ({
             <span className="weather__img">
               <img src={dayWeather.image} alt="Weather Icon" />
             </span>
-              <Temp weather={dayWeather} />
+            <Temp weather={dayWeather} />
           </li>
         );
       })}

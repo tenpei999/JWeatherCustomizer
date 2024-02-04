@@ -1,8 +1,8 @@
 import Temp from "./Temp";
 import TimeZone from "./TimeZone";
-import useBorderStyles from "../functions/useBorderStyles";
-import { getBackgroundStyles } from '../functions/getBackgroundStyles';
-import getTextColor from '../functions/getTextColor';
+import useBorderStyles from "../hooks/useBorderStyles";
+import { getBackgroundStyles } from '../hooks/getBackgroundStyles';
+import getTextColor from '../hooks/getTextColor';
 import '../style.scss';
 
 const CurrentWeather = ({

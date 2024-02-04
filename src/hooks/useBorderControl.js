@@ -14,7 +14,6 @@ export function isValidBorderWidth(width) {
 }
 
 export function isValidBorder(border) {
-  console.log(border)
   if (!border || typeof border !== 'object') {
     console.error('Invalid border object: ', border);
     throw new Error('Invalid border object');
@@ -78,10 +77,7 @@ export function useBorderControl(attributes, setAttributes) {
       typeof borders.left === 'object';
   };
 
-  console.log(borders)
-
   const onChangeBorder = (newBorderSet) => {
-    console.log(newBorderSet)
     try {
       let updatedBorders = {};
 
@@ -93,7 +89,7 @@ export function useBorderControl(attributes, setAttributes) {
           bottom: newBorderSet,
           left: newBorderSet
         };
-        console.log('flat')
+        // console.log('flat')
       } else if (isSplitMode(newBorderSet)) {
         // Splitモードの場合、各辺を個別に更新
         updatedBorders = {
@@ -102,7 +98,7 @@ export function useBorderControl(attributes, setAttributes) {
           bottom: { ...borders.bottom, ...newBorderSet.bottom },
           left: { ...borders.left, ...newBorderSet.left }
         };
-        console.log('split')
+        // console.log('split')
       }
 
       // 更新されたボーダー設定を適用

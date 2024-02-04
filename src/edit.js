@@ -16,12 +16,12 @@ import { useState, useRef, useEffect } from '@wordpress/element';
 import './editor.scss';
 import './style.scss';
 import SettingGroup from './components/SettingGroup';
-import { useChangeCity } from './functions/useChangeCity';
-import useBlockSelection from './functions/useOutsideClick';
+import { useChangeCity } from './hooks/useChangeCity';
+import useBlockSelection from './hooks/useOutsideClick';
 import { createVisibilitySettings } from './objects/visibilitySettings';
 import { cities } from './objects/getSpotWeather';
-import { useFontFamilyControl } from './functions/useFontFamilyControl';
-import { useChangeBalance } from './functions/useChangeBalance';
+import { useFontFamilyControl } from './hooks/useFontFamilyControl';
+import { useChangeBalance } from './hooks/useChangeBalance';
 import Preview from './components/Preview';
 
 export default function Edit({ attributes, setAttributes }) {
@@ -100,8 +100,6 @@ export default function Edit({ attributes, setAttributes }) {
 		backgroundGradient: attributes.backgroundGradient,
 		backgroundColor: attributes.backgroundColor,
 	};
-
-	console.log(attributes)
 
 	return (
 		<div {...blockProps}  >
