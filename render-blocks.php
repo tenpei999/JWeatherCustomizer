@@ -41,7 +41,6 @@ function generateBackgroundStyles($attr)
 }
 function jWeatherCustomizer_render_block($attr, $content)
 {
-
   $attr = array_merge([
     'showTodayWeather' => true,
     'showTomorrowWeather' => true,
@@ -102,6 +101,8 @@ function jWeatherCustomizer_render_block($attr, $content)
   if ($attr['showTodayWeather'] && isset($attr['todayWeather'])) {
     $data = $attr['todayWeather'];
     $textColor = setTextColor($data['day'] ?? []);
+    error_log('Data that failed to save: ' . print_r($textColor, true));
+
     $output .= generateWeatherOutput($data, $textColor, $time_ranges, $attr['showHoliday'], $attr['showPrecipitation'], esc_html__('今日の天気', 'j-weather-customizer'), $commonStyle, esc_attr($attr['balanceOption']));
   }
 
@@ -129,7 +130,7 @@ function generateWeatherOutput($data, $textColor, $time_ranges, $showHoliday, $s
 {
   $output = '<div class="block--current ' . esc_attr($selectedBalance) . '" style="' . esc_attr($commonStyle) . '">';
   $output .= '<h3>' . esc_html($title) . '</h3>';
-  $output .= '<h4' . esc_attr($textColor) . '>' . esc_html($data['day']['date']['month'] ?? '') . esc_html($data['day']['date']['day'] ?? '') . '<br/>' . esc_html($data['day']['date']['dayOfWeek'] ?? '') . '</h4>';
+  $output .= '<h4' . $textColor . '>' . esc_html($data['day']['date']['month'] ?? '') . esc_html($data['day']['date']['day'] ?? '') . '<br/>' . esc_html($data['day']['date']['dayOfWeek'] ?? '') . '</h4>';
   if ($showHoliday) {
     $output .= '<p>' . esc_html($data['day']['holidayName'] ?? '') . '</p>';
   }
@@ -166,7 +167,7 @@ function generateWeeklyWeatherOutput($data, $textColor, $showHoliday)
 
   // error_log('generateWeeklyWeatherOutput - data: ' . print_r($data, true));
   $output = '<li class="block--day">';
-  $output .= '<h4' . esc_attr($textColor) . '>' . esc_html($data['day']['date']['month'] ?? '') . esc_html($data['day']['date']['day'] ?? '') . '<br/>' . esc_html($data['day']['date']['dayOfWeek'] ?? '') . '</h4>';
+  $output .= '<h4' . $textColor . '>' . esc_html($data['day']['date']['month'] ?? '') . esc_html($data['day']['date']['day'] ?? '') . '<br/>' . esc_html($data['day']['date']['dayOfWeek'] ?? '') . '</h4>';
   if ($showHoliday) {
     $output .= '<p>' . esc_html($data['day']['holidayName'] ?? '') . '</p>';
   }

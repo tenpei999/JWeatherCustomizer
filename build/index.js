@@ -530,9 +530,9 @@ const ManagedError = () => {
   } else {
     errorMessage = _objects_errorMessages__WEBPACK_IMPORTED_MODULE_1__.responseErrorMessage[_objects_weatherObject__WEBPACK_IMPORTED_MODULE_2__.isApiError.statusCode] || "不明なエラーが発生しました。";
   }
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, errorTitle), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h3", null, errorTitle), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "\u30B9\u30C6\u30FC\u30BF\u30B9: ", _objects_weatherObject__WEBPACK_IMPORTED_MODULE_2__.isApiError.statusCode), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
     className: "error-message"
-  }, errorMessage), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "\u30B9\u30C6\u30FC\u30BF\u30B9\u30B3\u30FC\u30C9: ", _objects_weatherObject__WEBPACK_IMPORTED_MODULE_2__.isApiError.statusCode), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "\u30D6\u30E9\u30A6\u30B6\u306E\u958B\u767A\u8005\u30C4\u30FC\u30EB\u3092\u958B\u304D\u3001"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "\u30A8\u30E9\u30FC\u5185\u5BB9\u3092\u78BA\u8A8D\u3057\u3066\u304F\u3060\u3055\u3044\u3002")));
+  }, errorMessage), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "\u5929\u6C17\u60C5\u5831\u306E\u66F4\u65B0\u306B\u5931\u6557\u3057\u307E\u3057\u305F\u3002 \u8A2D\u5B9A\u60C5\u5831\u306F\u524D\u56DE\u306E\u60C5\u5831\u3092\u7DAD\u6301\u3057\u307E\u3059\u3002")));
 };
 /* harmony default export */ __webpack_exports__["default"] = (ManagedError);
 
@@ -1295,6 +1295,7 @@ function Edit({
     backgroundGradient: attributes.backgroundGradient,
     backgroundColor: attributes.backgroundColor
   };
+  console.log(attributes);
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     ...blockProps
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -1684,7 +1685,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 
-function useBorderStyles(borders, validateBorder) {
+function useBorderStyles(borders) {
   const [borderStyles, setBorderStyles] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({});
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     setBorderStyles({
@@ -2222,6 +2223,10 @@ let isApiError = {
   statusCode: null
 };
 let apiRequestCount = 0;
+
+// isApiError.isError = true;
+// isApiError.statusCode = 500; // 例として500を使用
+
 const isValidUrl = url => {
   try {
     const validBaseUrl = "https://api.open-meteo.com/v1";

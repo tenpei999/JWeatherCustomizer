@@ -17,11 +17,11 @@ const ManagedError = () => {
   return (
     <>
       <div>
-        <p>{errorTitle}</p>
+        <h3>{errorTitle}</h3>
+        <p>ステータス: {isApiError.statusCode}</p>
         <p className="error-message">{errorMessage}</p>
-        <p>ステータスコード: {isApiError.statusCode}</p>
-        <p>ブラウザの開発者ツールを開き、</p>
-        <p>エラー内容を確認してください。</p>
+        <p>天気情報の更新に失敗しました。
+          設定情報は前回の情報を維持します。</p>
       </div>
     </>
   );

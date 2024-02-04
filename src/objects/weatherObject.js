@@ -7,6 +7,9 @@ let isApiError = {
 };
 let apiRequestCount = 0;
 
+// isApiError.isError = true;
+// isApiError.statusCode = 500; // 例として500を使用
+
 const isValidUrl = (url) => {
   try {
     const validBaseUrl = "https://api.open-meteo.com/v1";

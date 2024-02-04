@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-function useBorderStyles(borders, validateBorder) {
+function useBorderStyles(borders) {
   const [borderStyles, setBorderStyles] = useState({});
 
   useEffect(() => {
