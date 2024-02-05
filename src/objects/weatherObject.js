@@ -20,13 +20,15 @@ const isValidUrl = (url) => {
   }
 };
 
+
 const weatherObject = async (
   cityurl,
   setTodayWeather,
   setTomorrowWeather,
   setWeeklyWeather,
   addBreak = false
-) => {
+  ) => {
+
   try {
     if (!cityurl || !isValidUrl(cityurl)) {
       throw new Error(`City "${cityurl}" does not exist in the city object.`);
@@ -60,12 +62,10 @@ const weatherObject = async (
       }
     });
 
-
     apiRequestCount++;
     // console.log(`リクエスト回数: ${apiRequestCount}`);
     const response = await fetch(cityurl);
     if (!response.ok) {
-      // 429 エラーの場合、APIアクセスが制限されているとみなす
       isApiError = true;
       isApiError.statusCode = response.status;
     }

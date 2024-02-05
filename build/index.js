@@ -1242,6 +1242,7 @@ function Edit({
   const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps)({
     className: 'my-first-plugin'
   });
+  console.log(weatherData);
   const cityOptions = Object.entries(_objects_getSpotWeather__WEBPACK_IMPORTED_MODULE_9__.cities).map(([key, city]) => ({
     label: city.name,
     // 'name'属性を表示テキストとして使用
@@ -1295,7 +1296,6 @@ function Edit({
     backgroundGradient: attributes.backgroundGradient,
     backgroundColor: attributes.backgroundColor
   };
-  console.log(attributes);
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     ...blockProps
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -2041,17 +2041,58 @@ const dayWithHoliday = async (addBreak = false) => {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   responseErrorMessage: function() { return /* binding */ responseErrorMessage; }
+/* harmony export */   responseErrorMessage: function() { return /* binding */ responseErrorMessage; },
+/* harmony export */   responseErrorMessage2: function() { return /* binding */ responseErrorMessage2; }
 /* harmony export */ });
 // errorMessages.js
 
-const responseErrorMessage = {
+const responseErrorMessage2 = {
   400: "リクエストが不正です。入力を確認してください。",
   401: "認証に失敗しました。APIキーを確認してください。",
   403: "アクセスが拒否されました。権限を確認してください。",
   404: "リクエストしたリソースが見つかりませんでした。",
   500: "サーバー側で問題が発生しました。後ほど再試行してください。",
   503: "サービスが利用不可です。後ほど再試行してください。"
+};
+// errorMessages.js
+
+const responseErrorMessage = {
+  400: {
+    title: "不正なリクエストエラー",
+    notice: "JWeatherCustomizerは、無効なリクエストを検知したため機能を停止しました。",
+    guidance: "JWeatherCustomizerを速やかに停止し、管理者に連絡してください。",
+    supplement: "サイトに天気情報が表示されていない可能性があります。"
+  },
+  401: {
+    title: "認証エラー",
+    notice: "JWeatherCustomizerはAPI Keyが一致しません。",
+    guidance: "プラグインを速やかに停止し、管理者に連絡してください。",
+    supplement: "サイトに天気情報が表示されていない可能性があります。"
+  },
+  403: {
+    title: "アクセス禁止エラー",
+    notice: "JWeatherCustomizerに許可されていない操作を行いました。",
+    guidance: "WordPressにログインし直してください",
+    supplement: "設定は更新前の情報を維持します。"
+  },
+  404: {
+    title: "URL不存在エラー",
+    notice: "JWeatherCustomizerは都市のurlが見つかりませんでした。",
+    guidance: "JWeatherCustomizerを速やかに停止し、管理者に連絡してください。",
+    supplement: "設定は更新前の情報を維持します。"
+  },
+  500: {
+    title: "サーバー内部エラー",
+    notice: "サーバーに接続できないためJWeatherCustomizerはデータを更新できません。",
+    guidance: "インターネット接続を確認してから再試行してください。",
+    supplement: "サイトに天気情報が表示されていない可能性があります。"
+  },
+  503: {
+    title: "サービス利用不可エラー",
+    notice: "JWeatherCustomizerは、API提供元サーバーの影響によりサービスが一時的に利用不可です",
+    guidance: "時間をおいてから再度操作を行い、解決しなければ管理者に連絡してください。",
+    supplement: "設定は更新前の情報を維持します。"
+  }
 };
 
 /***/ }),
@@ -2271,7 +2312,6 @@ const weatherObject = async (cityurl, setTodayWeather, setTomorrowWeather, setWe
     // console.log(`リクエスト回数: ${apiRequestCount}`);
     const response = await fetch(cityurl);
     if (!response.ok) {
-      // 429 エラーの場合、APIアクセスが制限されているとみなす
       isApiError = true;
       isApiError.statusCode = response.status;
     }
