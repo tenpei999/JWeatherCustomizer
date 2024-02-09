@@ -1,8 +1,10 @@
 import { __ } from '@wordpress/i18n';
+import { useState, useEffect } from '@wordpress/element';
 import { CurrentWeather } from './CurrentWeather';
 import WeekWeather from './WeekWeather';
+import { handleWeatherError } from '../hooks/handleWeatherError';
 import { isApiError } from '../objects/weatherObject';
-import ManagedError from './ManegedError';
+import { ResponseError } from './ResponseError';
 
 export default function Preview({ attributes, commonProps }) {
   const {
@@ -16,8 +18,19 @@ export default function Preview({ attributes, commonProps }) {
     showPrecipitation
   } = attributes;
 
+  const [errorMessage, setErrorMessage] = useState(null);
+  useEffect(() => {
+    if (isApiError.isError) {
+      const message = handleWeatherError(isApiError);
+      if (message) {
+        setErrorMessage(message);
+      }
+    }
+  }, [isApiError]); // isApiErrorの変更を監視
+
   const renderCurrentWeather = (weather, title) => {
     if (!weather || !weather.day) return null;
+  
 
     const isHoliday = weather.day.isHoliday || weather.day.isSunday;
     const textColor = isHoliday ? 'red' : weather.day.isSaturday ? 'blue' : '';
@@ -36,8 +49,8 @@ export default function Preview({ attributes, commonProps }) {
 
   return (
     <>
-      {isApiError.isError ? (
-        <ManagedError isApiError={isApiError.statusCode} />
+      {errorMessage ? (
+        <ResponseError errorMessage={errorMessage} />
       ) : (
         <div className="layout">
           <div className="today-and-tomorrow weather-layout">

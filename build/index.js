@@ -504,40 +504,6 @@ function FontFamilyControl({
 
 /***/ }),
 
-/***/ "./src/components/ManegedError.js":
-/*!****************************************!*\
-  !*** ./src/components/ManegedError.js ***!
-  \****************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _objects_errorMessages__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../objects/errorMessages */ "./src/objects/errorMessages.js");
-/* harmony import */ var _objects_weatherObject__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../objects/weatherObject */ "./src/objects/weatherObject.js");
-
-
-
-const ManagedError = () => {
-  let errorTitle;
-  let errorMessage;
-  if (_objects_weatherObject__WEBPACK_IMPORTED_MODULE_2__.isApiError.isError) {
-    errorTitle = "APIの取得に失敗しました。";
-  }
-  if (_objects_weatherObject__WEBPACK_IMPORTED_MODULE_2__.isApiError.statusCode === null || _objects_weatherObject__WEBPACK_IMPORTED_MODULE_2__.isApiError.statusCode === undefined) {
-    _objects_weatherObject__WEBPACK_IMPORTED_MODULE_2__.isApiError.statusCode = "不明なエラー";
-  } else {
-    errorMessage = _objects_errorMessages__WEBPACK_IMPORTED_MODULE_1__.responseErrorMessage[_objects_weatherObject__WEBPACK_IMPORTED_MODULE_2__.isApiError.statusCode] || "不明なエラーが発生しました。";
-  }
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h3", null, errorTitle), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "\u30B9\u30C6\u30FC\u30BF\u30B9: ", _objects_weatherObject__WEBPACK_IMPORTED_MODULE_2__.isApiError.statusCode), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
-    className: "error-message"
-  }, errorMessage), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "\u5929\u6C17\u60C5\u5831\u306E\u66F4\u65B0\u306B\u5931\u6557\u3057\u307E\u3057\u305F\u3002 \u8A2D\u5B9A\u60C5\u5831\u306F\u524D\u56DE\u306E\u60C5\u5831\u3092\u7DAD\u6301\u3057\u307E\u3059\u3002")));
-};
-/* harmony default export */ __webpack_exports__["default"] = (ManagedError);
-
-/***/ }),
-
 /***/ "./src/components/Preview.js":
 /*!***********************************!*\
   !*** ./src/components/Preview.js ***!
@@ -555,8 +521,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _CurrentWeather__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./CurrentWeather */ "./src/components/CurrentWeather.js");
 /* harmony import */ var _WeekWeather__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./WeekWeather */ "./src/components/WeekWeather.js");
-/* harmony import */ var _objects_weatherObject__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../objects/weatherObject */ "./src/objects/weatherObject.js");
-/* harmony import */ var _ManegedError__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./ManegedError */ "./src/components/ManegedError.js");
+/* harmony import */ var _hooks_handleWeatherError__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../hooks/handleWeatherError */ "./src/hooks/handleWeatherError.js");
+/* harmony import */ var _objects_weatherObject__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../objects/weatherObject */ "./src/objects/weatherObject.js");
+/* harmony import */ var _ResponseError__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./ResponseError */ "./src/components/ResponseError.js");
+
+
 
 
 
@@ -577,6 +546,16 @@ function Preview({
     showHoliday,
     showPrecipitation
   } = attributes;
+  const [errorMessage, setErrorMessage] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    if (_objects_weatherObject__WEBPACK_IMPORTED_MODULE_5__.isApiError.isError) {
+      const message = (0,_hooks_handleWeatherError__WEBPACK_IMPORTED_MODULE_4__.handleWeatherError)(_objects_weatherObject__WEBPACK_IMPORTED_MODULE_5__.isApiError);
+      if (message) {
+        setErrorMessage(message);
+      }
+    }
+  }, [_objects_weatherObject__WEBPACK_IMPORTED_MODULE_5__.isApiError]); // isApiErrorの変更を監視
+
   const renderCurrentWeather = (weather, title) => {
     if (!weather || !weather.day) return null;
     const isHoliday = weather.day.isHoliday || weather.day.isSunday;
@@ -590,8 +569,8 @@ function Preview({
       textColor: textColor
     });
   };
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, _objects_weatherObject__WEBPACK_IMPORTED_MODULE_4__.isApiError.isError ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_ManegedError__WEBPACK_IMPORTED_MODULE_5__["default"], {
-    isApiError: _objects_weatherObject__WEBPACK_IMPORTED_MODULE_4__.isApiError.statusCode
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, errorMessage ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_ResponseError__WEBPACK_IMPORTED_MODULE_6__.ResponseError, {
+    errorMessage: errorMessage
   }) : (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "layout"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -601,6 +580,37 @@ function Preview({
     ...commonProps
   })));
 }
+
+/***/ }),
+
+/***/ "./src/components/ResponseError.js":
+/*!*****************************************!*\
+  !*** ./src/components/ResponseError.js ***!
+  \*****************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ResponseError: function() { return /* binding */ ResponseError; }
+/* harmony export */ });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+
+// ResponseErrorコンポーネント
+
+const ResponseError = ({
+  errorMessage
+}) => {
+  if (!errorMessage) {
+    return null; // エラーメッセージがない場合は何も表示しない
+  }
+
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h4", null, errorMessage.title), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, errorMessage.notice), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("img", {
+    src: errorMessage.icon,
+    alt: "Error icon"
+  }));
+};
 
 /***/ }),
 
@@ -1242,7 +1252,6 @@ function Edit({
   const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps)({
     className: 'my-first-plugin'
   });
-  console.log(weatherData);
   const cityOptions = Object.entries(_objects_getSpotWeather__WEBPACK_IMPORTED_MODULE_9__.cities).map(([key, city]) => ({
     label: city.name,
     // 'name'属性を表示テキストとして使用
@@ -1499,6 +1508,45 @@ const getWeatherInfo = weatherCode => {
   };
 };
 /* harmony default export */ __webpack_exports__["default"] = (getWeatherInfo);
+
+/***/ }),
+
+/***/ "./src/hooks/handleWeatherError.js":
+/*!*****************************************!*\
+  !*** ./src/hooks/handleWeatherError.js ***!
+  \*****************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   handleWeatherError: function() { return /* binding */ handleWeatherError; }
+/* harmony export */ });
+/* harmony import */ var _objects_responseErrorMessages__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../objects/responseErrorMessages */ "./src/objects/responseErrorMessages.js");
+
+const handleWeatherError = isApiError => {
+  if (!isApiError.isError) {
+    // エラーがない場合は何もしない
+    return null;
+  }
+
+  // エラーがある場合、エラーメッセージを取得
+  const pluginImagePaths = JWeatherCustomizerData.pluginImagePath; // 適切なパス取得方法を用いる
+  const messages = (0,_objects_responseErrorMessages__WEBPACK_IMPORTED_MODULE_0__.responseErrorMessage)(pluginImagePaths); // ステータスコードに応じたエラーメッセージを格納するオブジェクト
+  console.log(messages);
+  const messageForStatusCode = messages[isApiError.statusCode]; // ステータスコードに一致するメッセージを選択
+
+  // ステータスコードに一致するエラーメッセージがない場合のデフォルト処理
+  if (!messageForStatusCode) {
+    return {
+      title: 'Unknown Error',
+      notice: 'An unknown error occurred.',
+      icon: `${pluginImagePaths}default-error-icon.svg` // 例: デフォルトのエラーアイコンパス
+    };
+  }
+
+  return messageForStatusCode;
+};
 
 /***/ }),
 
@@ -2032,71 +2080,6 @@ const dayWithHoliday = async (addBreak = false) => {
 
 /***/ }),
 
-/***/ "./src/objects/errorMessages.js":
-/*!**************************************!*\
-  !*** ./src/objects/errorMessages.js ***!
-  \**************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   responseErrorMessage: function() { return /* binding */ responseErrorMessage; },
-/* harmony export */   responseErrorMessage2: function() { return /* binding */ responseErrorMessage2; }
-/* harmony export */ });
-// errorMessages.js
-
-const responseErrorMessage2 = {
-  400: "リクエストが不正です。入力を確認してください。",
-  401: "認証に失敗しました。APIキーを確認してください。",
-  403: "アクセスが拒否されました。権限を確認してください。",
-  404: "リクエストしたリソースが見つかりませんでした。",
-  500: "サーバー側で問題が発生しました。後ほど再試行してください。",
-  503: "サービスが利用不可です。後ほど再試行してください。"
-};
-// errorMessages.js
-
-const responseErrorMessage = {
-  400: {
-    title: "不正なリクエストエラー",
-    notice: "JWeatherCustomizerは、無効なリクエストを検知したため機能を停止しました。",
-    guidance: "JWeatherCustomizerを速やかに停止し、管理者に連絡してください。",
-    supplement: "サイトに天気情報が表示されていない可能性があります。"
-  },
-  401: {
-    title: "認証エラー",
-    notice: "JWeatherCustomizerはAPI Keyが一致しません。",
-    guidance: "プラグインを速やかに停止し、管理者に連絡してください。",
-    supplement: "サイトに天気情報が表示されていない可能性があります。"
-  },
-  403: {
-    title: "アクセス禁止エラー",
-    notice: "JWeatherCustomizerに許可されていない操作を行いました。",
-    guidance: "WordPressにログインし直してください",
-    supplement: "設定は更新前の情報を維持します。"
-  },
-  404: {
-    title: "URL不存在エラー",
-    notice: "JWeatherCustomizerは都市のurlが見つかりませんでした。",
-    guidance: "JWeatherCustomizerを速やかに停止し、管理者に連絡してください。",
-    supplement: "設定は更新前の情報を維持します。"
-  },
-  500: {
-    title: "サーバー内部エラー",
-    notice: "サーバーに接続できないためJWeatherCustomizerはデータを更新できません。",
-    guidance: "インターネット接続を確認してから再試行してください。",
-    supplement: "サイトに天気情報が表示されていない可能性があります。"
-  },
-  503: {
-    title: "サービス利用不可エラー",
-    notice: "JWeatherCustomizerは、API提供元サーバーの影響によりサービスが一時的に利用不可です",
-    guidance: "時間をおいてから再度操作を行い、解決しなければ管理者に連絡してください。",
-    supplement: "設定は更新前の情報を維持します。"
-  }
-};
-
-/***/ }),
-
 /***/ "./src/objects/getSpotWeather.js":
 /*!***************************************!*\
   !*** ./src/objects/getSpotWeather.js ***!
@@ -2170,6 +2153,71 @@ const cities = {
     url: createCityWeatherUrl(48.8534, 2.3488)
   }
 };
+
+/***/ }),
+
+/***/ "./src/objects/responseErrorMessages.js":
+/*!**********************************************!*\
+  !*** ./src/objects/responseErrorMessages.js ***!
+  \**********************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   responseErrorMessage: function() { return /* binding */ responseErrorMessage; }
+/* harmony export */ });
+const responseErrorMessage = pluginImagePaths => ({
+  400: {
+    title: "不正なリクエストエラー",
+    notice: "無効なリクエストを検知したため機能を停止しました。",
+    guidance: "JWeatherCustomizerを速やかに停止し、管理者に連絡してください。",
+    supplement: "サイトに天気情報が表示されていない可能性があります。",
+    icon: `${pluginImagePaths}attention.svg`
+  },
+  401: {
+    title: "認証エラー",
+    notice: "はAPI Keyが一致しません。",
+    guidance: "プラグインを速やかに停止し、管理者に連絡してください。",
+    supplement: "サイトに天気情報が表示されていない可能性があります。",
+    icon: `${pluginImagePaths}ID.svg`
+  },
+  403: {
+    title: "アクセス禁止エラー",
+    notice: "許可されていない操作を行いました。",
+    guidance: "WordPressにログインし直してください",
+    supplement: "設定は更新前の情報を維持します。",
+    icon: `${pluginImagePaths}stop.svg`
+  },
+  404: {
+    title: "URL不存在エラー",
+    notice: "都市のurlが見つかりませんでした。",
+    guidance: "JWeatherCustomizerを速やかに停止し、管理者に連絡してください。",
+    supplement: "設定は更新前の情報を維持します。",
+    icon: `${pluginImagePaths}question.svg`
+  },
+  500: {
+    title: "サーバー内部エラー",
+    notice: "サーバーに接続できないためJWeatherCustomizerはデータを更新できません。",
+    guidance: "インターネット接続を確認してから再試行してください。",
+    supplement: "サイトに天気情報が表示されていない可能性があります。",
+    icon: `${pluginImagePaths}server.svg`
+  },
+  503: {
+    title: "サービス利用不可エラー",
+    notice: "API提供元サーバーの影響によりサービスが一時的に利用不可です",
+    guidance: "時間をおいてから再度操作を行い、解決しなければ管理者に連絡してください。",
+    supplement: "設定は更新前の情報を維持します。",
+    icon: `${pluginImagePaths}attention.svg`
+  },
+  default: {
+    title: "未知のエラー",
+    notice: "予期せぬエラーが発生しました。",
+    guidance: "サポートにお問い合わせください。",
+    supplement: "詳細な情報は利用できません。",
+    icon: `${pluginImagePaths}attention.svg`
+  }
+});
 
 /***/ }),
 
@@ -2264,9 +2312,8 @@ let isApiError = {
   statusCode: null
 };
 let apiRequestCount = 0;
-
-// isApiError.isError = true;
-// isApiError.statusCode = 500; // 例として500を使用
+isApiError.isError = true;
+isApiError.statusCode = 503; // 例として500を使用
 
 const isValidUrl = url => {
   try {
@@ -2401,7 +2448,7 @@ const weatherObject = async (cityurl, setTodayWeather, setTomorrowWeather, setWe
 
     // エラーが発生した場合、isApiError を更新
     isApiError.isError = true;
-    isApiError.statusCode = error.status || 500;
+    isApiError.statusCode = error.status || 400;
   }
 };
 

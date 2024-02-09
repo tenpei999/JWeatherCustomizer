@@ -7,8 +7,8 @@ let isApiError = {
 };
 let apiRequestCount = 0;
 
-// isApiError.isError = true;
-// isApiError.statusCode = 500; // 例として500を使用
+isApiError.isError = true;
+isApiError.statusCode = 503; // 例として500を使用
 
 const isValidUrl = (url) => {
   try {
@@ -171,7 +171,7 @@ const weatherObject = async (
 
     // エラーが発生した場合、isApiError を更新
     isApiError.isError = true;
-    isApiError.statusCode = error.status || 500; 
+    isApiError.statusCode = error.status || 400; 
 
   }
 }

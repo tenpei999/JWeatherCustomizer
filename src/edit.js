@@ -44,8 +44,6 @@ export default function Edit({ attributes, setAttributes }) {
 		className: 'my-first-plugin',
 	});
 
-	console.log(weatherData)
-
 	const cityOptions = Object.entries(cities).map(([key, city]) => ({
 		label: city.name, // 'name'属性を表示テキストとして使用
 		value: key,       // キー（都市名）を内部値として使用
