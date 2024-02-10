@@ -8,7 +8,7 @@ let isApiError = {
 let apiRequestCount = 0;
 
 isApiError.isError = true;
-isApiError.statusCode = 503; // 例として500を使用
+isApiError.statusCode = 403; // 例として500を使用
 
 const isValidUrl = (url) => {
   try {

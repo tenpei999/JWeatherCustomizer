@@ -596,8 +596,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _objects_weatherObject__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../objects/weatherObject */ "./src/objects/weatherObject.js");
 
-// ResponseErrorコンポーネント
 
 const ResponseError = ({
   errorMessage
@@ -606,10 +606,67 @@ const ResponseError = ({
     return null; // エラーメッセージがない場合は何も表示しない
   }
 
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h4", null, errorMessage.title), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, errorMessage.notice), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("img", {
+  const grid = {
+    display: 'grid',
+    gridTemplateColumn: '1fr',
+    gridTemplateRows: '20% 45% 35%',
+    border: 'solid #ff6b81',
+    height: '70vh'
+  };
+  const title = {
+    textAlign: 'center',
+    fontSize: '2.5rem',
+    fontWeight: 'bold',
+    margin: 'auto'
+  };
+  const image = {
+    display: 'block',
+    height: '60%',
+    margin: '0 auto',
+    paddingBottom: '1.2rem'
+  };
+  const imageBox = {
+    width: '50%',
+    margin: '0 auto',
+    fontWeight: 'bold',
+    color: 'red',
+    fontSize: '1.2rem',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'end',
+    lineHeight: '1.2'
+  };
+  const guidance = {
+    fontSize: '1.7rem',
+    display: 'inline',
+    borderBottom: 'solid'
+  };
+  const noticeBox = {
+    width: '70%',
+    display: 'inlinBlock',
+    margin: 'auto',
+    lineHeight: '1.2'
+  };
+  const supplement = {
+    paddingTop: '1rem'
+  };
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("article", {
+    style: grid
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h4", {
+    style: title
+  }, errorMessage.title), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    style: imageBox
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("img", {
     src: errorMessage.icon,
+    style: image,
     alt: "Error icon"
-  }));
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, errorMessage.notice), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "JWeatherCustomizer\u30A8\u30E9\u30FC:", _objects_weatherObject__WEBPACK_IMPORTED_MODULE_1__.isApiError.statusCode)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    style: noticeBox
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    style: guidance
+  }, errorMessage.guidance), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    style: supplement
+  }, errorMessage.supplement)));
 };
 
 /***/ }),
@@ -2313,7 +2370,7 @@ let isApiError = {
 };
 let apiRequestCount = 0;
 isApiError.isError = true;
-isApiError.statusCode = 503; // 例として500を使用
+isApiError.statusCode = 403; // 例として500を使用
 
 const isValidUrl = url => {
   try {
