@@ -48,6 +48,19 @@
   transform: translateX(33%);
   font-size: 20px;
 }
+.jwc-responseError-imageContainer {
+  z-index: 1;
+}
+.jwc-responseError-imageContainer::before {
+  content: "";
+  position: absolute;
+  bottom: 15%;
+  width: 100%;
+  height: 15%;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.2);
+  z-index: -1;
+}
 
 .faded-checkbox .components-checkbox-control__input-container input[type=checkbox] {
   opacity: 0.5;

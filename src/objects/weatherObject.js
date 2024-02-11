@@ -7,8 +7,8 @@ let isApiError = {
 };
 let apiRequestCount = 0;
 
-isApiError.isError = true;
-isApiError.statusCode = 403; // 例として500を使用
+// isApiError.isError = true;
+// isApiError.statusCode = 500; // 例として500を使用
 
 const isValidUrl = (url) => {
   try {
@@ -27,7 +27,7 @@ const weatherObject = async (
   setTomorrowWeather,
   setWeeklyWeather,
   addBreak = false
-  ) => {
+) => {
 
   try {
     if (!cityurl || !isValidUrl(cityurl)) {
@@ -171,9 +171,9 @@ const weatherObject = async (
 
     // エラーが発生した場合、isApiError を更新
     isApiError.isError = true;
-    isApiError.statusCode = error.status || 400; 
+    isApiError.statusCode = error.status || 400;
 
   }
 }
 
-export { weatherObject,isApiError };
+export { weatherObject, isApiError };

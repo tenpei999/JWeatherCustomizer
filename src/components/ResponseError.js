@@ -8,9 +8,10 @@ export const ResponseError = ({ errorMessage }) => {
   const grid = {
     display: 'grid',
     gridTemplateColumn: '1fr',
-    gridTemplateRows: '20% 45% 35%',
-    border: 'solid #ff6b81',
-    height: '70vh',
+    gridTemplateRows: '20% 40% 40%',
+    border: 'solid #fe8509',
+    borderRadius: '50px',
+    height: '60vh',
   }
 
   const title = {
@@ -21,10 +22,14 @@ export const ResponseError = ({ errorMessage }) => {
   }
 
   const image = {
-    display: 'block',
-    height: '60%',
+    height: '100%',
+  }
+
+  const imageParent = {
     margin: '0 auto',
-    paddingBottom: '1.2rem'
+    paddingBottom: '2.2rem',
+    height: '35%',
+    position: 'relative'
   }
 
   const imageBox = {
@@ -37,6 +42,13 @@ export const ResponseError = ({ errorMessage }) => {
     flexDirection: 'column',
     justifyContent: 'end',
     lineHeight: '1.2'
+  }
+
+  const letterSpacing = {
+    letterSpacing: '-1px',
+  }
+  const letterSpacingWide = {
+    letterSpacing: '1px',
   }
 
   const guidance = {
@@ -60,12 +72,14 @@ export const ResponseError = ({ errorMessage }) => {
     <article style={grid}>
       <h4 style={title}>{errorMessage.title}</h4>
       <div style={imageBox}>
-        <img src={errorMessage.icon} style={image} alt="Error icon" />
+        <div className="jwc-responseError-imageContainer" style={imageParent}>
+          <img src={errorMessage.icon} style={image} alt="Error icon" />
+        </div>
         <p>
           {errorMessage.notice}
         </p>
-        <p>
-          JWeatherCustomizerエラー:{isApiError.statusCode}
+        <p style={letterSpacingWide}>
+          <span style={letterSpacing}>JWeatherCustomizer</span>エラー:{isApiError.statusCode}
         </p>
       </div>
       <div style={noticeBox}>

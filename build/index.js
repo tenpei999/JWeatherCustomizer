@@ -609,9 +609,10 @@ const ResponseError = ({
   const grid = {
     display: 'grid',
     gridTemplateColumn: '1fr',
-    gridTemplateRows: '20% 45% 35%',
-    border: 'solid #ff6b81',
-    height: '70vh'
+    gridTemplateRows: '20% 40% 40%',
+    border: 'solid #fe8509',
+    borderRadius: '50px',
+    height: '60vh'
   };
   const title = {
     textAlign: 'center',
@@ -620,10 +621,13 @@ const ResponseError = ({
     margin: 'auto'
   };
   const image = {
-    display: 'block',
-    height: '60%',
+    height: '100%'
+  };
+  const imageParent = {
     margin: '0 auto',
-    paddingBottom: '1.2rem'
+    paddingBottom: '2.2rem',
+    height: '35%',
+    position: 'relative'
   };
   const imageBox = {
     width: '50%',
@@ -635,6 +639,12 @@ const ResponseError = ({
     flexDirection: 'column',
     justifyContent: 'end',
     lineHeight: '1.2'
+  };
+  const letterSpacing = {
+    letterSpacing: '-1px'
+  };
+  const letterSpacingWide = {
+    letterSpacing: '1px'
   };
   const guidance = {
     fontSize: '1.7rem',
@@ -656,11 +666,18 @@ const ResponseError = ({
     style: title
   }, errorMessage.title), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     style: imageBox
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "jwc-responseError-imageContainer",
+    style: imageParent
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("img", {
     src: errorMessage.icon,
     style: image,
     alt: "Error icon"
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, errorMessage.notice), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "JWeatherCustomizer\u30A8\u30E9\u30FC:", _objects_weatherObject__WEBPACK_IMPORTED_MODULE_1__.isApiError.statusCode)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, errorMessage.notice), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    style: letterSpacingWide
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    style: letterSpacing
+  }, "JWeatherCustomizer"), "\u30A8\u30E9\u30FC:", _objects_weatherObject__WEBPACK_IMPORTED_MODULE_1__.isApiError.statusCode)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     style: noticeBox
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
     style: guidance
@@ -2230,49 +2247,49 @@ const responseErrorMessage = pluginImagePaths => ({
     notice: "無効なリクエストを検知したため機能を停止しました。",
     guidance: "JWeatherCustomizerを速やかに停止し、管理者に連絡してください。",
     supplement: "サイトに天気情報が表示されていない可能性があります。",
-    icon: `${pluginImagePaths}attention.svg`
+    icon: `${pluginImagePaths}attention.png`
   },
   401: {
     title: "認証エラー",
     notice: "はAPI Keyが一致しません。",
     guidance: "プラグインを速やかに停止し、管理者に連絡してください。",
     supplement: "サイトに天気情報が表示されていない可能性があります。",
-    icon: `${pluginImagePaths}ID.svg`
+    icon: `${pluginImagePaths}ID.png`
   },
   403: {
     title: "アクセス禁止エラー",
     notice: "許可されていない操作を行いました。",
     guidance: "WordPressにログインし直してください",
     supplement: "設定は更新前の情報を維持します。",
-    icon: `${pluginImagePaths}stop.svg`
+    icon: `${pluginImagePaths}stop.png`
   },
   404: {
     title: "URL不存在エラー",
     notice: "都市のurlが見つかりませんでした。",
     guidance: "JWeatherCustomizerを速やかに停止し、管理者に連絡してください。",
     supplement: "設定は更新前の情報を維持します。",
-    icon: `${pluginImagePaths}question.svg`
+    icon: `${pluginImagePaths}question.png`
   },
   500: {
     title: "サーバー内部エラー",
     notice: "サーバーに接続できないためJWeatherCustomizerはデータを更新できません。",
     guidance: "インターネット接続を確認してから再試行してください。",
     supplement: "サイトに天気情報が表示されていない可能性があります。",
-    icon: `${pluginImagePaths}server.svg`
+    icon: `${pluginImagePaths}server.png`
   },
   503: {
     title: "サービス利用不可エラー",
     notice: "API提供元サーバーの影響によりサービスが一時的に利用不可です",
     guidance: "時間をおいてから再度操作を行い、解決しなければ管理者に連絡してください。",
     supplement: "設定は更新前の情報を維持します。",
-    icon: `${pluginImagePaths}attention.svg`
+    icon: `${pluginImagePaths}attention.png`
   },
   default: {
     title: "未知のエラー",
     notice: "予期せぬエラーが発生しました。",
     guidance: "サポートにお問い合わせください。",
     supplement: "詳細な情報は利用できません。",
-    icon: `${pluginImagePaths}attention.svg`
+    icon: `${pluginImagePaths}attention.png`
   }
 });
 
@@ -2369,8 +2386,9 @@ let isApiError = {
   statusCode: null
 };
 let apiRequestCount = 0;
-isApiError.isError = true;
-isApiError.statusCode = 403; // 例として500を使用
+
+// isApiError.isError = true;
+// isApiError.statusCode = 500; // 例として500を使用
 
 const isValidUrl = url => {
   try {
