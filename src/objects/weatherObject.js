@@ -7,9 +7,6 @@ let isApiError = {
 };
 let apiRequestCount = 0;
 
-// isApiError.isError = true;
-// isApiError.statusCode = 500; // 例として500を使用
-
 const isValidUrl = (url) => {
   try {
     const validBaseUrl = "https://api.open-meteo.com/v1";
@@ -28,6 +25,8 @@ const weatherObject = async (
   setWeeklyWeather,
   addBreak = false
 ) => {
+
+
 
   try {
     if (!cityurl || !isValidUrl(cityurl)) {
@@ -64,10 +63,14 @@ const weatherObject = async (
 
     apiRequestCount++;
     // console.log(`リクエスト回数: ${apiRequestCount}`);
+    isApiError.isError = false;
+    isApiError.statusCode = null;
     const response = await fetch(cityurl);
+
     if (!response.ok) {
-      isApiError = true;
+      isApiError.isError = true;
       isApiError.statusCode = response.status;
+      throw new Error(`API response error with status: ${response.status}`);
     }
 
     const data2 = await response.json();

@@ -1,9 +1,12 @@
 import { isApiError } from "../objects/weatherObject";
 
+console.log(isApiError)
+
 export const ResponseError = ({ errorMessage }) => {
   if (!errorMessage) {
     return null; // エラーメッセージがない場合は何も表示しない
   }
+  console.log(errorMessage)
 
   const grid = {
     display: 'grid',
@@ -79,7 +82,7 @@ export const ResponseError = ({ errorMessage }) => {
           {errorMessage.notice}
         </p>
         <p style={letterSpacingWide}>
-          <span style={letterSpacing}>JWeatherCustomizer</span>エラー:{isApiError.statusCode}
+          <span style={letterSpacing}>JWeatherCustomizer</span>エラー:{errorMessage.statuscode}
         </p>
       </div>
       <div style={noticeBox}>

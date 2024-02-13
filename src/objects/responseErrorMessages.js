@@ -6,13 +6,15 @@ export const responseErrorMessage = (pluginImagePaths) => ({
     guidance: "JWeatherCustomizerを速やかに停止し、管理者に連絡してください。",
     supplement: "サイトに天気情報が表示されていない可能性があります。",
     icon: `${pluginImagePaths}attention.png`,
+    statuscode: '400',
   },
   401: {
     title: "認証エラー",
-    notice: "はAPI Keyが一致しません。",
+    notice: "API Keyが一致しません。",
     guidance: "プラグインを速やかに停止し、管理者に連絡してください。",
     supplement: "サイトに天気情報が表示されていない可能性があります。",
     icon: `${pluginImagePaths}ID.png`,
+    statuscode: '401',
   },
   403: {
     title: "アクセス禁止エラー",
@@ -20,6 +22,7 @@ export const responseErrorMessage = (pluginImagePaths) => ({
     guidance: "WordPressにログインし直してください",
     supplement: "設定は更新前の情報を維持します。",
     icon: `${pluginImagePaths}stop.png`,
+    statuscode: '403',
   },
   404: {
     title: "URL不存在エラー",
@@ -27,6 +30,7 @@ export const responseErrorMessage = (pluginImagePaths) => ({
     guidance: "JWeatherCustomizerを速やかに停止し、管理者に連絡してください。",
     supplement: "設定は更新前の情報を維持します。",
     icon: `${pluginImagePaths}question.png`,
+    statuscode: '404',
   },
   500: {
     title: "サーバー内部エラー",
@@ -34,6 +38,7 @@ export const responseErrorMessage = (pluginImagePaths) => ({
     guidance: "インターネット接続を確認してから再試行してください。",
     supplement: "サイトに天気情報が表示されていない可能性があります。",
     icon: `${pluginImagePaths}server.png`,
+    statuscode: '500',
   },
   503: {
     title: "サービス利用不可エラー",
@@ -41,6 +46,7 @@ export const responseErrorMessage = (pluginImagePaths) => ({
     guidance: "時間をおいてから再度操作を行い、解決しなければ管理者に連絡してください。",
     supplement: "設定は更新前の情報を維持します。",
     icon: `${pluginImagePaths}attention.png`,
+    statuscode: '503',
   },
   default: {
     title: "未知のエラー",
@@ -48,5 +54,6 @@ export const responseErrorMessage = (pluginImagePaths) => ({
     guidance: "サポートにお問い合わせください。",
     supplement: "詳細な情報は利用できません。",
     icon: `${pluginImagePaths}attention.png`,
+    statuscode: '',
   },
 });

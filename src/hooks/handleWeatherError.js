@@ -9,7 +9,6 @@ export const handleWeatherError = (isApiError) => {
   // エラーがある場合、エラーメッセージを取得
   const pluginImagePaths = JWeatherCustomizerData.pluginImagePath; // 適切なパス取得方法を用いる
   const messages = responseErrorMessage(pluginImagePaths); // ステータスコードに応じたエラーメッセージを格納するオブジェクト
-  console.log(messages)
   const messageForStatusCode = messages[isApiError.statusCode]; // ステータスコードに一致するメッセージを選択
 
   // ステータスコードに一致するエラーメッセージがない場合のデフォルト処理
@@ -20,6 +19,7 @@ export const handleWeatherError = (isApiError) => {
       icon: `${pluginImagePaths}default-error-icon.svg`, // 例: デフォルトのエラーアイコンパス
     };
   }
+  console.log(messageForStatusCode)
 
   return messageForStatusCode;
 };

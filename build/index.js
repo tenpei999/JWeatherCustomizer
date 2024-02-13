@@ -547,6 +547,7 @@ function Preview({
     showPrecipitation
   } = attributes;
   const [errorMessage, setErrorMessage] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
+  // isApiErrorの状態を監視
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     if (_objects_weatherObject__WEBPACK_IMPORTED_MODULE_5__.isApiError.isError) {
       const message = (0,_hooks_handleWeatherError__WEBPACK_IMPORTED_MODULE_4__.handleWeatherError)(_objects_weatherObject__WEBPACK_IMPORTED_MODULE_5__.isApiError);
@@ -554,7 +555,7 @@ function Preview({
         setErrorMessage(message);
       }
     }
-  }, [_objects_weatherObject__WEBPACK_IMPORTED_MODULE_5__.isApiError]); // isApiErrorの変更を監視
+  }, [_objects_weatherObject__WEBPACK_IMPORTED_MODULE_5__.isApiError]); // isApiErrorが変更された時にのみ実行
 
   const renderCurrentWeather = (weather, title) => {
     if (!weather || !weather.day) return null;
@@ -569,7 +570,8 @@ function Preview({
       textColor: textColor
     });
   };
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, errorMessage ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_ResponseError__WEBPACK_IMPORTED_MODULE_6__.ResponseError, {
+  console.log(_objects_weatherObject__WEBPACK_IMPORTED_MODULE_5__.isApiError.isError);
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, _objects_weatherObject__WEBPACK_IMPORTED_MODULE_5__.isApiError.isError ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_ResponseError__WEBPACK_IMPORTED_MODULE_6__.ResponseError, {
     errorMessage: errorMessage
   }) : (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "layout"
@@ -599,6 +601,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _objects_weatherObject__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../objects/weatherObject */ "./src/objects/weatherObject.js");
 
 
+console.log(_objects_weatherObject__WEBPACK_IMPORTED_MODULE_1__.isApiError);
 const ResponseError = ({
   errorMessage
 }) => {
@@ -606,6 +609,7 @@ const ResponseError = ({
     return null; // エラーメッセージがない場合は何も表示しない
   }
 
+  console.log(errorMessage);
   const grid = {
     display: 'grid',
     gridTemplateColumn: '1fr',
@@ -677,7 +681,7 @@ const ResponseError = ({
     style: letterSpacingWide
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     style: letterSpacing
-  }, "JWeatherCustomizer"), "\u30A8\u30E9\u30FC:", _objects_weatherObject__WEBPACK_IMPORTED_MODULE_1__.isApiError.statusCode)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }, "JWeatherCustomizer"), "\u30A8\u30E9\u30FC:", errorMessage.statuscode)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     style: noticeBox
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
     style: guidance
@@ -1607,7 +1611,6 @@ const handleWeatherError = isApiError => {
   // エラーがある場合、エラーメッセージを取得
   const pluginImagePaths = JWeatherCustomizerData.pluginImagePath; // 適切なパス取得方法を用いる
   const messages = (0,_objects_responseErrorMessages__WEBPACK_IMPORTED_MODULE_0__.responseErrorMessage)(pluginImagePaths); // ステータスコードに応じたエラーメッセージを格納するオブジェクト
-  console.log(messages);
   const messageForStatusCode = messages[isApiError.statusCode]; // ステータスコードに一致するメッセージを選択
 
   // ステータスコードに一致するエラーメッセージがない場合のデフォルト処理
@@ -1619,6 +1622,7 @@ const handleWeatherError = isApiError => {
     };
   }
 
+  console.log(messageForStatusCode);
   return messageForStatusCode;
 };
 
@@ -2247,49 +2251,56 @@ const responseErrorMessage = pluginImagePaths => ({
     notice: "無効なリクエストを検知したため機能を停止しました。",
     guidance: "JWeatherCustomizerを速やかに停止し、管理者に連絡してください。",
     supplement: "サイトに天気情報が表示されていない可能性があります。",
-    icon: `${pluginImagePaths}attention.png`
+    icon: `${pluginImagePaths}attention.png`,
+    statuscode: '400'
   },
   401: {
     title: "認証エラー",
-    notice: "はAPI Keyが一致しません。",
+    notice: "API Keyが一致しません。",
     guidance: "プラグインを速やかに停止し、管理者に連絡してください。",
     supplement: "サイトに天気情報が表示されていない可能性があります。",
-    icon: `${pluginImagePaths}ID.png`
+    icon: `${pluginImagePaths}ID.png`,
+    statuscode: '401'
   },
   403: {
     title: "アクセス禁止エラー",
     notice: "許可されていない操作を行いました。",
     guidance: "WordPressにログインし直してください",
     supplement: "設定は更新前の情報を維持します。",
-    icon: `${pluginImagePaths}stop.png`
+    icon: `${pluginImagePaths}stop.png`,
+    statuscode: '403'
   },
   404: {
     title: "URL不存在エラー",
     notice: "都市のurlが見つかりませんでした。",
     guidance: "JWeatherCustomizerを速やかに停止し、管理者に連絡してください。",
     supplement: "設定は更新前の情報を維持します。",
-    icon: `${pluginImagePaths}question.png`
+    icon: `${pluginImagePaths}question.png`,
+    statuscode: '404'
   },
   500: {
     title: "サーバー内部エラー",
     notice: "サーバーに接続できないためJWeatherCustomizerはデータを更新できません。",
     guidance: "インターネット接続を確認してから再試行してください。",
     supplement: "サイトに天気情報が表示されていない可能性があります。",
-    icon: `${pluginImagePaths}server.png`
+    icon: `${pluginImagePaths}server.png`,
+    statuscode: '500'
   },
   503: {
     title: "サービス利用不可エラー",
     notice: "API提供元サーバーの影響によりサービスが一時的に利用不可です",
     guidance: "時間をおいてから再度操作を行い、解決しなければ管理者に連絡してください。",
     supplement: "設定は更新前の情報を維持します。",
-    icon: `${pluginImagePaths}attention.png`
+    icon: `${pluginImagePaths}attention.png`,
+    statuscode: '503'
   },
   default: {
     title: "未知のエラー",
     notice: "予期せぬエラーが発生しました。",
     guidance: "サポートにお問い合わせください。",
     supplement: "詳細な情報は利用できません。",
-    icon: `${pluginImagePaths}attention.png`
+    icon: `${pluginImagePaths}attention.png`,
+    statuscode: ''
   }
 });
 
@@ -2386,10 +2397,6 @@ let isApiError = {
   statusCode: null
 };
 let apiRequestCount = 0;
-
-// isApiError.isError = true;
-// isApiError.statusCode = 500; // 例として500を使用
-
 const isValidUrl = url => {
   try {
     const validBaseUrl = "https://api.open-meteo.com/v1";
@@ -2432,10 +2439,13 @@ const weatherObject = async (cityurl, setTodayWeather, setTomorrowWeather, setWe
     });
     apiRequestCount++;
     // console.log(`リクエスト回数: ${apiRequestCount}`);
+    isApiError.isError = false;
+    isApiError.statusCode = null;
     const response = await fetch(cityurl);
     if (!response.ok) {
-      isApiError = true;
+      isApiError.isError = true;
       isApiError.statusCode = response.status;
+      throw new Error(`API response error with status: ${response.status}`);
     }
     const data2 = await response.json();
     if (!validateWeatherData(data2)) {

@@ -19,6 +19,7 @@ export default function Preview({ attributes, commonProps }) {
   } = attributes;
 
   const [errorMessage, setErrorMessage] = useState(null);
+  // isApiErrorの状態を監視
   useEffect(() => {
     if (isApiError.isError) {
       const message = handleWeatherError(isApiError);
@@ -26,11 +27,11 @@ export default function Preview({ attributes, commonProps }) {
         setErrorMessage(message);
       }
     }
-  }, [isApiError]); // isApiErrorの変更を監視
+  }, [isApiError]); // isApiErrorが変更された時にのみ実行
 
   const renderCurrentWeather = (weather, title) => {
     if (!weather || !weather.day) return null;
-  
+
 
     const isHoliday = weather.day.isHoliday || weather.day.isSunday;
     const textColor = isHoliday ? 'red' : weather.day.isSaturday ? 'blue' : '';
@@ -47,9 +48,11 @@ export default function Preview({ attributes, commonProps }) {
     );
   };
 
+  console.log(isApiError.isError)
+
   return (
     <>
-      {errorMessage ? (
+      {isApiError.isError ? (
         <ResponseError errorMessage={errorMessage} />
       ) : (
         <div className="layout">
