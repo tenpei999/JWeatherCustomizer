@@ -80,3 +80,17 @@ function save_weather_data(WP_REST_Request $request)
 		return new WP_Error('rest_forbidden', esc_html__('You do not have permission to save data.', 'JWeatherCustomizer'), array('status' => 401));
 	}
 }
+
+function JWeatherCustomizer_frontend_scripts() {
+	// ブロックが存在するページのみでスクリプトを読み込む
+	if ( has_block( 'create-block/j-weather-customizer' ) ) {
+			wp_enqueue_script(
+					'JWeatherCustomizer-frontend-script',
+					get_template_directory_uri() . '/dist/frontend.js', // 正確なパスに変更してください
+					array(), // 依存関係がある場合はここに記載
+					'1.0',
+					true // スクリプトをフッターに配置
+			);
+	}
+}
+add_action( 'wp_enqueue_scripts', 'JWeatherCustomizer_frontend_scripts' );
