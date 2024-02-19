@@ -1,0 +1,1 @@
+document.addEventListener("DOMContentLoaded",(function(){document.querySelectorAll(".wp-block-create-block-j-weather-customizer").forEach((function(e){console.log(e)}))}));

@@ -86,7 +86,7 @@ function JWeatherCustomizer_frontend_scripts() {
 	if ( has_block( 'create-block/j-weather-customizer' ) ) {
 			wp_enqueue_script(
 					'JWeatherCustomizer-frontend-script',
-					get_template_directory_uri() . '/dist/frontend.js', // 正確なパスに変更してください
+					plugins_url('JWeatherCustomizer') . '/frontScript/frontend.js', // 正確なパスに変更してください
 					array(), // 依存関係がある場合はここに記載
 					'1.0',
 					true // スクリプトをフッターに配置
