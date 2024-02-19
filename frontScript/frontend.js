@@ -1,1 +1,1 @@
-document.addEventListener("DOMContentLoaded",(function(){document.querySelectorAll(".wp-block-create-block-j-weather-customizer").forEach((function(e){console.log(e)}))}));
+document.addEventListener("DOMContentLoaded",(function(){document.querySelectorAll(".wp-block-create-block-j-weather-customizer"),document.querySelectorAll(".block--current").forEach((function(e){const t=e.getAttribute("data-attribute-name");console.log(t),console.log(e)}))}));

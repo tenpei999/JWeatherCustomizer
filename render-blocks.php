@@ -128,7 +128,7 @@ function jWeatherCustomizer_render_block($attr, $content)
 
 function generateWeatherOutput($data, $textColor, $time_ranges, $showHoliday, $showPrecipitation, $title, $commonStyle, $selectedBalance)
 {
-  $output = '<div class="block--current ' . esc_attr($selectedBalance) . '" style="' . esc_attr($commonStyle) . '">';
+  $output = '<div class="block--current ' . esc_attr($selectedBalance) . '" style="' . esc_attr($commonStyle) . '" data-attribute-name="' . esc_attr($title) . '">';
   $output .= '<h3>' . esc_html($title) . '</h3>';
   $output .= '<h4' . $textColor . '>' . esc_html($data['day']['date']['month'] ?? '') . esc_html($data['day']['date']['day'] ?? '') . '<br/>' . esc_html($data['day']['date']['dayOfWeek'] ?? '') . '</h4>';
   if ($showHoliday) {

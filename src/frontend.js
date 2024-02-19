@@ -1,9 +1,13 @@
 document.addEventListener('DOMContentLoaded', function() {
   // 特定のブロックIDやクラスに基づいて操作を行う
   const blocks = document.querySelectorAll('.wp-block-create-block-j-weather-customizer');
+  const current = document.querySelectorAll('.block--current');
 
-  blocks.forEach(function(block) {
+  current.forEach(function(block) {
       // ここにブロックごとの処理を書く
-      console.log(block); // 例としてコンソールに出力
+      const weatherName = block.getAttribute('data-attribute-name');
+      console.log(weatherName); // コンソールに天気の名前を出力
+
+      console.log(block)
   });
 });
