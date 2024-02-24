@@ -133,63 +133,9 @@ function jWeatherCustomizer_render_block($attr, $content)
 
 function generateWeatherOutput($data, $textColor, $time_ranges, $showHoliday, $showPrecipitation, $title, $commonStyle, $selectedBalance)
 {
-  $output = '<div class="block--current ' . esc_attr($selectedBalance) . '" style="' . esc_attr($commonStyle) . '" data-attribute-name="' . esc_attr($title) . '">';
-  $output .= '<h3>' . esc_html($title) . '</h3>';
-  $output .= '<h4' . $textColor . '>' . esc_html($data['day']['date']['month'] ?? '') . esc_html($data['day']['date']['day'] ?? '') . '<br/>' . esc_html($data['day']['date']['dayOfWeek'] ?? '') . '</h4>';
-  if ($showHoliday) {
-    $output .= '<p>' . esc_html($data['day']['holidayName'] ?? '') . '</p>';
-  }
-  $output .= '<p class="weather__name">' . esc_html($data['name'] ?? '') . '</p>';
-  $output .= "<img src=\"" . esc_url($data['image']) . "\" alt=\"weather icon\">";
-  $output .= '<ul class="temp">';
-  $output .= '<li class="highestAndComparison">';
-  $output .= '<p class="highest">' . esc_html($data['highestTemperature'] ?? '') . '<span class="celsius">℃</span></p>';
-  $output .= '<p class="comparison">' . esc_html($data['maximumTemperatureComparison'] ?? '') . '</p>';
-  $output .= '</li>';
-  $output .= '<li class="lowestAndComparison">';
-  $output .= '<p class="lowest">' . esc_html($data['lowestTemperature'] ?? '') . '<span class="celsius">℃</span></p>';
-  $output .= '<p class="comparison">' . esc_html($data['lowestTemperatureComparison'] ?? '') . '</p>';
-  $output .= '</li>';
-  $output .= '</ul>';
-  if ($showPrecipitation && isset($data['rainProbability']) && is_array($data['rainProbability'])) {
-    $output .= '<ul class="time-zone">';
-    $output .= '<li class="c-weather__chanceOfRain-index"><p class="time">時間</p><p class="rain">降水</p></li>';
-    for ($i = 0; $i < 4; $i++) {
-      $output .= '<li class="c-weather__chanceOfRain-timezone' . ($i + 1) . '">';
-      $output .= '<p class="time">' . esc_html($time_ranges[$i]) . '</p>';
-      $output .= '<p class="rain">' . esc_html($data['rainProbability'][$i]['precipitation_probability'] ?? '') . '%</p>';
-      $output .= '</li>';
-    }
-    $output .= '</ul>';
-  }
-  $output .= '</div>';
-
-  return $output;
 }
 
 function generateWeeklyWeatherOutput($data, $textColor, $showHoliday)
 {
 
-  // error_log('generateWeeklyWeatherOutput - data: ' . print_r($data, true));
-  $output = '<li class="block--day">';
-  $output .= '<h4' . $textColor . '>' . esc_html($data['day']['date']['month'] ?? '') . esc_html($data['day']['date']['day'] ?? '') . '<br/>' . esc_html($data['day']['date']['dayOfWeek'] ?? '') . '</h4>';
-  if ($showHoliday) {
-    $output .= '<p>' . esc_html($data['day']['holidayName'] ?? '') . '</p>';
-  }
-  $output .= '<p class="weather__name">' . esc_html($data['name'] ?? '') . '</p>';
-  $output .= "<img src=\"" . esc_url($data['image']) . "\" alt=\"weather icon\">";
-  $output .= '<ul class="temp">';
-  $output .= '<li>';
-  $output .= '<p>' . esc_html($data['highestTemperature'] ?? '') . '<span class="celsius">℃</span></p>';
-  $output .= '<p>' . esc_html($data['maximumTemperatureComparison'] ?? '') . '</p>';
-  $output .= '</li>';
-  $output .= '<li>';
-  $output .= '<p>' . esc_html($data['lowestTemperature'] ?? '') . '<span class="celsius">℃</span></p>';
-  $output .= '<p>' . esc_html($data['lowestTemperatureComparison'] ?? '') . '</p>';
-  $output .= '</li>';
-  $output .= '</ul>';
-  $output .= '</li>';
-
-
-  return $output;
 }
