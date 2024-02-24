@@ -78,19 +78,56 @@ function save_weather_data(WP_REST_Request $request)
 	$nonce = $request->get_header('X-WP-Nonce');
 	if (!wp_verify_nonce($nonce, 'wp_rest')) {
 		return new WP_Error('rest_forbidden', esc_html__('You do not have permission to save data.', 'JWeatherCustomizer'), array('status' => 401));
+	};
+	error_log('Nonce verification succeeded');
+
+	$data = $request->get_param('dailyData');
+	error_log('Received data: ' . print_r($data, true));
+	if (!$data) {
+		error_log('Error: No data provided');
+		return new WP_REST_Response('Error: No data provided', 400);
+	}
+
+	if (!is_array($data)) {
+		error_log('Error: Invalid data format, expected array');
+		return new WP_REST_Response('Error: Invalid data format', 400);
+	}
+
+	foreach ($data as $day => $value) {
+		error_log("Processing day: $day");
+		if (!is_string($value)) {
+			if (is_array($value)) {
+				$sanitized_value = array_map('sanitize_text_field', $value);
+				error_log("Sanitized value for $day: " . print_r($sanitized_value, true));
+			} else {
+				error_log("Error: Each item of dailyData must be a JSON string or an array.");
+				return new WP_REST_Response('Error: Each item of dailyData must be a JSON string or an array.', 400);
+			}
+		} else {
+			$decoded_value = json_decode($value, true);
+			if (json_last_error() === JSON_ERROR_NONE) {
+				$sanitized_value = array_map('sanitize_text_field', $decoded_value);
+				error_log("Decoded and sanitized value for $day: " . print_r($sanitized_value, true));
+			} else {
+				error_log("Error: Invalid JSON string provided for day $day");
+				return new WP_REST_Response('Error: Invalid JSON string provided for day ' . esc_html($day), 400);
+			}
+		}
+		$data[$day] = $sanitized_value;
 	}
 }
 
-function JWeatherCustomizer_frontend_scripts() {
+function JWeatherCustomizer_frontend_scripts()
+{
 	// ブロックが存在するページのみでスクリプトを読み込む
-	if ( has_block( 'create-block/j-weather-customizer' ) ) {
-			wp_enqueue_script(
-					'JWeatherCustomizer-frontend-script',
-					plugins_url('JWeatherCustomizer') . '/frontScript/frontend.js', // 正確なパスに変更してください
-					array(), // 依存関係がある場合はここに記載
-					'1.0',
-					true // スクリプトをフッターに配置
-			);
+	if (has_block('create-block/j-weather-customizer')) {
+		wp_enqueue_script(
+			'JWeatherCustomizer-frontend-script',
+			plugins_url('JWeatherCustomizer') . '/frontScript/frontend.js', // 正確なパスに変更してください
+			array(), // 依存関係がある場合はここに記載
+			'1.0',
+			true // スクリプトをフッターに配置
+		);
 	}
 }
-add_action( 'wp_enqueue_scripts', 'JWeatherCustomizer_frontend_scripts' );
+add_action('wp_enqueue_scripts', 'JWeatherCustomizer_frontend_scripts');

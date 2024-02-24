@@ -2407,8 +2407,25 @@ const isValidUrl = url => {
     return false;
   }
 };
+async function fetchWeatherData(cityurl) {
+  if (!cityurl || !isValidUrl(cityurl)) {
+    throw new Error(`City "${cityurl}" does not exist in the city object.`);
+  }
+  apiRequestCount++;
+  isApiError.isError = false;
+  isApiError.statusCode = null;
+  const response = await fetch(cityurl);
+  if (!response.ok) {
+    isApiError.isError = true;
+    isApiError.statusCode = response.status;
+    throw new Error(`API response error with status: ${response.status}`);
+  }
+  const data = await response.json();
+  return data;
+}
 const weatherObject = async (cityurl, setTodayWeather, setTomorrowWeather, setWeeklyWeather, addBreak = false) => {
   try {
+    const data = await fetchWeatherData(cityurl);
     if (!cityurl || !isValidUrl(cityurl)) {
       throw new Error(`City "${cityurl}" does not exist in the city object.`);
     }
@@ -2438,21 +2455,10 @@ const weatherObject = async (cityurl, setTodayWeather, setTomorrowWeather, setWe
         throw new Error("One of the weather setter functions is not a function.");
       }
     });
-    apiRequestCount++;
-    // console.log(`リクエスト回数: ${apiRequestCount}`);
-    isApiError.isError = false;
-    isApiError.statusCode = null;
-    const response = await fetch(cityurl);
-    if (!response.ok) {
-      isApiError.isError = true;
-      isApiError.statusCode = response.status;
-      throw new Error(`API response error with status: ${response.status}`);
-    }
-    const data2 = await response.json();
-    if (!validateWeatherData(data2)) {
+    if (!validateWeatherData(data)) {
       throw new Error("Invalid weather data format.");
     }
-    if (!data2 || !data2.daily) {
+    if (!data || !data.daily) {
       throw new Error("Unexpected data format received from the weather API.");
     }
     // Validation for `setTodayWeather`, `setTomorrowWeather`, `setWeeklyWeather`
@@ -2463,13 +2469,13 @@ const weatherObject = async (cityurl, setTodayWeather, setTomorrowWeather, setWe
     if (!datesForWeek || datesForWeek.length !== 7) {
       throw new Error("Unexpected date array length from dayWithHoliday.");
     }
-    const weatherCodesForWeek = data2.daily.weathercode; // 本日から6日後までの天気コード
+    const weatherCodesForWeek = data.daily.weathercode; // 本日から6日後までの天気コード
 
     // 天気コードを天気名に変換
     const weatherNamesForWeek = weatherCodesForWeek.map(code => (0,_hooks_getWeatherInfo__WEBPACK_IMPORTED_MODULE_0__["default"])(code).label);
     const weatherImageForWeek = weatherCodesForWeek.map(code => sanitizeImageUrl((0,_hooks_getWeatherInfo__WEBPACK_IMPORTED_MODULE_0__["default"])(code).icon));
-    const highestTemperatureForWeek = data2.daily.temperature_2m_max.map(temp => validateTemperature(temp) ? temp : null);
-    const lowestTemperatureForWeek = data2.daily.temperature_2m_min.map(temp => validateTemperature(temp) ? temp : null);
+    const highestTemperatureForWeek = data.daily.temperature_2m_max.map(temp => validateTemperature(temp) ? temp : null);
+    const lowestTemperatureForWeek = data.daily.temperature_2m_min.map(temp => validateTemperature(temp) ? temp : null);
     const highestTemperatureDifferencesForWeek = [];
     for (let i = -1; i < highestTemperatureForWeek.length; i++) {
       const todayMaxTemperature = highestTemperatureForWeek[i + 1];
@@ -2492,8 +2498,8 @@ const weatherObject = async (cityurl, setTodayWeather, setTomorrowWeather, setWe
       rainProbability1[i] = [];
       for (let j = 0; j < 4; j++) {
         rainProbability1[i].push({
-          time: data2.hourly.time[baseTime + j * 6],
-          precipitation_probability: data2.hourly.precipitation_probability[baseTime + j * 6]
+          time: data.hourly.time[baseTime + j * 6],
+          precipitation_probability: data.hourly.precipitation_probability[baseTime + j * 6]
         });
       }
     }
@@ -2507,6 +2513,30 @@ const weatherObject = async (cityurl, setTodayWeather, setTomorrowWeather, setWe
       lowestTemperatureComparison: lowestTemperatureDifferencesForWeek[index + 1],
       rainProbability: rainProbability1[index + 1]
     }));
+    if (typeof setTodayWeather !== 'function') {
+      throw new Error('setTodayWeather is not a function.');
+    }
+    if (typeof setTomorrowWeather !== 'function') {
+      throw new Error('setTomorrowWeather is not a function.');
+    }
+    if (typeof setWeeklyWeather !== 'function') {
+      throw new Error('setWeeklyWeather is not a function.');
+    }
+    const postResponse = await fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-WP-Nonce': JWeatherCustomizerData.nonce // nonceをヘッダーに追加
+      },
+
+      body: JSON.stringify({
+        dailyData: dailyData
+      })
+    });
+    if (!postResponse.ok) {
+      console.error(`Failed to post data to ${apiUrl}. Status: ${postResponse.status}`);
+      throw new Error(`Failed to post data to ${apiUrl}. Status: ${postResponse.status}`);
+    }
     if (typeof setTodayWeather !== 'function') {
       throw new Error('setTodayWeather is not a function.');
     }

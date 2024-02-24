@@ -80,7 +80,6 @@ function jWeatherCustomizer_render_block($attr, $content)
       return ' style="color: blue"';
     }
     return '';
-    error_log('Data that failed to save: ' . print_r($day, true));
   }
 
   // Styles
@@ -101,7 +100,6 @@ function jWeatherCustomizer_render_block($attr, $content)
   if ($attr['showTodayWeather'] && isset($attr['todayWeather'])) {
     $data = $attr['todayWeather'];
     $textColor = setTextColor($data['day'] ?? []);
-    error_log('Data that failed to save: ' . print_r($textColor, true));
 
     $output .= generateWeatherOutput($data, $textColor, $time_ranges, $attr['showHoliday'], $attr['showPrecipitation'], esc_html__('今日の天気', 'j-weather-customizer'), $commonStyle, esc_attr($attr['balanceOption']));
   }
