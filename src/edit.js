@@ -19,7 +19,7 @@ import SettingGroup from './components/SettingGroup';
 import { useChangeCity } from './hooks/useChangeCity';
 import useBlockSelection from './hooks/useOutsideClick';
 import { createVisibilitySettings } from './objects/visibilitySettings';
-import { cities } from './objects/getSpotWeather';
+import { cities } from './weatherDate/getSpotWeather';
 import { useFontFamilyControl } from './hooks/useFontFamilyControl';
 import { useChangeBalance } from './hooks/useChangeBalance';
 import Preview from './components/Preview';

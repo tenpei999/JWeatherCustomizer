@@ -1,5 +1,5 @@
 import { useEffect, useState } from '@wordpress/element';
-import { weatherObject } from '../objects/weatherObject';
+import { mainWeatherLogic } from '../weatherDate/MainWeatherLogic';
 
 export function useChangeCity(selectedCity) {
 
@@ -9,18 +9,18 @@ export function useChangeCity(selectedCity) {
     tomorrow: null,
     weekly: null,
   });
-  
+
   useEffect(() => {
     async function fetchData() {
       if (!selectedCity || !selectedCity.url) {
         console.error(`No URL found for city: ${selectedCity ? selectedCity.name : "Unknown city"}`);
         return; // selectedCityオブジェクトがない、またはURLがない場合、ここで処理を終了します。
       }
-      
+
       // 'selectedCity'が存在し、URLが含まれている場合、以下の処理を行います。
       const cityUrl = selectedCity.url;
-      
-      await weatherObject(
+
+      await mainWeatherLogic(
         cityUrl,
         (todayWeather) => {
           setWeatherData((prevData) => ({

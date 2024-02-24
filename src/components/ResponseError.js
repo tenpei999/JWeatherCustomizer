@@ -1,4 +1,4 @@
-import { isApiError } from "../objects/weatherObject";
+import { isApiError } from "../weatherDate/fetchWeatherData";
 
 console.log(isApiError)
 

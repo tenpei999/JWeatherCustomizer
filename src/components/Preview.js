@@ -2,8 +2,8 @@ import { __ } from '@wordpress/i18n';
 import { useState, useEffect } from '@wordpress/element';
 import { CurrentWeather } from './CurrentWeather';
 import WeekWeather from './WeekWeather';
+import { isApiError } from '../weatherDate/fetchWeatherData';
 import { handleWeatherError } from '../hooks/handleWeatherError';
-import { isApiError } from '../objects/weatherObject';
 import { ResponseError } from './ResponseError';
 
 export default function Preview({ attributes, commonProps }) {

@@ -521,8 +521,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _CurrentWeather__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./CurrentWeather */ "./src/components/CurrentWeather.js");
 /* harmony import */ var _WeekWeather__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./WeekWeather */ "./src/components/WeekWeather.js");
-/* harmony import */ var _hooks_handleWeatherError__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../hooks/handleWeatherError */ "./src/hooks/handleWeatherError.js");
-/* harmony import */ var _objects_weatherObject__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../objects/weatherObject */ "./src/objects/weatherObject.js");
+/* harmony import */ var _weatherDate_fetchWeatherData__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../weatherDate/fetchWeatherData */ "./src/weatherDate/fetchWeatherData.js");
+/* harmony import */ var _hooks_handleWeatherError__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../hooks/handleWeatherError */ "./src/hooks/handleWeatherError.js");
 /* harmony import */ var _ResponseError__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./ResponseError */ "./src/components/ResponseError.js");
 
 
@@ -549,13 +549,13 @@ function Preview({
   const [errorMessage, setErrorMessage] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
   // isApiErrorの状態を監視
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
-    if (_objects_weatherObject__WEBPACK_IMPORTED_MODULE_5__.isApiError.isError) {
-      const message = (0,_hooks_handleWeatherError__WEBPACK_IMPORTED_MODULE_4__.handleWeatherError)(_objects_weatherObject__WEBPACK_IMPORTED_MODULE_5__.isApiError);
+    if (_weatherDate_fetchWeatherData__WEBPACK_IMPORTED_MODULE_4__.isApiError.isError) {
+      const message = (0,_hooks_handleWeatherError__WEBPACK_IMPORTED_MODULE_5__.handleWeatherError)(_weatherDate_fetchWeatherData__WEBPACK_IMPORTED_MODULE_4__.isApiError);
       if (message) {
         setErrorMessage(message);
       }
     }
-  }, [_objects_weatherObject__WEBPACK_IMPORTED_MODULE_5__.isApiError]); // isApiErrorが変更された時にのみ実行
+  }, [_weatherDate_fetchWeatherData__WEBPACK_IMPORTED_MODULE_4__.isApiError]); // isApiErrorが変更された時にのみ実行
 
   const renderCurrentWeather = (weather, title) => {
     if (!weather || !weather.day) return null;
@@ -570,8 +570,8 @@ function Preview({
       textColor: textColor
     });
   };
-  console.log(_objects_weatherObject__WEBPACK_IMPORTED_MODULE_5__.isApiError.isError);
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, _objects_weatherObject__WEBPACK_IMPORTED_MODULE_5__.isApiError.isError ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_ResponseError__WEBPACK_IMPORTED_MODULE_6__.ResponseError, {
+  console.log(_weatherDate_fetchWeatherData__WEBPACK_IMPORTED_MODULE_4__.isApiError.isError);
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, _weatherDate_fetchWeatherData__WEBPACK_IMPORTED_MODULE_4__.isApiError.isError ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_ResponseError__WEBPACK_IMPORTED_MODULE_6__.ResponseError, {
     errorMessage: errorMessage
   }) : (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "layout"
@@ -598,10 +598,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _objects_weatherObject__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../objects/weatherObject */ "./src/objects/weatherObject.js");
+/* harmony import */ var _weatherDate_fetchWeatherData__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../weatherDate/fetchWeatherData */ "./src/weatherDate/fetchWeatherData.js");
 
 
-console.log(_objects_weatherObject__WEBPACK_IMPORTED_MODULE_1__.isApiError);
+console.log(_weatherDate_fetchWeatherData__WEBPACK_IMPORTED_MODULE_1__.isApiError);
 const ResponseError = ({
   errorMessage
 }) => {
@@ -1271,7 +1271,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _hooks_useChangeCity__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./hooks/useChangeCity */ "./src/hooks/useChangeCity.js");
 /* harmony import */ var _hooks_useOutsideClick__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./hooks/useOutsideClick */ "./src/hooks/useOutsideClick.js");
 /* harmony import */ var _objects_visibilitySettings__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./objects/visibilitySettings */ "./src/objects/visibilitySettings.js");
-/* harmony import */ var _objects_getSpotWeather__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./objects/getSpotWeather */ "./src/objects/getSpotWeather.js");
+/* harmony import */ var _weatherDate_getSpotWeather__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./weatherDate/getSpotWeather */ "./src/weatherDate/getSpotWeather.js");
 /* harmony import */ var _hooks_useFontFamilyControl__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./hooks/useFontFamilyControl */ "./src/hooks/useFontFamilyControl.js");
 /* harmony import */ var _hooks_useChangeBalance__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./hooks/useChangeBalance */ "./src/hooks/useChangeBalance.js");
 /* harmony import */ var _components_Preview__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./components/Preview */ "./src/components/Preview.js");
@@ -1330,14 +1330,14 @@ function Edit({
   const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps)({
     className: 'my-first-plugin'
   });
-  const cityOptions = Object.entries(_objects_getSpotWeather__WEBPACK_IMPORTED_MODULE_9__.cities).map(([key, city]) => ({
+  const cityOptions = Object.entries(_weatherDate_getSpotWeather__WEBPACK_IMPORTED_MODULE_9__.cities).map(([key, city]) => ({
     label: city.name,
     // 'name'属性を表示テキストとして使用
     value: key // キー（都市名）を内部値として使用
   }));
 
   const handleCityChange = selectedCityKey => {
-    const newSelectedCity = _objects_getSpotWeather__WEBPACK_IMPORTED_MODULE_9__.cities[selectedCityKey];
+    const newSelectedCity = _weatherDate_getSpotWeather__WEBPACK_IMPORTED_MODULE_9__.cities[selectedCityKey];
     setSelectedCity(newSelectedCity);
     setAttributes({
       selectedCity: newSelectedCity
@@ -1900,7 +1900,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _objects_weatherObject__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../objects/weatherObject */ "./src/objects/weatherObject.js");
+/* harmony import */ var _weatherDate_MainWeatherLogic__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../weatherDate/MainWeatherLogic */ "./src/weatherDate/MainWeatherLogic.js");
 
 
 function useChangeCity(selectedCity) {
@@ -1919,7 +1919,7 @@ function useChangeCity(selectedCity) {
 
       // 'selectedCity'が存在し、URLが含まれている場合、以下の処理を行います。
       const cityUrl = selectedCity.url;
-      await (0,_objects_weatherObject__WEBPACK_IMPORTED_MODULE_1__.weatherObject)(cityUrl, todayWeather => {
+      await (0,_weatherDate_MainWeatherLogic__WEBPACK_IMPORTED_MODULE_1__.mainWeatherLogic)(cityUrl, todayWeather => {
         setWeatherData(prevData => ({
           ...prevData,
           today: todayWeather
@@ -2081,160 +2081,6 @@ if (!(0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__.getBlockType)(_block_json
 
 /***/ }),
 
-/***/ "./src/objects/dayWithHoloday.js":
-/*!***************************************!*\
-  !*** ./src/objects/dayWithHoloday.js ***!
-  \***************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-const dayWithHoliday = async (addBreak = false) => {
-  const cache = {};
-  const fetchHolidays = async () => {
-    const url = 'https://holidays-jp.github.io/api/v1/date.json';
-    try {
-      const response = await fetch(url);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      console.error('Error fetching holidays:', error);
-      return {}; // 空のオブジェクトを返し、処理を続行
-    }
-  };
-
-  const getHolidays = async () => {
-    const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD形式
-    if (!cache[today]) {
-      cache[today] = await fetchHolidays();
-    }
-    return cache[today];
-  };
-  function getDateRangeArray(startDate, endDate) {
-    const dateArray = [];
-    let currentDate = new Date(startDate);
-    while (currentDate <= endDate) {
-      dateArray.push(new Date(currentDate));
-      currentDate.setDate(currentDate.getDate() + 1);
-    }
-    return dateArray;
-  }
-  async function getOneWeekDatesWithHolidays(addBreak = false) {
-    const today = new Date();
-    const sixDaysLater = new Date(today);
-    sixDaysLater.setDate(today.getDate() + 6);
-    const oneWeekDates = getDateRangeArray(today, sixDaysLater);
-
-    // Get the holidays
-    const holidays = await getHolidays();
-
-    // Create an array of dates with holidays data included
-    const oneWeekDatesWithHolidays = oneWeekDates.map(date => {
-      const weekDays = ["日", "月", "火", "水", "木", "金", "土"];
-      const dayOfWeek = weekDays[date.getDay()];
-      const formattedDate = `${String(date.getMonth() + 1)}月${String(date.getDate())}日(${dayOfWeek})`;
-      return {
-        date: {
-          month: `${String(date.getMonth() + 1)}月`,
-          day: `${String(date.getDate())}日`,
-          dayOfWeek: `(${dayOfWeek})`,
-          fullDate: `${String(date.getMonth() + 1)}月${String(date.getDate())}日(${dayOfWeek})`
-        },
-        isHoliday: !!holidays[formattedDate],
-        // this will be true if the date is a holiday, otherwise false
-        holidayName: holidays[formattedDate] || null,
-        // this will have the holiday name if the date is a holiday, otherwise null
-        isSaturday: date.getDay() === 6,
-        isSunday: date.getDay() === 0
-      };
-    });
-    return oneWeekDatesWithHolidays;
-  }
-  return await getOneWeekDatesWithHolidays(addBreak);
-};
-/* harmony default export */ __webpack_exports__["default"] = (dayWithHoliday);
-
-/***/ }),
-
-/***/ "./src/objects/getSpotWeather.js":
-/*!***************************************!*\
-  !*** ./src/objects/getSpotWeather.js ***!
-  \***************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   cities: function() { return /* binding */ cities; }
-/* harmony export */ });
-const apiBaseUrl = 'https://api.open-meteo.com/v1/forecast';
-const createCityWeatherUrl = (latitude, longitude) => {
-  return `${apiBaseUrl}?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m,precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14`;
-};
-const cities = {
-  札幌: {
-    name: '札幌',
-    url: createCityWeatherUrl(43.0667, 141.35)
-  },
-  秋田: {
-    name: '秋田',
-    url: createCityWeatherUrl(39.7167, 140.1167)
-  },
-  金沢: {
-    name: '金沢',
-    url: createCityWeatherUrl(36.6, 136.6167)
-  },
-  東京: {
-    name: '東京',
-    url: createCityWeatherUrl(35.6895, 139.6917)
-  },
-  大宮: {
-    name: '大宮',
-    url: createCityWeatherUrl(35.9635, 139.8305)
-  },
-  名古屋: {
-    name: '名古屋',
-    url: createCityWeatherUrl(35.1815, 136.9064)
-  },
-  南堀江: {
-    name: '南堀江',
-    url: createCityWeatherUrl(34.6711, 135.4942)
-  },
-  八尾: {
-    name: '八尾',
-    url: createCityWeatherUrl(34.6167, 135.6)
-  },
-  奈良: {
-    name: '奈良',
-    url: createCityWeatherUrl(34.685, 135.8049)
-  },
-  朝来: {
-    name: '朝来',
-    url: createCityWeatherUrl(35.2591, 134.8139)
-  },
-  福岡: {
-    name: '福岡',
-    url: createCityWeatherUrl(33.6, 130.4167)
-  },
-  佐世保: {
-    name: '佐世保',
-    url: createCityWeatherUrl(33.1683, 129.725)
-  },
-  諸塚: {
-    name: '諸塚',
-    url: createCityWeatherUrl(32.5601, 131.3198)
-  },
-  パリ: {
-    name: 'パリ',
-    url: createCityWeatherUrl(48.8534, 2.3488)
-  }
-};
-
-/***/ }),
-
 /***/ "./src/objects/responseErrorMessages.js":
 /*!**********************************************!*\
   !*** ./src/objects/responseErrorMessages.js ***!
@@ -2377,37 +2223,153 @@ const createVisibilitySettings = ({
 
 /***/ }),
 
-/***/ "./src/objects/weatherObject.js":
-/*!**************************************!*\
-  !*** ./src/objects/weatherObject.js ***!
-  \**************************************/
+/***/ "./src/weatherDate/MainWeatherLogic.js":
+/*!*********************************************!*\
+  !*** ./src/weatherDate/MainWeatherLogic.js ***!
+  \*********************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   isApiError: function() { return /* binding */ isApiError; },
-/* harmony export */   weatherObject: function() { return /* binding */ weatherObject; }
+/* harmony export */   mainWeatherLogic: function() { return /* binding */ mainWeatherLogic; }
 /* harmony export */ });
-/* harmony import */ var _hooks_getWeatherInfo__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../hooks/getWeatherInfo */ "./src/hooks/getWeatherInfo.js");
-/* harmony import */ var _dayWithHoloday__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./dayWithHoloday */ "./src/objects/dayWithHoloday.js");
+/* harmony import */ var _fetchWeatherData__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./fetchWeatherData */ "./src/weatherDate/fetchWeatherData.js");
+/* harmony import */ var _processWeatherData__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./processWeatherData */ "./src/weatherDate/processWeatherData.js");
+/* harmony import */ var _saveWeatherDataToServer__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./saveWeatherDataToServer */ "./src/weatherDate/saveWeatherDataToServer.js");
 
 
+
+async function mainWeatherLogic(cityurl, setTodayWeather, setTomorrowWeather, setWeeklyWeather, addBreak = false) {
+  try {
+    // 1. 天気データを取得
+    const rawData = await (0,_fetchWeatherData__WEBPACK_IMPORTED_MODULE_0__.fetchWeatherData)(cityurl);
+
+    // 2. 天気データを処理（加工）
+    const processedData = await (0,_processWeatherData__WEBPACK_IMPORTED_MODULE_1__["default"])(rawData, addBreak);
+
+    // 3. UIを更新するためのデータをセット
+    setTodayWeather(processedData.dailyData[0]);
+    setTomorrowWeather(processedData.dailyData[1]);
+    setWeeklyWeather(processedData.dailyData.slice(2)); // 2日目以降のデータを週間天気として設定
+
+    // 4. 処理された天気データをサーバーに保存
+    await (0,_saveWeatherDataToServer__WEBPACK_IMPORTED_MODULE_2__["default"])(processedData.dailyData);
+  } catch (error) {
+    console.error('Error in weatherObject function:', error);
+    // 必要に応じて、ここでエラーハンドリングを行う
+  }
+}
+
+
+
+/***/ }),
+
+/***/ "./src/weatherDate/dayWithHoloday.js":
+/*!*******************************************!*\
+  !*** ./src/weatherDate/dayWithHoloday.js ***!
+  \*******************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+const dayWithHoliday = async (addBreak = false) => {
+  const cache = {};
+  const fetchHolidays = async () => {
+    const url = 'https://holidays-jp.github.io/api/v1/date.json';
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error fetching holidays:', error);
+      return {}; // 空のオブジェクトを返し、処理を続行
+    }
+  };
+
+  const getHolidays = async () => {
+    const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD形式
+    if (!cache[today]) {
+      cache[today] = await fetchHolidays();
+    }
+    return cache[today];
+  };
+  function getDateRangeArray(startDate, endDate) {
+    const dateArray = [];
+    let currentDate = new Date(startDate);
+    while (currentDate <= endDate) {
+      dateArray.push(new Date(currentDate));
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+    return dateArray;
+  }
+  async function getOneWeekDatesWithHolidays(addBreak = false) {
+    const today = new Date();
+    const sixDaysLater = new Date(today);
+    sixDaysLater.setDate(today.getDate() + 6);
+    const oneWeekDates = getDateRangeArray(today, sixDaysLater);
+
+    // Get the holidays
+    const holidays = await getHolidays();
+
+    // Create an array of dates with holidays data included
+    const oneWeekDatesWithHolidays = oneWeekDates.map(date => {
+      const weekDays = ["日", "月", "火", "水", "木", "金", "土"];
+      const dayOfWeek = weekDays[date.getDay()];
+      const formattedDate = `${String(date.getMonth() + 1)}月${String(date.getDate())}日(${dayOfWeek})`;
+      return {
+        date: {
+          month: `${String(date.getMonth() + 1)}月`,
+          day: `${String(date.getDate())}日`,
+          dayOfWeek: `(${dayOfWeek})`,
+          fullDate: `${String(date.getMonth() + 1)}月${String(date.getDate())}日(${dayOfWeek})`
+        },
+        isHoliday: !!holidays[formattedDate],
+        // this will be true if the date is a holiday, otherwise false
+        holidayName: holidays[formattedDate] || null,
+        // this will have the holiday name if the date is a holiday, otherwise null
+        isSaturday: date.getDay() === 6,
+        isSunday: date.getDay() === 0
+      };
+    });
+    return oneWeekDatesWithHolidays;
+  }
+  return await getOneWeekDatesWithHolidays(addBreak);
+};
+/* harmony default export */ __webpack_exports__["default"] = (dayWithHoliday);
+
+/***/ }),
+
+/***/ "./src/weatherDate/fetchWeatherData.js":
+/*!*********************************************!*\
+  !*** ./src/weatherDate/fetchWeatherData.js ***!
+  \*********************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   fetchWeatherData: function() { return /* binding */ fetchWeatherData; },
+/* harmony export */   isApiError: function() { return /* binding */ isApiError; }
+/* harmony export */ });
 let isApiError = {
   isError: false,
   statusCode: null
 };
-let apiRequestCount = 0;
-const isValidUrl = url => {
-  try {
-    const validBaseUrl = "https://api.open-meteo.com/v1";
-    const parsedUrl = new URL(url);
-    return parsedUrl.href.startsWith(validBaseUrl);
-  } catch (e) {
-    return false;
-  }
-};
 async function fetchWeatherData(cityurl) {
+  const isValidUrl = url => {
+    try {
+      const validBaseUrl = "https://api.open-meteo.com/v1";
+      const parsedUrl = new URL(url);
+      return parsedUrl.href.startsWith(validBaseUrl);
+    } catch (e) {
+      return false;
+    }
+  };
+  let apiRequestCount = 0;
   if (!cityurl || !isValidUrl(cityurl)) {
     throw new Error(`City "${cityurl}" does not exist in the city object.`);
   }
@@ -2424,6 +2386,98 @@ async function fetchWeatherData(cityurl) {
   return data;
 }
 ;
+
+
+/***/ }),
+
+/***/ "./src/weatherDate/getSpotWeather.js":
+/*!*******************************************!*\
+  !*** ./src/weatherDate/getSpotWeather.js ***!
+  \*******************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   cities: function() { return /* binding */ cities; }
+/* harmony export */ });
+const apiBaseUrl = 'https://api.open-meteo.com/v1/forecast';
+const createCityWeatherUrl = (latitude, longitude) => {
+  return `${apiBaseUrl}?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m,precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14`;
+};
+const cities = {
+  札幌: {
+    name: '札幌',
+    url: createCityWeatherUrl(43.0667, 141.35)
+  },
+  秋田: {
+    name: '秋田',
+    url: createCityWeatherUrl(39.7167, 140.1167)
+  },
+  金沢: {
+    name: '金沢',
+    url: createCityWeatherUrl(36.6, 136.6167)
+  },
+  東京: {
+    name: '東京',
+    url: createCityWeatherUrl(35.6895, 139.6917)
+  },
+  大宮: {
+    name: '大宮',
+    url: createCityWeatherUrl(35.9635, 139.8305)
+  },
+  名古屋: {
+    name: '名古屋',
+    url: createCityWeatherUrl(35.1815, 136.9064)
+  },
+  南堀江: {
+    name: '南堀江',
+    url: createCityWeatherUrl(34.6711, 135.4942)
+  },
+  八尾: {
+    name: '八尾',
+    url: createCityWeatherUrl(34.6167, 135.6)
+  },
+  奈良: {
+    name: '奈良',
+    url: createCityWeatherUrl(34.685, 135.8049)
+  },
+  朝来: {
+    name: '朝来',
+    url: createCityWeatherUrl(35.2591, 134.8139)
+  },
+  福岡: {
+    name: '福岡',
+    url: createCityWeatherUrl(33.6, 130.4167)
+  },
+  佐世保: {
+    name: '佐世保',
+    url: createCityWeatherUrl(33.1683, 129.725)
+  },
+  諸塚: {
+    name: '諸塚',
+    url: createCityWeatherUrl(32.5601, 131.3198)
+  },
+  パリ: {
+    name: 'パリ',
+    url: createCityWeatherUrl(48.8534, 2.3488)
+  }
+};
+
+/***/ }),
+
+/***/ "./src/weatherDate/processWeatherData.js":
+/*!***********************************************!*\
+  !*** ./src/weatherDate/processWeatherData.js ***!
+  \***********************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _hooks_getWeatherInfo__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../hooks/getWeatherInfo */ "./src/hooks/getWeatherInfo.js");
+/* harmony import */ var _dayWithHoloday__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./dayWithHoloday */ "./src/weatherDate/dayWithHoloday.js");
+
+
 async function processWeatherData(data, addBreak = false) {
   const sanitizeImageUrl = url => {
     // 画像URLをサニタイズする関数。不正なURLを除去または修正
@@ -2496,86 +2550,40 @@ async function processWeatherData(data, addBreak = false) {
   };
 }
 
-const weatherObject = async (cityurl, setTodayWeather, setTomorrowWeather, setWeeklyWeather, addBreak = false) => {
+/* harmony default export */ __webpack_exports__["default"] = (processWeatherData);
+
+/***/ }),
+
+/***/ "./src/weatherDate/saveWeatherDataToServer.js":
+/*!****************************************************!*\
+  !*** ./src/weatherDate/saveWeatherDataToServer.js ***!
+  \****************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+async function saveWeatherDataToServer(dailyData) {
+  const apiUrl = JWeatherCustomizerData.siteUrl + '/wp-json/j-weather-customizer/save-data/';
   try {
-    const data = await fetchWeatherData(cityurl);
-    const {
-      dailyData
-    } = await processWeatherData(data, addBreak);
-    if (!cityurl || !isValidUrl(cityurl)) {
-      throw new Error(`City "${cityurl}" does not exist in the city object.`);
-    }
-    const apiUrl = JWeatherCustomizerData.siteUrl + '/wp-json/j-weather-customizer/save-data/';
-
-    // console.log('Making request to weather API for city:', cityurl); // API呼び出し前のログ
-
-    const validateWeatherData = data => {
-      // 天気データの構造を検証する関数
-      return data && data.daily && Array.isArray(data.daily.weathercode) && Array.isArray(data.daily.temperature_2m_max);
-    };
-    [setTodayWeather, setTomorrowWeather, setWeeklyWeather].forEach(func => {
-      if (typeof func !== 'function') {
-        throw new Error("One of the weather setter functions is not a function.");
-      }
-    });
-    if (!validateWeatherData(data)) {
-      throw new Error("Invalid weather data format.");
-    }
-    if (typeof setTodayWeather !== 'function') {
-      throw new Error('setTodayWeather is not a function.');
-    }
-    if (typeof setTomorrowWeather !== 'function') {
-      throw new Error('setTomorrowWeather is not a function.');
-    }
-    if (typeof setWeeklyWeather !== 'function') {
-      throw new Error('setWeeklyWeather is not a function.');
-    }
-    const postResponse = await fetch(apiUrl, {
+    const response = await fetch(apiUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-WP-Nonce': JWeatherCustomizerData.nonce // nonceをヘッダーに追加
+        'X-WP-Nonce': JWeatherCustomizerData.nonce
       },
-
       body: JSON.stringify({
-        dailyData: dailyData
+        dailyData
       })
     });
-    if (!postResponse.ok) {
-      console.error(`Failed to post data to ${apiUrl}. Status: ${postResponse.status}`);
-      throw new Error(`Failed to post data to ${apiUrl}. Status: ${postResponse.status}`);
+    if (!response.ok) {
+      throw new Error(`Failed to post data. Status: ${response.status}`);
     }
-    if (typeof setTodayWeather !== 'function') {
-      throw new Error('setTodayWeather is not a function.');
-    }
-    if (typeof setTomorrowWeather !== 'function') {
-      throw new Error('setTomorrowWeather is not a function.');
-    }
-    if (typeof setWeeklyWeather !== 'function') {
-      throw new Error('setWeeklyWeather is not a function.');
-    }
-
-    // 属性の設定
-    if (typeof setTodayWeather === 'function') {
-      setTodayWeather(dailyData[0]);
-    }
-    if (typeof setTomorrowWeather === 'function') {
-      setTomorrowWeather(dailyData[1]);
-    }
-    if (typeof setWeeklyWeather === 'function') {
-      setWeeklyWeather(dailyData.slice(2, 7));
-    }
-
-    // オプション値の存在を確認
+    console.log('Data successfully saved to the server.');
   } catch (error) {
-    console.error('APIの呼び出しに失敗:', error);
-
-    // エラーが発生した場合、isApiError を更新
-    isApiError.isError = true;
-    isApiError.statusCode = error.status || 400;
+    console.error('Failed to save data to the server:', error);
   }
-};
-
+}
+/* harmony default export */ __webpack_exports__["default"] = (saveWeatherDataToServer);
 
 /***/ }),
 
