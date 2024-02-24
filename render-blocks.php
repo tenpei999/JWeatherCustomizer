@@ -116,11 +116,18 @@ function jWeatherCustomizer_render_block($attr, $content)
 
   if ($attr['showWeeklyWeather'] && isset($attr['weeklyWeather']) && is_array($attr['weeklyWeather'])) {
     $output .= '<ul class="block--weekly weather-layout ' . esc_attr($attr['balanceOption']) . '" style="' . $commonStyle . '">';
+
+    $maxDays = 4;
     foreach ($attr['weeklyWeather'] as $i => $dayWeather) {
-      $data = $attr['weeklyWeather'][$i]; // 週間天気データを $data に設定
-      $textColor = setTextColor($data['day'] ?? []);
-      $output .= generateWeeklyWeatherOutput($data, $textColor, $attr['showHoliday']); // 週間天気用の出力関数を呼び出し
+      if ($i <= $maxDays) { // 0番目から5番目までの要素に対してのみ処理を実行
+        $data = $attr['weeklyWeather'][$i]; // 週間天気データを $data に設定
+        $textColor = setTextColor($data['day'] ?? []);
+        $output .= generateWeeklyWeatherOutput($data, $textColor, $attr['showHoliday']); // 週間天気用の出力関数を呼び出し
+      } else {
+        break; // 5番目の要素を処理した後、ループから抜け出す
+      }
     }
+    $output .= '</ul>';
   }
 
   return $output;
