@@ -20,6 +20,11 @@ async function processWeatherData(data, addBreak = false) {
     throw new Error("Unexpected data format received from the weather API.");
   }
 
+  function validateTemperature($temperature) {
+    // 温度データが数値であることを検証
+    return is_numeric($temperature) && is_finite($temperature);
+  }
+
   const datesForWeek = await dayWithHoliday(addBreak);
   if (!datesForWeek || datesForWeek.length !== 7) {
     throw new Error("Unexpected date array length from dayWithHoliday.");

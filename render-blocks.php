@@ -1,5 +1,66 @@
 <?php
 
+function getWeatherInfo($weatherCode)
+{
+  // プラグインの画像パスを指定
+  // 注意: このパスはプラグインの構造に合わせて適宜調整してください。
+  $pluginImagePaths = plugins_url('images/', __FILE__);
+
+  // 天気コードに基づいてラベルとアイコンを返す
+  if ($weatherCode === 0) {
+    return ['label' => "快晴", 'icon' => $pluginImagePaths . '100.svg'];
+  }
+  if ($weatherCode === 1) {
+    return ['label' => "晴れ", 'icon' => $pluginImagePaths . '100.svg'];
+  }
+  if ($weatherCode === 2) {
+    return ['label' => "一部曇", 'icon' => $pluginImagePaths . '101.svg'];
+  }
+  if ($weatherCode === 3) {
+    return ['label' => "曇り", 'icon' => $pluginImagePaths . '200.svg'];
+  }
+  if ($weatherCode <= 49) {
+    return ['label' => "霧", 'icon' => $pluginImagePaths . '200.svg'];
+  }
+  if ($weatherCode <= 59) {
+    return ['label' => "霧雨", 'icon' => $pluginImagePaths . '202.svg'];
+  }
+  if ($weatherCode <= 69) {
+    return ['label' => "雨", 'icon' => $pluginImagePaths . '300.svg'];
+  }
+  if ($weatherCode <= 79) {
+    return ['label' => "雪", 'icon' => $pluginImagePaths . '400.svg'];
+  }
+  if ($weatherCode <= 84) {
+    return ['label' => "俄か雨", 'icon' => $pluginImagePaths . '302.svg'];
+  }
+  if ($weatherCode <= 94) {
+    return ['label' => "雪・雹", 'icon' => $pluginImagePaths . '400.svg'];
+  }
+  if ($weatherCode <= 99) {
+    return ['label' => "雷雨", 'icon' => $pluginImagePaths . '300.svg'];
+  }
+
+  // 未定義のコードはエラーとする
+  return ['label' => "ERROR", 'icon' => ""];
+}
+
+function sanitizeImageUrl($url)
+{
+  // FILTER_VALIDATE_URLフィルターでURLを検証
+  $sanitizedUrl = filter_var($url, FILTER_VALIDATE_URL);
+
+  // URLが有効ならそのURLを、そうでなければ空文字列を返す
+  return $sanitizedUrl ? $sanitizedUrl : '';
+};
+
+function validateTemperature($temperature)
+{
+  // 温度データが数値であることを検証
+  return is_numeric($temperature) && is_finite($temperature);
+}
+
+
 function fetchWeatherDataWithCache($apiUrl, $cacheFile = 'weather_cache.json', $cacheTime = 3600)
 {
   $dataFromCache = true; // データがキャッシュから取得されたかどうかを追跡するフラグ
@@ -18,10 +79,78 @@ function fetchWeatherDataWithCache($apiUrl, $cacheFile = 'weather_cache.json', $
 
   // デバッグ情報をエラーログに出力
   if ($dataFromCache) {
-    error_log("Weather data fetched from cache: " . print_r($data, true));
+    // error_log("Weather data fetched from cache: " . print_r($data, true));
   } else {
-    error_log("Weather data fetched from API and updated cache: " . print_r($data, true));
+    // error_log("Weather data fetched from API and updated cache: " . print_r($data, true));
   }
+
+  $weatherCodesForWeek = $data['daily']['weathercode'];
+  $weatherNamesForWeek = array_map(function ($code) {
+    $info = getWeatherInfo($code); // getWeatherInfo()がコードに基づいて天気情報を返すように定義されていることを確認してください
+    return $info['label'];
+  }, $weatherCodesForWeek);
+  $weatherImageForWeek = array_map(function ($code) {
+    $info = getWeatherInfo($code);
+    return sanitizeImageUrl($info['icon']); // sanitizeImageUrl()が画像URLを適切にサニタイズするように定義されていることを確認してください
+  }, $weatherCodesForWeek);
+  $highestTemperatureForWeek = array_map(function ($temp) {
+    return validateTemperature($temp) ? $temp : null; // validateTemperature()が温度を適切に検証するように定義されていることを確認してください
+  }, $data['daily']['temperature_2m_max']);
+
+  $lowestTemperatureForWeek = array_map(function ($temp) {
+    return validateTemperature($temp) ? $temp : null;
+  }, $data['daily']['temperature_2m_min']);
+  $highestTemperatureDifferencesForWeek = [];
+  $lowestTemperatureDifferencesForWeek = [];
+  $rainProbability1 = [];
+
+  for ($i = -1; $i < count($highestTemperatureForWeek) - 1; $i++) {
+    $todayMaxTemperature = $highestTemperatureForWeek[$i + 1];
+    $yesterdayMaxTemperature = $highestTemperatureForWeek[$i];
+    $temperatureDifference = ceil(($todayMaxTemperature - $yesterdayMaxTemperature) * 10) / 10;
+    $formattedDifference = $temperatureDifference >= 0 ? "(+{$temperatureDifference})" : "(-" . abs($temperatureDifference) . ")";
+
+    $highestTemperatureDifferencesForWeek[] = $formattedDifference;
+  };
+
+  for ($i = -1; $i < count($lowestTemperatureForWeek) - 1; $i++) {
+    $todayMinTemperature = $lowestTemperatureForWeek[$i + 1];
+    $yesterdayMinTemperature = $lowestTemperatureForWeek[$i];
+    $temperatureDifference = ceil(($todayMinTemperature - $yesterdayMinTemperature) * 10) / 10;
+    $formattedDifference = $temperatureDifference >= 0 ? "(+{$temperatureDifference})" : "(-" . abs($temperatureDifference) . ")";
+
+    $lowestTemperatureDifferencesForWeek[] = $formattedDifference;
+  };
+  for ($i = 1; $i <= 7; $i++) {
+    $baseTime = $i === 1 ? 0 : 24 * ($i - 1);
+    $rainProbability1[$i] = [];
+
+    for ($j = 0; $j < 4; $j++) {
+      $timeIndex = $baseTime + $j * 6;
+      $rainProbability1[$i][] = [
+        'time' => $data['hourly']['time'][$timeIndex],
+        'precipitation_probability' => $data['hourly']['precipitation_probability'][$timeIndex]
+      ];
+    }
+  }
+  $dailyData = [];
+  foreach ($weatherNamesForWeek as $index => $name) {
+    $dailyData[] = [
+      'day' => '',
+      'name' => $name,
+      'image' => $weatherImageForWeek[$index],
+      'highestTemperature' => $highestTemperatureForWeek[$index],
+      'lowestTemperature' => $lowestTemperatureForWeek[$index],
+      'maximumTemperatureComparison' => $highestTemperatureDifferencesForWeek[$index],
+      'lowestTemperatureComparison' => $lowestTemperatureDifferencesForWeek[$index],
+      'rainProbability' => $rainProbability1[$index + 1], // インデックス調整
+    ];
+  }
+
+
+  error_log("dailyDate: " . print_r($dailyData, true));
+
+
 
   return $data;
 }
@@ -85,7 +214,7 @@ function jWeatherCustomizer_render_block($attr, $content)
   error_log("Tomorrow weather: " . print_r($tomorrowWeather, true));
   error_log("Weekly weather: " . print_r($weeklyWeather, true));
 
-  
+
   $attr = array_merge([
     'showTodayWeather' => true,
     'showTomorrowWeather' => true,
