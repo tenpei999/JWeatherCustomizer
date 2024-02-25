@@ -1,5 +1,32 @@
 <?php
 
+function fetchWeatherDataWithCache($apiUrl, $cacheFile = 'weather_cache.json', $cacheTime = 3600)
+{
+  $dataFromCache = true; // データがキャッシュから取得されたかどうかを追跡するフラグ
+
+  if (file_exists($cacheFile) && (filemtime($cacheFile) + $cacheTime > time())) {
+    // キャッシュが有効な場合、キャッシュからデータを読み込む
+    $data = json_decode(file_get_contents($cacheFile), true);
+  } else {
+    // キャッシュが無効または存在しない場合、APIからデータを取得
+    $response = file_get_contents($apiUrl);
+    $data = json_decode($response, true);
+    // 取得したデータをキャッシュファイルに保存
+    file_put_contents($cacheFile, json_encode($data));
+    $dataFromCache = false; // APIから新たにデータを取得したため、フラグを更新
+  }
+
+  // デバッグ情報をエラーログに出力
+  if ($dataFromCache) {
+    error_log("Weather data fetched from cache: " . print_r($data, true));
+  } else {
+    error_log("Weather data fetched from API and updated cache: " . print_r($data, true));
+  }
+
+  return $data;
+}
+
+
 function generateBorderStyle($borders, $borderRadiusValue)
 {
   $styles = [];
@@ -41,6 +68,24 @@ function generateBackgroundStyles($attr)
 }
 function jWeatherCustomizer_render_block($attr, $content)
 {
+  // API URLの設定 (ダミーのURLとして設定しています。実際のURLに置き換えてください)
+  $apiUrl = 'https://api.open-meteo.com/v1/forecast?latitude=35.6895&longitude=139.6917&hourly=precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14';
+  // キャッシュファイルのパス
+  $cacheFile = WP_CONTENT_DIR . '/uploads/weather_cache.json';
+
+  // 天気データを取得
+  $weatherData = fetchWeatherDataWithCache($apiUrl, $cacheFile);
+
+  // 今日の天気データ、明日の天気データ、週間天気データを取得するロジックを実装
+  // ここではダミーデータを使用
+  $todayWeather = $weatherData['today'] ?? [];
+  $tomorrowWeather = $weatherData['tomorrow'] ?? [];
+  $weeklyWeather = $weatherData['weekly'] ?? [];
+  error_log("Today weather: " . print_r($todayWeather, true));
+  error_log("Tomorrow weather: " . print_r($tomorrowWeather, true));
+  error_log("Weekly weather: " . print_r($weeklyWeather, true));
+
+  
   $attr = array_merge([
     'showTodayWeather' => true,
     'showTomorrowWeather' => true,
@@ -137,5 +182,4 @@ function generateWeatherOutput($data, $textColor, $time_ranges, $showHoliday, $s
 
 function generateWeeklyWeatherOutput($data, $textColor, $showHoliday)
 {
-
 }

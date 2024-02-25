@@ -82,34 +82,34 @@ function save_weather_data(WP_REST_Request $request)
 	error_log('Nonce verification succeeded');
 
 	$data = $request->get_param('dailyData');
-	error_log('Received data: ' . print_r($data, true));
+
 	if (!$data) {
 		error_log('Error: No data provided');
 		return new WP_REST_Response('Error: No data provided', 400);
 	}
 
 	if (!is_array($data)) {
-		error_log('Error: Invalid data format, expected array');
+		// error_log('Error: Invalid data format, expected array');
 		return new WP_REST_Response('Error: Invalid data format', 400);
 	}
 
 	foreach ($data as $day => $value) {
-		error_log("Processing day: $day");
+		// error_log("Processing day: $day");
 		if (!is_string($value)) {
 			if (is_array($value)) {
 				$sanitized_value = array_map('sanitize_text_field', $value);
-				error_log("Sanitized value for $day: " . print_r($sanitized_value, true));
+				// error_log("Sanitized value for $day: " . print_r($sanitized_value, true));
 			} else {
-				error_log("Error: Each item of dailyData must be a JSON string or an array.");
+				// error_log("Error: Each item of dailyData must be a JSON string or an array.");
 				return new WP_REST_Response('Error: Each item of dailyData must be a JSON string or an array.', 400);
 			}
 		} else {
 			$decoded_value = json_decode($value, true);
 			if (json_last_error() === JSON_ERROR_NONE) {
 				$sanitized_value = array_map('sanitize_text_field', $decoded_value);
-				error_log("Decoded and sanitized value for $day: " . print_r($sanitized_value, true));
+				// error_log("Decoded and sanitized value for $day: " . print_r($sanitized_value, true));
 			} else {
-				error_log("Error: Invalid JSON string provided for day $day");
+				// error_log("Error: Invalid JSON string provided for day $day");
 				return new WP_REST_Response('Error: Invalid JSON string provided for day ' . esc_html($day), 400);
 			}
 		}
@@ -131,3 +131,44 @@ function JWeatherCustomizer_frontend_scripts()
 	}
 }
 add_action('wp_enqueue_scripts', 'JWeatherCustomizer_frontend_scripts');
+
+add_action('wp_loaded', 'checkWeatherCache');
+
+function checkWeatherCache()
+{
+	$cacheFile = WP_CONTENT_DIR . '/uploads/weather_cache.json';
+
+	// キャッシュデータを取得する関数
+	$data = getCacheData($cacheFile);
+
+	if ($data) {
+		// キャッシュデータが存在する場合の処理
+		error_log('hoge'); // debug.logにメッセージを出力
+	} else {
+		// キャッシュデータが存在しない場合の処理
+		// ここで外部APIからデータを取得する仮定のコード
+		$apiUrl = "https://api.open-meteo.com/v1/forecast?latitude=35.6895&longitude=139.6917&hourly=precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14"; // APIのURL
+		$apiResponse = file_get_contents($apiUrl);
+		$data = json_decode($apiResponse, true);
+
+		// 取得したデータをキャッシュに保存
+		saveCacheData($cacheFile, $data);
+
+		error_log('huga'); // debug.logにメッセージを出力
+	}
+}
+
+function getCacheData($cacheFile)
+{
+	if (file_exists($cacheFile) && is_readable($cacheFile)) {
+		$jsonData = file_get_contents($cacheFile);
+		return json_decode($jsonData, true);
+	}
+	return false;
+}
+
+function saveCacheData($cacheFile, $data)
+{
+	$jsonData = json_encode($data);
+	file_put_contents($cacheFile, $jsonData);
+}
