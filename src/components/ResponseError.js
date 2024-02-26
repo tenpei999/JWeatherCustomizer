@@ -1,12 +1,8 @@
-import { isApiError } from "../weatherDate/fetchWeatherData";
-
-console.log(isApiError)
 
 export const ResponseError = ({ errorMessage }) => {
   if (!errorMessage) {
     return null; // エラーメッセージがない場合は何も表示しない
   }
-  console.log(errorMessage)
 
   const grid = {
     display: 'grid',

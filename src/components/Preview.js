@@ -48,8 +48,6 @@ export default function Preview({ attributes, commonProps }) {
     );
   };
 
-  console.log(isApiError.isError)
-
   return (
     <>
       {isApiError.isError ? (

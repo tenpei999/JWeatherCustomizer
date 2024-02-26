@@ -570,7 +570,6 @@ function Preview({
       textColor: textColor
     });
   };
-  console.log(_weatherDate_fetchWeatherData__WEBPACK_IMPORTED_MODULE_4__.isApiError.isError);
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, _weatherDate_fetchWeatherData__WEBPACK_IMPORTED_MODULE_4__.isApiError.isError ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_ResponseError__WEBPACK_IMPORTED_MODULE_6__.ResponseError, {
     errorMessage: errorMessage
   }) : (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -598,10 +597,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _weatherDate_fetchWeatherData__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../weatherDate/fetchWeatherData */ "./src/weatherDate/fetchWeatherData.js");
 
-
-console.log(_weatherDate_fetchWeatherData__WEBPACK_IMPORTED_MODULE_1__.isApiError);
 const ResponseError = ({
   errorMessage
 }) => {
@@ -609,7 +605,6 @@ const ResponseError = ({
     return null; // エラーメッセージがない場合は何も表示しない
   }
 
-  console.log(errorMessage);
   const grid = {
     display: 'grid',
     gridTemplateColumn: '1fr',
@@ -1383,7 +1378,6 @@ function Edit({
     backgroundGradient: attributes.backgroundGradient,
     backgroundColor: attributes.backgroundColor
   };
-  console.log(attributes);
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     ...blockProps
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -1473,6 +1467,120 @@ const getTextColor = weather => {
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (getTextColor);
+
+/***/ }),
+
+/***/ "./src/hooks/getWeatherInfo.js":
+/*!*************************************!*\
+  !*** ./src/hooks/getWeatherInfo.js ***!
+  \*************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/**
+* WMOのweatherCodeに対応する、天候名とアイコンを返す
+*
+* アイコンは気象庁の利用規約に基づいて使用させて頂いております。
+* 出典: 気象庁「https://www.jma.go.jp/bosai/forecast/img/100.svg」,
+      気象庁「https://www.jma.go.jp/bosai/forecast/img/101.svg」,
+      気象庁「https://www.jma.go.jp/bosai/forecast/img/200.svg」,
+      気象庁「https://www.jma.go.jp/bosai/forecast/img/202.svg」,
+      気象庁「https://www.jma.go.jp/bosai/forecast/img/300.svg」,
+      気象庁「https://www.jma.go.jp/bosai/forecast/img/302.svg」,
+      気象庁「https://www.jma.go.jp/bosai/forecast/img/400.svg」
+* @link https://www.jma.go.jp/jma/kishou/info/coment.html
+*
+* @param {number} weatherCode WMOに基づくweatherCode
+* @returns {Object<label<String>, icon<String>>} weatherコードに対応するラベルとアイコンを格納したオブジェクト
+*/
+
+const getWeatherInfo = weatherCode => {
+  const pluginImagePaths = JWeatherCustomizerData.pluginImagePath;
+
+  // 0 : Clear Sky
+  if (weatherCode === 0) {
+    return {
+      label: "快晴",
+      icon: pluginImagePaths + '100.svg'
+    };
+  }
+  if (weatherCode === 1) {
+    return {
+      label: "晴れ",
+      icon: pluginImagePaths + '100.svg'
+    };
+  }
+  // 2 : Partly Cloudy
+  if (weatherCode === 2) {
+    return {
+      label: "一部曇",
+      icon: pluginImagePaths + '101.svg'
+    };
+  }
+  // 3 : Overcast
+  if (weatherCode === 3) {
+    return {
+      label: "曇り",
+      icon: pluginImagePaths + '200.svg'
+    };
+  }
+  // 45, 48 : Fog And Depositing Rime Fog
+  if (weatherCode <= 49) {
+    return {
+      label: "霧",
+      icon: pluginImagePaths + '200.svg'
+    };
+  }
+  // 51, 53, 55 : Drizzle Light, Moderate And Dense Intensity ・ 56, 57 : Freezing Drizzle Light And Dense Intensity
+  if (weatherCode <= 59) {
+    return {
+      label: "霧雨",
+      icon: pluginImagePaths + '202.svg'
+    };
+  }
+  // 61, 63, 65 : Rain Slight, Moderate And Heavy Intensity ・66, 67 : Freezing Rain Light And Heavy Intensity
+  if (weatherCode <= 69) {
+    return {
+      label: "雨",
+      icon: pluginImagePaths + '300.svg'
+    };
+  }
+  // 71, 73, 75 : Snow Fall Slight, Moderate And Heavy Intensity ・ 77 : Snow Grains
+  if (weatherCode <= 79) {
+    return {
+      label: "雪",
+      icon: pluginImagePaths + '400.svg'
+    };
+  }
+  // 80, 81, 82 : Rain Showers Slight, Moderate And Violent
+  if (weatherCode <= 84) {
+    return {
+      label: "俄か雨",
+      icon: pluginImagePaths + '302.svg'
+    };
+  }
+  // 85, 86 : Snow Showers Slight And Heavy
+  if (weatherCode <= 94) {
+    return {
+      label: "雪・雹",
+      icon: pluginImagePaths + '400.svg'
+    };
+  }
+  // 95 : Thunderstorm Slight Or Moderate ・ 96, 99 : Thunderstorm With Slight And Heavy Hail
+  if (weatherCode <= 99) {
+    return {
+      label: "雷雨",
+      icon: pluginImagePaths + '300.svg'
+    };
+  }
+  // その他はエラーとする
+  return {
+    label: "ERROR",
+    icon: ""
+  };
+};
+/* harmony default export */ __webpack_exports__["default"] = (getWeatherInfo);
 
 /***/ }),
 
@@ -2151,6 +2259,84 @@ async function mainWeatherLogic(cityurl, setTodayWeather, setTomorrowWeather, se
 
 /***/ }),
 
+/***/ "./src/weatherDate/dayWithHoloday.js":
+/*!*******************************************!*\
+  !*** ./src/weatherDate/dayWithHoloday.js ***!
+  \*******************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+const dayWithHoliday = async (addBreak = false) => {
+  const cache = {};
+  const fetchHolidays = async () => {
+    const url = 'https://holidays-jp.github.io/api/v1/date.json';
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error fetching holidays:', error);
+      return {}; // 空のオブジェクトを返し、処理を続行
+    }
+  };
+
+  const getHolidays = async () => {
+    const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD形式
+    if (!cache[today]) {
+      cache[today] = await fetchHolidays();
+    }
+    return cache[today];
+  };
+  function getDateRangeArray(startDate, endDate) {
+    const dateArray = [];
+    let currentDate = new Date(startDate);
+    while (currentDate <= endDate) {
+      dateArray.push(new Date(currentDate));
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+    return dateArray;
+  }
+  async function getOneWeekDatesWithHolidays(addBreak = false) {
+    const today = new Date();
+    const sixDaysLater = new Date(today);
+    sixDaysLater.setDate(today.getDate() + 6);
+    const oneWeekDates = getDateRangeArray(today, sixDaysLater);
+
+    // Get the holidays
+    const holidays = await getHolidays();
+
+    // Create an array of dates with holidays data included
+    const oneWeekDatesWithHolidays = oneWeekDates.map(date => {
+      const weekDays = ["日", "月", "火", "水", "木", "金", "土"];
+      const dayOfWeek = weekDays[date.getDay()];
+      const formattedDate = `${String(date.getMonth() + 1)}月${String(date.getDate())}日(${dayOfWeek})`;
+      return {
+        date: {
+          month: `${String(date.getMonth() + 1)}月`,
+          day: `${String(date.getDate())}日`,
+          dayOfWeek: `(${dayOfWeek})`,
+          fullDate: `${String(date.getMonth() + 1)}月${String(date.getDate())}日(${dayOfWeek})`
+        },
+        isHoliday: !!holidays[formattedDate],
+        // this will be true if the date is a holiday, otherwise false
+        holidayName: holidays[formattedDate] || null,
+        // this will have the holiday name if the date is a holiday, otherwise null
+        isSaturday: date.getDay() === 6,
+        isSunday: date.getDay() === 0
+      };
+    });
+    return oneWeekDatesWithHolidays;
+  }
+  return await getOneWeekDatesWithHolidays(addBreak);
+};
+/* harmony default export */ __webpack_exports__["default"] = (dayWithHoliday);
+
+/***/ }),
+
 /***/ "./src/weatherDate/fetchWeatherData.js":
 /*!*********************************************!*\
   !*** ./src/weatherDate/fetchWeatherData.js ***!
@@ -2278,9 +2464,89 @@ const cities = {
 /*!***********************************************!*\
   !*** ./src/weatherDate/processWeatherData.js ***!
   \***********************************************/
-/***/ (function() {
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
-throw new Error("Module build failed (from ./node_modules/babel-loader/lib/index.js):\nSyntaxError: /Users/tsuruokatenpei/Local Sites/hoge/app/public/wp-content/plugins/JWeatherCustomizer/src/weatherDate/processWeatherData.js: Identifier 'validateTemperature' has already been declared. (23:11)\n\n\u001b[0m \u001b[90m 21 |\u001b[39m   }\u001b[0m\n\u001b[0m \u001b[90m 22 |\u001b[39m\u001b[0m\n\u001b[0m\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 23 |\u001b[39m   \u001b[36mfunction\u001b[39m validateTemperature($temperature) {\u001b[0m\n\u001b[0m \u001b[90m    |\u001b[39m            \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 24 |\u001b[39m     \u001b[90m// 温度データが数値であることを検証\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 25 |\u001b[39m     \u001b[36mreturn\u001b[39m is_numeric($temperature) \u001b[33m&&\u001b[39m is_finite($temperature)\u001b[33m;\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 26 |\u001b[39m }\u001b[0m\n    at constructor (/Users/tsuruokatenpei/Local Sites/hoge/app/public/wp-content/plugins/JWeatherCustomizer/node_modules/@babel/parser/lib/index.js:356:19)\n    at JSXParserMixin.raise (/Users/tsuruokatenpei/Local Sites/hoge/app/public/wp-content/plugins/JWeatherCustomizer/node_modules/@babel/parser/lib/index.js:3223:19)\n    at ScopeHandler.checkRedeclarationInScope (/Users/tsuruokatenpei/Local Sites/hoge/app/public/wp-content/plugins/JWeatherCustomizer/node_modules/@babel/parser/lib/index.js:1496:19)\n    at ScopeHandler.declareName (/Users/tsuruokatenpei/Local Sites/hoge/app/public/wp-content/plugins/JWeatherCustomizer/node_modules/@babel/parser/lib/index.js:1479:14)\n    at JSXParserMixin.registerFunctionStatementId (/Users/tsuruokatenpei/Local Sites/hoge/app/public/wp-content/plugins/JWeatherCustomizer/node_modules/@babel/parser/lib/index.js:13344:16)\n    at JSXParserMixin.parseFunction (/Users/tsuruokatenpei/Local Sites/hoge/app/public/wp-content/plugins/JWeatherCustomizer/node_modules/@babel/parser/lib/index.js:13328:12)\n    at JSXParserMixin.parseFunctionStatement (/Users/tsuruokatenpei/Local Sites/hoge/app/public/wp-content/plugins/JWeatherCustomizer/node_modules/@babel/parser/lib/index.js:12989:17)\n    at JSXParserMixin.parseStatementContent (/Users/tsuruokatenpei/Local Sites/hoge/app/public/wp-content/plugins/JWeatherCustomizer/node_modules/@babel/parser/lib/index.js:12619:21)\n    at JSXParserMixin.parseStatementLike (/Users/tsuruokatenpei/Local Sites/hoge/app/public/wp-content/plugins/JWeatherCustomizer/node_modules/@babel/parser/lib/index.js:12593:17)\n    at JSXParserMixin.parseStatementListItem (/Users/tsuruokatenpei/Local Sites/hoge/app/public/wp-content/plugins/JWeatherCustomizer/node_modules/@babel/parser/lib/index.js:12573:17)\n    at JSXParserMixin.parseBlockOrModuleBlockBody (/Users/tsuruokatenpei/Local Sites/hoge/app/public/wp-content/plugins/JWeatherCustomizer/node_modules/@babel/parser/lib/index.js:13194:61)\n    at JSXParserMixin.parseBlockBody (/Users/tsuruokatenpei/Local Sites/hoge/app/public/wp-content/plugins/JWeatherCustomizer/node_modules/@babel/parser/lib/index.js:13187:10)\n    at JSXParserMixin.parseBlock (/Users/tsuruokatenpei/Local Sites/hoge/app/public/wp-content/plugins/JWeatherCustomizer/node_modules/@babel/parser/lib/index.js:13175:10)\n    at JSXParserMixin.parseFunctionBody (/Users/tsuruokatenpei/Local Sites/hoge/app/public/wp-content/plugins/JWeatherCustomizer/node_modules/@babel/parser/lib/index.js:11940:24)\n    at JSXParserMixin.parseFunctionBodyAndFinish (/Users/tsuruokatenpei/Local Sites/hoge/app/public/wp-content/plugins/JWeatherCustomizer/node_modules/@babel/parser/lib/index.js:11926:10)\n    at /Users/tsuruokatenpei/Local Sites/hoge/app/public/wp-content/plugins/JWeatherCustomizer/node_modules/@babel/parser/lib/index.js:13323:12\n    at JSXParserMixin.withSmartMixTopicForbiddingContext (/Users/tsuruokatenpei/Local Sites/hoge/app/public/wp-content/plugins/JWeatherCustomizer/node_modules/@babel/parser/lib/index.js:12266:14)\n    at JSXParserMixin.parseFunction (/Users/tsuruokatenpei/Local Sites/hoge/app/public/wp-content/plugins/JWeatherCustomizer/node_modules/@babel/parser/lib/index.js:13322:10)\n    at JSXParserMixin.parseFunctionStatement (/Users/tsuruokatenpei/Local Sites/hoge/app/public/wp-content/plugins/JWeatherCustomizer/node_modules/@babel/parser/lib/index.js:12989:17)\n    at JSXParserMixin.parseStatementContent (/Users/tsuruokatenpei/Local Sites/hoge/app/public/wp-content/plugins/JWeatherCustomizer/node_modules/@babel/parser/lib/index.js:12737:25)\n    at JSXParserMixin.parseStatementLike (/Users/tsuruokatenpei/Local Sites/hoge/app/public/wp-content/plugins/JWeatherCustomizer/node_modules/@babel/parser/lib/index.js:12593:17)\n    at JSXParserMixin.parseModuleItem (/Users/tsuruokatenpei/Local Sites/hoge/app/public/wp-content/plugins/JWeatherCustomizer/node_modules/@babel/parser/lib/index.js:12570:17)\n    at JSXParserMixin.parseBlockOrModuleBlockBody (/Users/tsuruokatenpei/Local Sites/hoge/app/public/wp-content/plugins/JWeatherCustomizer/node_modules/@babel/parser/lib/index.js:13194:36)\n    at JSXParserMixin.parseBlockBody (/Users/tsuruokatenpei/Local Sites/hoge/app/public/wp-content/plugins/JWeatherCustomizer/node_modules/@babel/parser/lib/index.js:13187:10)\n    at JSXParserMixin.parseProgram (/Users/tsuruokatenpei/Local Sites/hoge/app/public/wp-content/plugins/JWeatherCustomizer/node_modules/@babel/parser/lib/index.js:12469:10)\n    at JSXParserMixin.parseTopLevel (/Users/tsuruokatenpei/Local Sites/hoge/app/public/wp-content/plugins/JWeatherCustomizer/node_modules/@babel/parser/lib/index.js:12459:25)\n    at JSXParserMixin.parse (/Users/tsuruokatenpei/Local Sites/hoge/app/public/wp-content/plugins/JWeatherCustomizer/node_modules/@babel/parser/lib/index.js:14381:10)\n    at parse (/Users/tsuruokatenpei/Local Sites/hoge/app/public/wp-content/plugins/JWeatherCustomizer/node_modules/@babel/parser/lib/index.js:14422:38)\n    at parser (/Users/tsuruokatenpei/Local Sites/hoge/app/public/wp-content/plugins/JWeatherCustomizer/node_modules/@babel/core/lib/parser/index.js:41:34)\n    at parser.next (<anonymous>)\n    at normalizeFile (/Users/tsuruokatenpei/Local Sites/hoge/app/public/wp-content/plugins/JWeatherCustomizer/node_modules/@babel/core/lib/transformation/normalize-file.js:64:37)\n    at normalizeFile.next (<anonymous>)\n    at run (/Users/tsuruokatenpei/Local Sites/hoge/app/public/wp-content/plugins/JWeatherCustomizer/node_modules/@babel/core/lib/transformation/index.js:21:50)\n    at run.next (<anonymous>)\n    at transform (/Users/tsuruokatenpei/Local Sites/hoge/app/public/wp-content/plugins/JWeatherCustomizer/node_modules/@babel/core/lib/transform.js:22:33)\n    at transform.next (<anonymous>)\n    at step (/Users/tsuruokatenpei/Local Sites/hoge/app/public/wp-content/plugins/JWeatherCustomizer/node_modules/gensync/index.js:261:32)\n    at /Users/tsuruokatenpei/Local Sites/hoge/app/public/wp-content/plugins/JWeatherCustomizer/node_modules/gensync/index.js:273:13\n    at async.call.result.err.err (/Users/tsuruokatenpei/Local Sites/hoge/app/public/wp-content/plugins/JWeatherCustomizer/node_modules/gensync/index.js:223:11)");
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _hooks_getWeatherInfo__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../hooks/getWeatherInfo */ "./src/hooks/getWeatherInfo.js");
+/* harmony import */ var _dayWithHoloday__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./dayWithHoloday */ "./src/weatherDate/dayWithHoloday.js");
+
+
+async function processWeatherData(data, addBreak = false) {
+  const sanitizeImageUrl = url => {
+    // 画像URLをサニタイズする関数。不正なURLを除去または修正
+    try {
+      return new URL(url).toString();
+    } catch (e) {
+      return ''; // 不正なURLは空文字列に置き換える
+    }
+  };
+
+  const validateTemperature = temperature => {
+    // 温度データが数値であることを検証
+    return !isNaN(temperature) && isFinite(temperature);
+  };
+  if (!data || !data.daily) {
+    throw new Error("Unexpected data format received from the weather API.");
+  }
+  const datesForWeek = await (0,_dayWithHoloday__WEBPACK_IMPORTED_MODULE_1__["default"])(addBreak);
+  if (!datesForWeek || datesForWeek.length !== 7) {
+    throw new Error("Unexpected date array length from dayWithHoliday.");
+  }
+  const weatherCodesForWeek = data.daily.weathercode; // 本日から6日後までの天気コード
+
+  // 天気コードを天気名に変換
+  const weatherNamesForWeek = weatherCodesForWeek.map(code => (0,_hooks_getWeatherInfo__WEBPACK_IMPORTED_MODULE_0__["default"])(code).label);
+  const weatherImageForWeek = weatherCodesForWeek.map(code => sanitizeImageUrl((0,_hooks_getWeatherInfo__WEBPACK_IMPORTED_MODULE_0__["default"])(code).icon));
+  const highestTemperatureForWeek = data.daily.temperature_2m_max.map(temp => validateTemperature(temp) ? temp : null);
+  const lowestTemperatureForWeek = data.daily.temperature_2m_min.map(temp => validateTemperature(temp) ? temp : null);
+  const highestTemperatureDifferencesForWeek = [];
+  for (let i = -1; i < highestTemperatureForWeek.length; i++) {
+    const todayMaxTemperature = highestTemperatureForWeek[i + 1];
+    const yesterdayMaxTemperature = highestTemperatureForWeek[i];
+    const temperatureDifference = Math.ceil((todayMaxTemperature - yesterdayMaxTemperature) * 10) / 10;
+    const formattedDifference = temperatureDifference >= 0 ? `(+${temperatureDifference})` : `(-${Math.abs(temperatureDifference)})`;
+    highestTemperatureDifferencesForWeek.push(formattedDifference);
+  }
+  const lowestTemperatureDifferencesForWeek = [];
+  for (let i = -1; i < lowestTemperatureForWeek.length; i++) {
+    const todayMinTemperature = lowestTemperatureForWeek[i + 1];
+    const yesterdayMinTemperature = lowestTemperatureForWeek[i];
+    const temperatureDifference = Math.ceil((todayMinTemperature - yesterdayMinTemperature) * 10) / 10;
+    const formattedDifference = temperatureDifference >= 0 ? `(+${temperatureDifference})` : `(-${Math.abs(temperatureDifference)})`;
+    lowestTemperatureDifferencesForWeek.push(formattedDifference);
+  }
+  const rainProbability1 = {};
+  for (let i = 1; i <= 7; i++) {
+    let baseTime = i === 0 ? 0 : 24 * i;
+    rainProbability1[i] = [];
+    for (let j = 0; j < 4; j++) {
+      rainProbability1[i].push({
+        time: data.hourly.time[baseTime + j * 6],
+        precipitation_probability: data.hourly.precipitation_probability[baseTime + j * 6]
+      });
+    }
+  }
+  const dailyData = datesForWeek.map((day, index) => {
+    return {
+      day: datesForWeek[index],
+      name: weatherNamesForWeek[index + 1],
+      image: weatherImageForWeek[index + 1],
+      highestTemperature: highestTemperatureForWeek[index + 1],
+      lowestTemperature: lowestTemperatureForWeek[index + 1],
+      maximumTemperatureComparison: highestTemperatureDifferencesForWeek[index + 1],
+      lowestTemperatureComparison: lowestTemperatureDifferencesForWeek[index + 1],
+      rainProbability: rainProbability1[index + 1] // インデックス調整
+    };
+  }).filter((_, index) => index < datesForWeek.length);
+
+  // 加工された全データを返す
+  return {
+    dailyData // 加工された日毎の天気データ
+  };
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (processWeatherData);
 
 /***/ }),
 

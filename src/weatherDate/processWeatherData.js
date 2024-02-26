@@ -19,18 +19,13 @@ async function processWeatherData(data, addBreak = false) {
   if (!data || !data.daily) {
     throw new Error("Unexpected data format received from the weather API.");
   }
-
-  function validateTemperature($temperature) {
-    // 温度データが数値であることを検証
-    return is_numeric($temperature) && is_finite($temperature);
-  }
-
   const datesForWeek = await dayWithHoliday(addBreak);
   if (!datesForWeek || datesForWeek.length !== 7) {
     throw new Error("Unexpected date array length from dayWithHoliday.");
   }
 
   const weatherCodesForWeek = data.daily.weathercode; // 本日から6日後までの天気コード
+
 
   // 天気コードを天気名に変換
   const weatherNamesForWeek = weatherCodesForWeek.map(code => getWeatherInfo(code).label);
@@ -73,16 +68,18 @@ async function processWeatherData(data, addBreak = false) {
     }
   }
 
-  const dailyData = weatherNamesForWeek.map((name, index) => ({
-    day: datesForWeek[index],
-    name,
-    image: weatherImageForWeek[index],
-    highestTemperature: highestTemperatureForWeek[index],
-    lowestTemperature: lowestTemperatureForWeek[index],
-    maximumTemperatureComparison: highestTemperatureDifferencesForWeek[index],
-    lowestTemperatureComparison: lowestTemperatureDifferencesForWeek[index],
-    rainProbability: rainProbability1[index + 1], // インデックス調整
-  }));
+  const dailyData = datesForWeek.map((day, index) => {
+    return {
+      day: datesForWeek[index],
+      name: weatherNamesForWeek[index + 1],
+      image: weatherImageForWeek[index + 1],
+      highestTemperature: highestTemperatureForWeek[index + 1],
+      lowestTemperature: lowestTemperatureForWeek[index + 1],
+      maximumTemperatureComparison: highestTemperatureDifferencesForWeek[index + 1],
+      lowestTemperatureComparison: lowestTemperatureDifferencesForWeek[index + 1],
+      rainProbability: rainProbability1[index + 1], // インデックス調整
+    }
+  }).filter((_, index) => index < datesForWeek.length);
 
   // 加工された全データを返す
   return {
