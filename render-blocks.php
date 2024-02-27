@@ -1,5 +1,83 @@
 <?php
 
+
+function fetchHolidays()
+{
+  $url = 'https://holidays-jp.github.io/api/v1/date.json';
+  $ch = curl_init();
+  curl_setopt($ch, CURLOPT_URL, $url);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  $response = curl_exec($ch);
+  $err = curl_error($ch);
+  curl_close($ch);
+
+  if ($err) {
+    echo "cURL Error #:" . $err;
+    return []; // 空の配列を返し、処理を続行
+  } else {
+    return json_decode($response, true); // 配列としてデコード
+  }
+}
+
+function getHolidays(&$cache)
+{
+  $today = date('Y-m-d'); // YYYY-MM-DD形式
+  if (!isset($cache[$today])) {
+    $cache[$today] = fetchHolidays();
+  }
+  return $cache[$today];
+}
+
+function getDateRangeArray($startDate, $endDate)
+{
+  $dateArray = [];
+  $currentDate = strtotime($startDate);
+
+  while ($currentDate <= strtotime($endDate)) {
+    $dateArray[] = date('Y-m-d', $currentDate);
+    $currentDate = strtotime("+1 day", $currentDate);
+  }
+
+  return $dateArray;
+}
+
+function getOneWeekDatesWithHolidays($addBreak = false)
+{
+  $cache = [];
+  $today = date('Y-m-d');
+  $sixDaysLater = date('Y-m-d', strtotime($today . ' + 6 days'));
+
+  $oneWeekDates = getDateRangeArray($today, $sixDaysLater);
+  $holidays = getHolidays($cache);
+
+  $oneWeekDatesWithHolidays = [];
+  foreach ($oneWeekDates as $date) {
+    $timestamp = strtotime($date);
+    $dayOfWeek = date('w', $timestamp);
+    $weekDays = ["日", "月", "火", "水", "木", "金", "土"];
+    $formattedDate = date('n月j日', $timestamp) . '(' . $weekDays[$dayOfWeek] . ')';
+    $holidayKey = date('Y-m-d', $timestamp);
+
+    $oneWeekDatesWithHolidays[] = [
+      'date' => [
+        'month' => date('n月', $timestamp),
+        'day' => date('j日', $timestamp),
+        'dayOfWeek' => '(' . $weekDays[$dayOfWeek] . ')',
+        'fullDate' => $formattedDate,
+      ],
+      'isHoliday' => isset($holidays[$holidayKey]),
+      'holidayName' => $holidays[$holidayKey] ?? null,
+      'isSaturday' => $dayOfWeek == 6,
+      'isSunday' => $dayOfWeek == 0,
+    ];
+  }
+
+  return $oneWeekDatesWithHolidays;
+}
+
+// この関数を呼び出して1週間の日付と祝日の情報を取得
+$datesWithHoliday = getOneWeekDatesWithHolidays();
+
 function getWeatherInfo($weatherCode)
 {
   // プラグインの画像パスを指定
@@ -106,7 +184,7 @@ function fetchWeatherDataWithCache($apiUrl, $cacheFile = 'weather_cache.json', $
 
   for ($i = -1; $i < count($highestTemperatureForWeek) - 1; $i++) {
     $todayMaxTemperature = $highestTemperatureForWeek[$i + 1];
-    $yesterdayMaxTemperature = $highestTemperatureForWeek[$i];
+    $yesterdayMaxTemperature = $highestTemperatureForWeek[$i + 1];
     $temperatureDifference = ceil(($todayMaxTemperature - $yesterdayMaxTemperature) * 10) / 10;
     $formattedDifference = $temperatureDifference >= 0 ? "(+{$temperatureDifference})" : "(-" . abs($temperatureDifference) . ")";
 
@@ -115,7 +193,7 @@ function fetchWeatherDataWithCache($apiUrl, $cacheFile = 'weather_cache.json', $
 
   for ($i = -1; $i < count($lowestTemperatureForWeek) - 1; $i++) {
     $todayMinTemperature = $lowestTemperatureForWeek[$i + 1];
-    $yesterdayMinTemperature = $lowestTemperatureForWeek[$i];
+    $yesterdayMinTemperature = $lowestTemperatureForWeek[$i + 1];
     $temperatureDifference = ceil(($todayMinTemperature - $yesterdayMinTemperature) * 10) / 10;
     $formattedDifference = $temperatureDifference >= 0 ? "(+{$temperatureDifference})" : "(-" . abs($temperatureDifference) . ")";
 
@@ -134,24 +212,25 @@ function fetchWeatherDataWithCache($apiUrl, $cacheFile = 'weather_cache.json', $
     }
   }
   $dailyData = [];
-  foreach ($weatherNamesForWeek as $index => $name) {
-    $dailyData[] = [
-      'day' => '',
-      'name' => $name,
-      'image' => $weatherImageForWeek[$index],
-      'highestTemperature' => $highestTemperatureForWeek[$index],
-      'lowestTemperature' => $lowestTemperatureForWeek[$index],
-      'maximumTemperatureComparison' => $highestTemperatureDifferencesForWeek[$index],
-      'lowestTemperatureComparison' => $lowestTemperatureDifferencesForWeek[$index],
-      'rainProbability' => $rainProbability1[$index + 1], // インデックス調整
-    ];
+
+  $datesWithHoliday = getOneWeekDatesWithHolidays();
+  foreach ($datesWithHoliday as $index => $dateInfo) {
+    // $weatherNamesForWeekや他の天気情報配列が日付情報配列と同じ長さであることを確認
+    if (isset($weatherNamesForWeek[$index])) {
+      $dailyData[] = [
+        'day' => $dateInfo,
+        'name' => $weatherNamesForWeek[$index + 1],
+        'image' => $weatherImageForWeek[$index + 1],
+        'highestTemperature' => $highestTemperatureForWeek[$index + 1],
+        'lowestTemperature' => $lowestTemperatureForWeek[$index + 1],
+        'maximumTemperatureComparison' => $highestTemperatureDifferencesForWeek[$index + 1], // null合体演算子を使用して、インデックスが存在しない場合に備える
+        'lowestTemperatureComparison' => $lowestTemperatureDifferencesForWeek[$index + 2] ?? null,
+        'rainProbability' => $rainProbability1[$index + 2] ?? null, // インデックス調整 (+1 されているので存在しない場合に備える)
+      ];
+    }
   }
 
-
   error_log("dailyDate: " . print_r($dailyData, true));
-
-
-
   return $data;
 }
 
