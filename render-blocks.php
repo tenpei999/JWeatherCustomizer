@@ -1,29 +1,40 @@
 <?php
 
+// 共通のキャッシュ機能を利用してデータを取得する関
 
-function fetchHolidays()
+function fetchDataWithCache($url, $cachePath = 'holidays_cache.json', $cacheDuration = 14400)
+{
+  if (file_exists($cachePath) && (time() - filemtime($cachePath) < $cacheDuration)) {
+    return json_decode(file_get_contents($cachePath), true);
+  } else {
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    $response = curl_exec($ch);
+    $err = curl_error($ch);
+    curl_close($ch);
+    if ($err) {
+      echo "cURL Error #:" . $err;
+      return []; // 空の配列を返し、処理を続行
+    } else {
+      $data = json_decode($response, true);
+      file_put_contents($cachePath, json_encode($data));
+      return $data;
+    }
+  }
+}
+
+function fetchHolidaysWithCache()
 {
   $url = 'https://holidays-jp.github.io/api/v1/date.json';
-  $ch = curl_init();
-  curl_setopt($ch, CURLOPT_URL, $url);
-  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-  $response = curl_exec($ch);
-  $err = curl_error($ch);
-  curl_close($ch);
-
-  if ($err) {
-    echo "cURL Error #:" . $err;
-    return []; // 空の配列を返し、処理を続行
-  } else {
-    return json_decode($response, true); // 配列としてデコード
-  }
+  return fetchDataWithCache($url);
 }
 
 function getHolidays(&$cache)
 {
   $today = date('Y-m-d'); // YYYY-MM-DD形式
   if (!isset($cache[$today])) {
-    $cache[$today] = fetchHolidays();
+    $cache[$today] = fetchHolidaysWithCache();
   }
   return $cache[$today];
 }
@@ -139,7 +150,7 @@ function validateTemperature($temperature)
 }
 
 
-function fetchWeatherDataWithCache($apiUrl, $cacheFile = 'weather_cache.json', $cacheTime = 3600)
+function fetchWeatherDataWithCache($apiUrl, $cacheFile = 'weather_cache.json', $cacheTime = 14400)
 {
   $dataFromCache = true; // データがキャッシュから取得されたかどうかを追跡するフラグ
 
@@ -229,8 +240,6 @@ function fetchWeatherDataWithCache($apiUrl, $cacheFile = 'weather_cache.json', $
       ];
     }
   }
-
-  error_log("dailyDate: " . print_r($dailyData, true));
   return $data;
 }
 
