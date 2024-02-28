@@ -221,7 +221,11 @@ function fetchWeatherDataWithCache($apiUrl, $cacheFile = 'weather_cache.json', $
       ];
     }
   }
-  $dailyData = [];
+
+  $todayWeather = [];
+  $tomorrowWeather = [];
+  $weeklyWeather = [];
+
 
   $datesWithHoliday = getOneWeekDatesWithHolidays();
   foreach ($datesWithHoliday as $index => $dateInfo) {
@@ -237,8 +241,26 @@ function fetchWeatherDataWithCache($apiUrl, $cacheFile = 'weather_cache.json', $
         'lowestTemperatureComparison' => $lowestTemperatureDifferencesForWeek[$index + 2] ?? null,
         'rainProbability' => $rainProbability1[$index + 2] ?? null, // インデックス調整 (+1 されているので存在しない場合に備える)
       ];
+      // 最初の要素を今日の天気データとして取得
+      if (isset($dailyData[0])) {
+        $todayWeather = $dailyData[0];
+      }
+
+      // 2番目の要素を明日の天気データとして取得
+      if (isset($dailyData[1])) {
+        $tomorrowWeather = $dailyData[1];
+      }
+
+      // 3番目以降の要素を週間の天気データとして取得
+      if (count($dailyData) > 2) {
+        $weeklyWeather = array_slice($dailyData, 2);
+      }
     }
   }
-  error_log("Data: " . print_r($dailyData, true));
-  return $data;
+
+  return [
+    'today' => $todayWeather,
+    'tomorrow' => $tomorrowWeather,
+    'weekly' => $weeklyWeather,
+  ];
 }
