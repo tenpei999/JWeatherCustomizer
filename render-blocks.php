@@ -56,10 +56,11 @@ function jWeatherCustomizer_render_block($attr, $content)
   $todayWeather = $weatherData['today'] ?? [];
   $tomorrowWeather = $weatherData['tomorrow'] ?? [];
   $weeklyWeather = $weatherData['weekly'] ?? [];
-  error_log("Today weather: " . print_r($todayWeather, true));
-  error_log("Tomorrow weather: " . print_r($tomorrowWeather, true));
-  error_log("Weekly weather: " . print_r($weeklyWeather, true));
 
+  // エラーログにデータを出力
+  // error_log("Today's Weather: " . print_r($todayWeather, true));
+  // error_log("Tomorrow's Weather: " . print_r($tomorrowWeather, true));
+  // error_log("Weekly Weather: " . print_r($weeklyWeather, true));
 
   $attr = array_merge([
     'showTodayWeather' => true,
@@ -118,27 +119,27 @@ function jWeatherCustomizer_render_block($attr, $content)
 
 
   if ($attr['showTodayWeather'] && isset($attr['todayWeather'])) {
-    $data = $attr['todayWeather'];
+    $data = $todayWeather;
     $textColor = setTextColor($data['day'] ?? []);
 
     $output .= generateWeatherOutput($data, $textColor, $time_ranges, $attr['showHoliday'], $attr['showPrecipitation'], esc_html__('今日の天気', 'j-weather-customizer'), $commonStyle, esc_attr($attr['balanceOption']));
   }
 
   if ($attr['showTomorrowWeather'] && isset($attr['tomorrowWeather'])) {
-    $data = $attr['tomorrowWeather'];
+    $data = $tomorrowWeather;
     $textColor = setTextColor($data['day'] ?? []);
     $output .= generateWeatherOutput($data, $textColor, $time_ranges, $attr['showHoliday'], $attr['showPrecipitation'], esc_html__('明日の天気', 'j-weather-customizer'), $commonStyle, esc_attr($attr['balanceOption']));
   }
 
   $output .= '</div></div>';
 
-  if ($attr['showWeeklyWeather'] && isset($attr['weeklyWeather']) && is_array($attr['weeklyWeather'])) {
+  if ($attr['showWeeklyWeather'] && isset($weeklyWeather) && is_array($weeklyWeather)) {
     $output .= '<ul class="block--weekly weather-layout ' . esc_attr($attr['balanceOption']) . '" style="' . $commonStyle . '">';
 
     $maxDays = 4;
-    foreach ($attr['weeklyWeather'] as $i => $dayWeather) {
+    foreach ($weeklyWeather as $i => $dayWeather) {
       if ($i <= $maxDays) { // 0番目から5番目までの要素に対してのみ処理を実行
-        $data = $attr['weeklyWeather'][$i]; // 週間天気データを $data に設定
+        $data = $weeklyWeather[$i]; // 週間天気データを $data に設定
         $textColor = setTextColor($data['day'] ?? []);
         $output .= generateWeeklyWeatherOutput($data, $textColor, $attr['showHoliday']); // 週間天気用の出力関数を呼び出し
       } else {

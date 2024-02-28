@@ -18,9 +18,12 @@ function fetchDataWithCache($url, $cachePath = 'holidays_cache.json', $cacheDura
     } else {
       $data = json_decode($response, true);
       file_put_contents($cachePath, json_encode($data));
-      return $data;
+      $dataFromCache = false;
+      error_log("[" . date('Y-m-d H:i:s') . "] Weather data fetched from API and updated cache.");
     }
   }
+  error_log("Weather data detail: " . print_r($data, true));
+  return $data;
 }
 
 function fetchHolidaysWithCache()
@@ -92,7 +95,8 @@ function getWeatherInfo($weatherCode)
 {
   // プラグインの画像パスを指定
   // 注意: このパスはプラグインの構造に合わせて適宜調整してください。
-  $pluginImagePaths = plugins_url('images/', __FILE__);
+  $pluginImagePaths = JWEATHERCUSTOMIZER_URL . 'images/';
+  // error_log("Plugin image paths: " . $pluginImagePaths);
 
   // 天気コードに基づいてラベルとアイコンを返す
   if ($weatherCode === 0) {

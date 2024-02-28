@@ -46,7 +46,7 @@ function enqueue_jWeatherCustomizer_script()
 
 	// データをローカライズしてセキュアな方法でスクリプトに渡します。
 	$plugin_data = array(
-		'pluginImagePath' => plugins_url('images/', __FILE__),
+		'pluginImagePath' => plugin_dir_url(__FILE__) . 'images/',
 		'restUrl'         => rest_url('j-weather-customizer/save-data/'),
 		'nonce' => wp_create_nonce('wp_rest'),
 		'siteUrl'         => get_site_url(),
@@ -172,3 +172,5 @@ function saveCacheData($cacheFile, $data)
 	$jsonData = json_encode($data);
 	file_put_contents($cacheFile, $jsonData);
 }
+
+define('JWEATHERCUSTOMIZER_URL', plugin_dir_url(__FILE__));
