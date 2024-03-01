@@ -1,11 +1,20 @@
 <?
+
+// タイムゾーンを日本時間に設定
+date_default_timezone_set('Asia/Tokyo');
+
 // 共通のキャッシュ機能を利用してデータを取得する関
 
 function fetchDataWithCache($url, $cachePath = 'holidays_cache.json', $cacheDuration = 14400)
 {
-  if (file_exists($cachePath) && (time() - filemtime($cachePath) < $cacheDuration)) {
-    return json_decode(file_get_contents($cachePath), true);
+  $dataFromCache = true;
+  // キャッシュファイルが存在し、かつ現在時刻がファイルの最終更新時刻から$cacheDuration以内かつ同じ日付であるかをチェック
+  if (file_exists($cachePath) && (time() - filemtime($cachePath) < $cacheDuration) && date('Y-m-d', filemtime($cachePath)) == date('Y-m-d')) {
+    $currentCount = time() - filemtime($cachePath); // 現在のカウント（経過時間）を計算
+    $data = json_decode(file_get_contents($cachePath), true);
+    error_log("[" . date('Y-m-d H:i:s') . "] Weather data fetched from cache. Current count: {$currentCount} seconds.");
   } else {
+     // キャッシュが無効または存在しない場合、または日付が異なる場合はAPIからデータを取得
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -17,12 +26,13 @@ function fetchDataWithCache($url, $cachePath = 'holidays_cache.json', $cacheDura
       return []; // 空の配列を返し、処理を続行
     } else {
       $data = json_decode($response, true);
+        // 取得したデータをキャッシュファイルに保存
       file_put_contents($cachePath, json_encode($data));
       $dataFromCache = false;
-      error_log("[" . date('Y-m-d H:i:s') . "] Weather data fetched from API and updated cache.");
+      error_log("[" . date('Y-m-d H:i:s') . "] Weather data fetched from API and cache updated.");
     }
   }
-  error_log("Weather data detail: " . print_r($data, true));
+  // error_log("Weather data detail: " . print_r($data, true));
   return $data;
 }
 
