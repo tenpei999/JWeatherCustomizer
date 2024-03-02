@@ -14,7 +14,7 @@ function fetchDataWithCache($url, $cachePath = 'holidays_cache.json', $cacheDura
     $data = json_decode(file_get_contents($cachePath), true);
     error_log("[" . date('Y-m-d H:i:s') . "] Weather data fetched from cache. Current count: {$currentCount} seconds.");
   } else {
-     // キャッシュが無効または存在しない場合、または日付が異なる場合はAPIからデータを取得
+    // キャッシュが無効または存在しない場合、または日付が異なる場合はAPIからデータを取得
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -26,7 +26,7 @@ function fetchDataWithCache($url, $cachePath = 'holidays_cache.json', $cacheDura
       return []; // 空の配列を返し、処理を続行
     } else {
       $data = json_decode($response, true);
-        // 取得したデータをキャッシュファイルに保存
+      // 取得したデータをキャッシュファイルに保存
       file_put_contents($cachePath, json_encode($data));
       $dataFromCache = false;
       error_log("[" . date('Y-m-d H:i:s') . "] Weather data fetched from API and cache updated.");
@@ -41,6 +41,7 @@ function fetchHolidaysWithCache()
   $url = 'https://holidays-jp.github.io/api/v1/date.json';
   return fetchDataWithCache($url);
 }
+
 
 function getHolidays(&$cache)
 {
@@ -185,6 +186,7 @@ function fetchWeatherDataWithCache($apiUrl, $cacheFile = 'weather_cache.json', $
   } else {
     // error_log("Weather data fetched from API and updated cache: " . print_r($data, true));
   }
+  error_log(print_r($data['daily'], true));
 
   $weatherCodesForWeek = $data['daily']['weathercode'];
   $weatherNamesForWeek = array_map(function ($code) {
@@ -208,16 +210,20 @@ function fetchWeatherDataWithCache($apiUrl, $cacheFile = 'weather_cache.json', $
 
   for ($i = -1; $i < count($highestTemperatureForWeek) - 1; $i++) {
     $todayMaxTemperature = $highestTemperatureForWeek[$i + 1];
-    $yesterdayMaxTemperature = $highestTemperatureForWeek[$i + 1];
+    error_log("Today's max temperature: {$todayMaxTemperature}");
+    $yesterdayMaxTemperature = $highestTemperatureForWeek[$i];
+    error_log("Yesterday's max temperature: {$yesterdayMaxTemperature}");
     $temperatureDifference = ceil(($todayMaxTemperature - $yesterdayMaxTemperature) * 10) / 10;
+    error_log("Temperature difference: {$temperatureDifference}");
     $formattedDifference = $temperatureDifference >= 0 ? "(+{$temperatureDifference})" : "(-" . abs($temperatureDifference) . ")";
+    error_log("Formatted temperature difference: {$formattedDifference}");
 
     $highestTemperatureDifferencesForWeek[] = $formattedDifference;
   };
 
   for ($i = -1; $i < count($lowestTemperatureForWeek) - 1; $i++) {
     $todayMinTemperature = $lowestTemperatureForWeek[$i + 1];
-    $yesterdayMinTemperature = $lowestTemperatureForWeek[$i + 1];
+    $yesterdayMinTemperature = $lowestTemperatureForWeek[$i];
     $temperatureDifference = ceil(($todayMinTemperature - $yesterdayMinTemperature) * 10) / 10;
     $formattedDifference = $temperatureDifference >= 0 ? "(+{$temperatureDifference})" : "(-" . abs($temperatureDifference) . ")";
 
@@ -247,11 +253,11 @@ function fetchWeatherDataWithCache($apiUrl, $cacheFile = 'weather_cache.json', $
     if (isset($weatherNamesForWeek[$index])) {
       $dailyData[] = [
         'day' => $dateInfo,
-        'name' => $weatherNamesForWeek[$index + 1],
-        'image' => $weatherImageForWeek[$index + 1],
-        'highestTemperature' => $highestTemperatureForWeek[$index + 1],
-        'lowestTemperature' => $lowestTemperatureForWeek[$index + 1],
-        'maximumTemperatureComparison' => $highestTemperatureDifferencesForWeek[$index + 1], // null合体演算子を使用して、インデックスが存在しない場合に備える
+        'name' => $weatherNamesForWeek[$index + 2],
+        'image' => $weatherImageForWeek[$index + 2],
+        'highestTemperature' => $highestTemperatureForWeek[$index + 2],
+        'lowestTemperature' => $lowestTemperatureForWeek[$index + 2],
+        'maximumTemperatureComparison' => $highestTemperatureDifferencesForWeek[$index + 2], // null合体演算子を使用して、インデックスが存在しない場合に備える
         'lowestTemperatureComparison' => $lowestTemperatureDifferencesForWeek[$index + 2] ?? null,
         'rainProbability' => $rainProbability1[$index + 2] ?? null, // インデックス調整 (+1 されているので存在しない場合に備える)
       ];

@@ -1,6 +1,5 @@
 import { fetchWeatherData } from "./fetchWeatherData";
 import processWeatherData from "./processWeatherData";
-import saveWeatherDataToServer from "./saveWeatherDataToServer";
 
 async function mainWeatherLogic(
   cityurl,
@@ -20,9 +19,6 @@ async function mainWeatherLogic(
     setTodayWeather(processedData.dailyData[0]);
     setTomorrowWeather(processedData.dailyData[1]);
     setWeeklyWeather(processedData.dailyData.slice(2)); // 2日目以降のデータを週間天気として設定
-
-    // 4. 処理された天気データをサーバーに保存
-    await saveWeatherDataToServer(processedData.dailyData);
 
   } catch (error) {
     console.error('Error in weatherObject function:', error);

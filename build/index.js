@@ -2230,9 +2230,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _fetchWeatherData__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./fetchWeatherData */ "./src/weatherDate/fetchWeatherData.js");
 /* harmony import */ var _processWeatherData__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./processWeatherData */ "./src/weatherDate/processWeatherData.js");
-/* harmony import */ var _saveWeatherDataToServer__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./saveWeatherDataToServer */ "./src/weatherDate/saveWeatherDataToServer.js");
 
 
+// import saveWeatherDataToServer from "./saveWeatherDataToServer";
 
 async function mainWeatherLogic(cityurl, setTodayWeather, setTomorrowWeather, setWeeklyWeather, addBreak = false) {
   try {
@@ -2241,6 +2241,7 @@ async function mainWeatherLogic(cityurl, setTodayWeather, setTomorrowWeather, se
 
     // 2. 天気データを処理（加工）
     const processedData = await (0,_processWeatherData__WEBPACK_IMPORTED_MODULE_1__["default"])(rawData, addBreak);
+    console.log();
 
     // 3. UIを更新するためのデータをセット
     setTodayWeather(processedData.dailyData[0]);
@@ -2248,7 +2249,7 @@ async function mainWeatherLogic(cityurl, setTodayWeather, setTomorrowWeather, se
     setWeeklyWeather(processedData.dailyData.slice(2)); // 2日目以降のデータを週間天気として設定
 
     // 4. 処理された天気データをサーバーに保存
-    await (0,_saveWeatherDataToServer__WEBPACK_IMPORTED_MODULE_2__["default"])(processedData.dailyData);
+    // await saveWeatherDataToServer(processedData.dailyData);
   } catch (error) {
     console.error('Error in weatherObject function:', error);
     // 必要に応じて、ここでエラーハンドリングを行う
@@ -2354,6 +2355,10 @@ let isApiError = {
   statusCode: null
 };
 async function fetchWeatherData(cityurl) {
+  const cacheDuration = 14400; // キャッシュの有効期限（秒）
+  const cacheKey = 'weatherDataCache'; // localStorageで使用するキャッシュのキー
+  const cacheTimestampKey = 'weatherDataTimestamp'; // キャッシュのタイムスタンプを保存するキー
+
   const isValidUrl = url => {
     try {
       const validBaseUrl = "https://api.open-meteo.com/v1";
@@ -2363,22 +2368,40 @@ async function fetchWeatherData(cityurl) {
       return false;
     }
   };
-  let apiRequestCount = 0;
   if (!cityurl || !isValidUrl(cityurl)) {
     throw new Error(`City "${cityurl}" does not exist in the city object.`);
   }
-  apiRequestCount++;
-  isApiError.isError = false;
-  isApiError.statusCode = null;
-  const response = await fetch(cityurl);
-  if (!response.ok) {
-    isApiError.isError = true;
-    isApiError.statusCode = response.status;
-    throw new Error(`API response error with status: ${response.status}`);
+  const now = new Date();
+  const currentTimestamp = Math.floor(now.getTime() / 1000); // 現在のUNIXタイムスタンプ（秒）
+  const storedTimestamp = localStorage.getItem(cacheTimestampKey);
+  const timePassed = currentTimestamp - storedTimestamp;
+  if (localStorage.getItem(cacheKey) && timePassed < cacheDuration && now.toDateString() === new Date(storedTimestamp * 1000).toDateString()) {
+    // キャッシュからデータを取得
+    console.log(`Cache hit: Data fetched from cache. Time passed since last cache: ${timePassed} seconds.`);
+    return JSON.parse(localStorage.getItem(cacheKey));
+  } else {
+    // APIからデータを取得
+    isApiError.isError = false;
+    isApiError.statusCode = null;
+    try {
+      const response = await fetch(cityurl);
+      if (!response.ok) {
+        isApiError.isError = true;
+        isApiError.statusCode = response.status;
+        throw new Error(`API response error with status: ${response.status}`);
+      }
+      const data = await response.json();
+      localStorage.setItem(cacheKey, JSON.stringify(data));
+      localStorage.setItem(cacheTimestampKey, currentTimestamp.toString());
+      console.log('Cache update: Data fetched from API and cache updated.');
+      return data;
+    } catch (error) {
+      console.error('Fetch error:', error);
+      throw error; // エラーを再スローして、呼び出し元で処理できるようにする
+    }
   }
-  const data = await response.json();
-  return data;
 }
+
 ;
 
 
@@ -2547,39 +2570,6 @@ async function processWeatherData(data, addBreak = false) {
 }
 
 /* harmony default export */ __webpack_exports__["default"] = (processWeatherData);
-
-/***/ }),
-
-/***/ "./src/weatherDate/saveWeatherDataToServer.js":
-/*!****************************************************!*\
-  !*** ./src/weatherDate/saveWeatherDataToServer.js ***!
-  \****************************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-async function saveWeatherDataToServer(dailyData) {
-  const apiUrl = JWeatherCustomizerData.siteUrl + '/wp-json/j-weather-customizer/save-data/';
-  try {
-    const response = await fetch(apiUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-WP-Nonce': JWeatherCustomizerData.nonce
-      },
-      body: JSON.stringify({
-        dailyData
-      })
-    });
-    if (!response.ok) {
-      throw new Error(`Failed to post data. Status: ${response.status}`);
-    }
-    console.log('Data successfully saved to the server.');
-  } catch (error) {
-    console.error('Failed to save data to the server:', error);
-  }
-}
-/* harmony default export */ __webpack_exports__["default"] = (saveWeatherDataToServer);
 
 /***/ }),
 
