@@ -3,49 +3,97 @@
 // タイムゾーンを日本時間に設定
 date_default_timezone_set('Asia/Tokyo');
 
-// 共通のキャッシュ機能を利用してデータを取得する関
+/**
+ * データをキャッシュから取得またはAPIから取得する。
+ *
+ * @param string $url APIのURL。
+ * @param string $cachePath キャッシュファイルのパス。
+ * @param int $cacheDuration キャッシュの有効期間（秒）。
+ * @return array データを含む配列。
+ */
 
 function fetchDataWithCache($url, $cachePath = 'holidays_cache.json', $cacheDuration = 14400)
 {
-  $dataFromCache = true;
-  // キャッシュファイルが存在し、かつ現在時刻がファイルの最終更新時刻から$cacheDuration以内かつ同じ日付であるかをチェック
-  if (file_exists($cachePath) && (time() - filemtime($cachePath) < $cacheDuration) && date('Y-m-d', filemtime($cachePath)) == date('Y-m-d')) {
-    $currentCount = time() - filemtime($cachePath); // 現在のカウント（経過時間）を計算
+  // キャッシュが有効かどうかを確認
+  if (isCacheValid($cachePath, $cacheDuration)) {
     $data = json_decode(file_get_contents($cachePath), true);
-    error_log("[" . date('Y-m-d H:i:s') . "] Weather data fetched from cache. Current count: {$currentCount} seconds.");
+    logMessage("Data fetched from cache.");
   } else {
-    // キャッシュが無効または存在しない場合、または日付が異なる場合はAPIからデータを取得
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    $response = curl_exec($ch);
-    $err = curl_error($ch);
-    curl_close($ch);
-    if ($err) {
-      echo "cURL Error #:" . $err;
-      return []; // 空の配列を返し、処理を続行
-    } else {
-      $data = json_decode($response, true);
-      // 取得したデータをキャッシュファイルに保存
+    $data = fetchDataFromApi($url);
+    if ($data) {
       file_put_contents($cachePath, json_encode($data));
-      $dataFromCache = false;
-      error_log("[" . date('Y-m-d H:i:s') . "] Weather data fetched from API and cache updated.");
+      logMessage("Data fetched from API and cache updated.");
     }
   }
-  // error_log("Weather data detail: " . print_r($data, true));
-  return $data;
+
+  return $data ?? [];
 }
+
+/**
+ * キャッシュが有効かどうかをチェックする。
+ *
+ * @param string $cachePath キャッシュファイルのパス。
+ * @param int $cacheDuration キャッシュの有効期間（秒）。
+ * @return bool キャッシュが有効な場合はtrue、それ以外の場合はfalse。
+ */
+
+function isCacheValid($cachePath, $cacheDuration)
+{
+  return file_exists($cachePath) &&
+    (time() - filemtime($cachePath) < $cacheDuration) &&
+    date('Y-m-d', filemtime($cachePath)) == date('Y-m-d');
+}
+
+
+/**
+ * APIからデータを取得する。
+ *
+ * @param string $url APIのURL。
+ * @return array|null データを含む配列、またはエラーが発生した場合はnull。
+ */
+
+function fetchDataFromApi($url)
+{
+  $ch = curl_init();
+  curl_setopt($ch, CURLOPT_URL, $url);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  $response = curl_exec($ch);
+  $err = curl_error($ch);
+  curl_close($ch);
+
+  if ($err) {
+    logMessage("cURL Error: " . $err);
+    return null;
+  } else {
+    return json_decode($response, true);
+  }
+}
+
+/**
+ * メッセージをログに記録する。
+ *
+ * @param string $message ログに記録するメッセージ。
+ */
+
+function logMessage($message)
+{
+  error_log("[" . date('Y-m-d H:i:s') . "] " . $message);
+}
+
+// 定数の定義
+define('HOLIDAYS_API_URL', 'https://holidays-jp.github.io/api/v1/date.json');
 
 function fetchHolidaysWithCache()
 {
-  $url = 'https://holidays-jp.github.io/api/v1/date.json';
-  return fetchDataWithCache($url);
+  // キャッシュパスと期間を指定
+  $cachePath = 'holidays_cache.json';
+  $cacheDuration = 86400; // 24時間を秒で指定
+  return fetchDataWithCache(HOLIDAYS_API_URL, $cachePath, $cacheDuration);
 }
-
 
 function getHolidays(&$cache)
 {
-  $today = date('Y-m-d'); // YYYY-MM-DD形式
+  $today = date('Y-m-d');
   if (!isset($cache[$today])) {
     $cache[$today] = fetchHolidaysWithCache();
   }
@@ -56,12 +104,10 @@ function getDateRangeArray($startDate, $endDate)
 {
   $dateArray = [];
   $currentDate = strtotime($startDate);
-
   while ($currentDate <= strtotime($endDate)) {
     $dateArray[] = date('Y-m-d', $currentDate);
     $currentDate = strtotime("+1 day", $currentDate);
   }
-
   return $dateArray;
 }
 
@@ -69,34 +115,30 @@ function getOneWeekDatesWithHolidays($addBreak = false)
 {
   $cache = [];
   $today = date('Y-m-d');
-  $sixDaysLater = date('Y-m-d', strtotime($today . ' + 6 days'));
+  $sixDaysLater = date('Y-m-d', strtotime("+6 days", strtotime($today)));
 
   $oneWeekDates = getDateRangeArray($today, $sixDaysLater);
   $holidays = getHolidays($cache);
 
-  $oneWeekDatesWithHolidays = [];
-  foreach ($oneWeekDates as $date) {
+  return array_map(function ($date) use ($holidays) {
     $timestamp = strtotime($date);
     $dayOfWeek = date('w', $timestamp);
     $weekDays = ["日", "月", "火", "水", "木", "金", "土"];
     $formattedDate = date('n月j日', $timestamp) . '(' . $weekDays[$dayOfWeek] . ')';
-    $holidayKey = date('Y-m-d', $timestamp);
 
-    $oneWeekDatesWithHolidays[] = [
+    return [
       'date' => [
         'month' => date('n月', $timestamp),
         'day' => date('j日', $timestamp),
         'dayOfWeek' => '(' . $weekDays[$dayOfWeek] . ')',
         'fullDate' => $formattedDate,
       ],
-      'isHoliday' => isset($holidays[$holidayKey]),
-      'holidayName' => $holidays[$holidayKey] ?? null,
+      'isHoliday' => isset($holidays[$date]),
+      'holidayName' => $holidays[$date] ?? null,
       'isSaturday' => $dayOfWeek == 6,
       'isSunday' => $dayOfWeek == 0,
     ];
-  }
-
-  return $oneWeekDatesWithHolidays;
+  }, $oneWeekDates);
 }
 
 // この関数を呼び出して1週間の日付と祝日の情報を取得
