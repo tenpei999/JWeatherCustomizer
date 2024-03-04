@@ -1,95 +1,95 @@
 <?
 
-// タイムゾーンを日本時間に設定
-date_default_timezone_set('Asia/Tokyo');
+// // タイムゾーンを日本時間に設定
+// date_default_timezone_set('Asia/Tokyo');
 
-/**
- * データをキャッシュから取得またはAPIから取得する。
- *
- * @param string $url APIのURL。
- * @param string $cachePath キャッシュファイルのパス。
- * @param int $cacheDuration キャッシュの有効期間（秒）。
- * @return array データを含む配列。
- */
+// /**
+//  * データをキャッシュから取得またはAPIから取得する。
+//  *
+//  * @param string $url APIのURL。
+//  * @param string $cachePath キャッシュファイルのパス。
+//  * @param int $cacheDuration キャッシュの有効期間（秒）。
+//  * @return array データを含む配列。
+//  */
 
-function fetchDataWithCache($url, $cachePath = 'holidays_cache.json', $cacheDuration = 14400)
-{
-  // キャッシュが有効かどうかを確認
-  if (isCacheValid($cachePath, $cacheDuration)) {
-    $data = json_decode(file_get_contents($cachePath), true);
-    logMessage("Data fetched from cache.");
-  } else {
-    $data = fetchDataFromApi($url);
-    if ($data) {
-      file_put_contents($cachePath, json_encode($data));
-      logMessage("Data fetched from API and cache updated.");
-    }
-  }
+// function fetchDataWithCache($url, $cachePath = 'holidays_cache.json', $cacheDuration = 14400)
+// {
+//   // キャッシュが有効かどうかを確認
+//   if (isCacheValid($cachePath, $cacheDuration)) {
+//     $data = json_decode(file_get_contents($cachePath), true);
+//     logMessage("Data fetched from cache.");
+//   } else {
+//     $data = fetchDataFromApi($url);
+//     if ($data) {
+//       file_put_contents($cachePath, json_encode($data));
+//       logMessage("Data fetched from API and cache updated.");
+//     }
+//   }
 
-  return $data ?? [];
-}
+//   return $data ?? [];
+// }
 
-/**
- * キャッシュが有効かどうかをチェックする。
- *
- * @param string $cachePath キャッシュファイルのパス。
- * @param int $cacheDuration キャッシュの有効期間（秒）。
- * @return bool キャッシュが有効な場合はtrue、それ以外の場合はfalse。
- */
+// /**
+//  * キャッシュが有効かどうかをチェックする。
+//  *
+//  * @param string $cachePath キャッシュファイルのパス。
+//  * @param int $cacheDuration キャッシュの有効期間（秒）。
+//  * @return bool キャッシュが有効な場合はtrue、それ以外の場合はfalse。
+//  */
 
-function isCacheValid($cachePath, $cacheDuration)
-{
-  return file_exists($cachePath) &&
-    (time() - filemtime($cachePath) < $cacheDuration) &&
-    date('Y-m-d', filemtime($cachePath)) == date('Y-m-d');
-}
+// function isCacheValid($cachePath, $cacheDuration)
+// {
+//   return file_exists($cachePath) &&
+//     (time() - filemtime($cachePath) < $cacheDuration) &&
+//     date('Y-m-d', filemtime($cachePath)) == date('Y-m-d');
+// }
 
 
-/**
- * APIからデータを取得する。
- *
- * @param string $url APIのURL。
- * @return array|null データを含む配列、またはエラーが発生した場合はnull。
- */
+// /**
+//  * APIからデータを取得する。
+//  *
+//  * @param string $url APIのURL。
+//  * @return array|null データを含む配列、またはエラーが発生した場合はnull。
+//  */
 
-function fetchDataFromApi($url)
-{
-  $ch = curl_init();
-  curl_setopt($ch, CURLOPT_URL, $url);
-  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-  $response = curl_exec($ch);
-  $err = curl_error($ch);
-  curl_close($ch);
+// function fetchDataFromApi($url)
+// {
+//   $ch = curl_init();
+//   curl_setopt($ch, CURLOPT_URL, $url);
+//   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+//   $response = curl_exec($ch);
+//   $err = curl_error($ch);
+//   curl_close($ch);
 
-  if ($err) {
-    logMessage("cURL Error: " . $err);
-    return null;
-  } else {
-    return json_decode($response, true);
-  }
-}
+//   if ($err) {
+//     logMessage("cURL Error: " . $err);
+//     return null;
+//   } else {
+//     return json_decode($response, true);
+//   }
+// }
 
-/**
- * メッセージをログに記録する。
- *
- * @param string $message ログに記録するメッセージ。
- */
+// /**
+//  * メッセージをログに記録する。
+//  *
+//  * @param string $message ログに記録するメッセージ。
+//  */
 
-function logMessage($message)
-{
-  error_log("[" . date('Y-m-d H:i:s') . "] " . $message);
-}
+// function logMessage($message)
+// {
+//   error_log("[" . date('Y-m-d H:i:s') . "] " . $message);
+// }
 
-// 定数の定義
-define('HOLIDAYS_API_URL', 'https://holidays-jp.github.io/api/v1/date.json');
+// // 定数の定義
+// define('HOLIDAYS_API_URL', 'https://holidays-jp.github.io/api/v1/date.json');
 
-function fetchHolidaysWithCache()
-{
-  // キャッシュパスと期間を指定
-  $cachePath = 'holidays_cache.json';
-  $cacheDuration = 86400; // 24時間を秒で指定
-  return fetchDataWithCache(HOLIDAYS_API_URL, $cachePath, $cacheDuration);
-}
+// function fetchHolidaysWithCache()
+// {
+//   // キャッシュパスと期間を指定
+//   $cachePath = 'holidays_cache.json';
+//   $cacheDuration = 86400; // 24時間を秒で指定
+//   return fetchDataWithCache(HOLIDAYS_API_URL, $cachePath, $cacheDuration);
+// }
 
 function getHolidays(&$cache)
 {
