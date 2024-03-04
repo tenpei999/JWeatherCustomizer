@@ -73,21 +73,6 @@ add_action('rest_api_init', function () {
 	));
 });
 
-function JWeatherCustomizer_frontend_scripts()
-{
-	// ブロックが存在するページのみでスクリプトを読み込む
-	if (has_block('create-block/j-weather-customizer')) {
-		wp_enqueue_script(
-			'JWeatherCustomizer-frontend-script',
-			plugins_url('JWeatherCustomizer') . '/frontScript/frontend.js', // 正確なパスに変更してください
-			array(), // 依存関係がある場合はここに記載
-			'1.0',
-			true // スクリプトをフッターに配置
-		);
-	}
-}
-add_action('wp_enqueue_scripts', 'JWeatherCustomizer_frontend_scripts');
-
 add_action('wp_loaded', 'checkWeatherCache');
 
 function checkWeatherCache()
