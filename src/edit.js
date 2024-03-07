@@ -89,6 +89,8 @@ export default function Edit({ attributes, setAttributes }) {
 		}
 	}, [weatherData]);
 
+	console.log(attributes)
+
 	const commonProps = {
 		borderRadius: attributes.borderRadiusValue,
 		borders: attributes.borders,

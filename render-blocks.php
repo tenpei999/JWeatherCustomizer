@@ -1,6 +1,6 @@
 <?php
 
-include 'assets/weatherDate.php';
+include 'assets/weather_data_processor.php';
 
 function generateBorderStyle($borders, $borderRadiusValue)
 {
@@ -15,6 +15,7 @@ function generateBorderStyle($borders, $borderRadiusValue)
   }
   return implode('; ', $styles);
 }
+
 
 function generateBackgroundStyles($attr)
 {
@@ -43,24 +44,6 @@ function generateBackgroundStyles($attr)
 }
 function jWeatherCustomizer_render_block($attr, $content)
 {
-  // API URLの設定 (ダミーのURLとして設定しています。実際のURLに置き換えてください)
-  $apiUrl = 'https://api.open-meteo.com/v1/forecast?latitude=35.6895&longitude=139.6917&hourly=precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14';
-  // キャッシュファイルのパス
-  $cacheFile = WP_CONTENT_DIR . '/uploads/weather_cache.json';
-
-  // 天気データを取得
-  $weatherData = fetchWeatherDataWithCache($apiUrl, $cacheFile);
-
-  // 今日の天気データ、明日の天気データ、週間天気データを取得するロジックを実装
-  // ここではダミーデータを使用
-  $todayWeather = $weatherData['today'] ?? [];
-  $tomorrowWeather = $weatherData['tomorrow'] ?? [];
-  $weeklyWeather = $weatherData['weekly'] ?? [];
-
-  // エラーログにデータを出力
-  // error_log("Today's Weather: " . print_r($todayWeather, true));
-  // error_log("Tomorrow's Weather: " . print_r($tomorrowWeather, true));
-  // error_log("Weekly Weather: " . print_r($weeklyWeather, true));
 
   $attr = array_merge([
     'showTodayWeather' => true,
@@ -89,7 +72,33 @@ function jWeatherCustomizer_render_block($attr, $content)
       'type' => 'array',
       'default' => []
     ],
+    'selectedCity' => [
+      'type' => 'object',
+      'default' => [
+        'name' => '東京',
+        'url' => 'https://api.open-meteo.com/v1/forecast?latitude=35.6895&longitude=139.6917&hourly=precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14'
+      ]
+    ],
   ], $attr);
+
+  // API URLの設定 (ダミーのURLとして設定しています。実際のURLに置き換えてください)
+  $apiUrl = $attr['selectedCity']['url'];
+  error_log('API URL in render_block: ' . print_r($apiUrl, true));
+  // キャッシュファイルのパス
+  $cacheFile = WP_CONTENT_DIR . '/uploads/weather_cache.json';
+
+  // 天気データを取得
+  $weatherData = fetchWeatherDataWithCache($apiUrl, $cacheFile);
+
+  // 今日の天気データ、明日の天気データ、週間天気データを取得するロジックを実装
+  $todayWeather = $weatherData['today'] ?? [];
+  $tomorrowWeather = $weatherData['tomorrow'] ?? [];
+  $weeklyWeather = $weatherData['weekly'] ?? [];
+
+  // エラーログにデータを出力
+  // error_log("Today's Weather: " . print_r($todayWeather, true));
+  // error_log("Tomorrow's Weather: " . print_r($tomorrowWeather, true));
+  // error_log("Weekly Weather: " . print_r($weeklyWeather, true));
 
   function setTextColor($day)
   {

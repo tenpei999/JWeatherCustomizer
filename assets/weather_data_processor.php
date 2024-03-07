@@ -1,104 +1,6 @@
 <?
-
-// // タイムゾーンを日本時間に設定
-// date_default_timezone_set('Asia/Tokyo');
-
-// /**
-//  * データをキャッシュから取得またはAPIから取得する。
-//  *
-//  * @param string $url APIのURL。
-//  * @param string $cachePath キャッシュファイルのパス。
-//  * @param int $cacheDuration キャッシュの有効期間（秒）。
-//  * @return array データを含む配列。
-//  */
-
-// function fetchDataWithCache($url, $cachePath = 'holidays_cache.json', $cacheDuration = 14400)
-// {
-//   // キャッシュが有効かどうかを確認
-//   if (isCacheValid($cachePath, $cacheDuration)) {
-//     $data = json_decode(file_get_contents($cachePath), true);
-//     logMessage("Data fetched from cache.");
-//   } else {
-//     $data = fetchDataFromApi($url);
-//     if ($data) {
-//       file_put_contents($cachePath, json_encode($data));
-//       logMessage("Data fetched from API and cache updated.");
-//     }
-//   }
-
-//   return $data ?? [];
-// }
-
-// /**
-//  * キャッシュが有効かどうかをチェックする。
-//  *
-//  * @param string $cachePath キャッシュファイルのパス。
-//  * @param int $cacheDuration キャッシュの有効期間（秒）。
-//  * @return bool キャッシュが有効な場合はtrue、それ以外の場合はfalse。
-//  */
-
-// function isCacheValid($cachePath, $cacheDuration)
-// {
-//   return file_exists($cachePath) &&
-//     (time() - filemtime($cachePath) < $cacheDuration) &&
-//     date('Y-m-d', filemtime($cachePath)) == date('Y-m-d');
-// }
-
-
-// /**
-//  * APIからデータを取得する。
-//  *
-//  * @param string $url APIのURL。
-//  * @return array|null データを含む配列、またはエラーが発生した場合はnull。
-//  */
-
-// function fetchDataFromApi($url)
-// {
-//   $ch = curl_init();
-//   curl_setopt($ch, CURLOPT_URL, $url);
-//   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-//   $response = curl_exec($ch);
-//   $err = curl_error($ch);
-//   curl_close($ch);
-
-//   if ($err) {
-//     logMessage("cURL Error: " . $err);
-//     return null;
-//   } else {
-//     return json_decode($response, true);
-//   }
-// }
-
-// /**
-//  * メッセージをログに記録する。
-//  *
-//  * @param string $message ログに記録するメッセージ。
-//  */
-
-// function logMessage($message)
-// {
-//   error_log("[" . date('Y-m-d H:i:s') . "] " . $message);
-// }
-
-// // 定数の定義
-// define('HOLIDAYS_API_URL', 'https://holidays-jp.github.io/api/v1/date.json');
-
-// function fetchHolidaysWithCache()
-// {
-//   // キャッシュパスと期間を指定
-//   $cachePath = 'holidays_cache.json';
-//   $cacheDuration = 86400; // 24時間を秒で指定
-//   return fetchDataWithCache(HOLIDAYS_API_URL, $cachePath, $cacheDuration);
-// }
-
-function getHolidays(&$cache)
-{
-  $today = date('Y-m-d');
-  if (!isset($cache[$today])) {
-    $cache[$today] = fetchHolidaysWithCache();
-  }
-  return $cache[$today];
-}
+include 'holiday_api_client.php';
+include 'cache_manager.php';
 
 function getDateRangeArray($startDate, $endDate)
 {
@@ -118,7 +20,7 @@ function getOneWeekDatesWithHolidays($addBreak = false)
   $sixDaysLater = date('Y-m-d', strtotime("+6 days", strtotime($today)));
 
   $oneWeekDates = getDateRangeArray($today, $sixDaysLater);
-  $holidays = getHolidays($cache);
+  $holidays = fetchHolidaysWithCache();
 
   return array_map(function ($date) use ($holidays) {
     $timestamp = strtotime($date);
@@ -206,29 +108,19 @@ function validateTemperature($temperature)
 }
 
 
-function fetchWeatherDataWithCache($apiUrl, $cacheFile = 'weather_cache.json', $cacheTime = 14400)
+function fetchWeatherDataWithCache($apiUrl)
 {
-  $dataFromCache = true; // データがキャッシュから取得されたかどうかを追跡するフラグ
 
-  if (file_exists($cacheFile) && (filemtime($cacheFile) + $cacheTime > time())) {
-    // キャッシュが有効な場合、キャッシュからデータを読み込む
-    $data = json_decode(file_get_contents($cacheFile), true);
-  } else {
-    // キャッシュが無効または存在しない場合、APIからデータを取得
-    $response = file_get_contents($apiUrl);
-    $data = json_decode($response, true);
-    // 取得したデータをキャッシュファイルに保存
-    file_put_contents($cacheFile, json_encode($data));
-    $dataFromCache = false; // APIから新たにデータを取得したため、フラグを更新
+  error_log("Fetching weather data from API URL: " . $apiUrl);
+  $data = checkWeatherCache($apiUrl);
+  // error_log("Data: " . print_r($data, true));
+
+  if (!$data) {
+    // error_log("Failed to fetch weather data.");
+    return [];
   }
 
-  // デバッグ情報をエラーログに出力
-  if ($dataFromCache) {
-    // error_log("Weather data fetched from cache: " . print_r($data, true));
-  } else {
-    // error_log("Weather data fetched from API and updated cache: " . print_r($data, true));
-  }
-  error_log(print_r($data['daily'], true));
+  // error_log(print_r($data['daily'], true));
 
   $weatherCodesForWeek = $data['daily']['weathercode'];
   $weatherNamesForWeek = array_map(function ($code) {
@@ -250,20 +142,16 @@ function fetchWeatherDataWithCache($apiUrl, $cacheFile = 'weather_cache.json', $
   $lowestTemperatureDifferencesForWeek = [];
   $rainProbability1 = [];
 
-  for ($i = -1; $i < count($highestTemperatureForWeek) - 1; $i++) {
+  for ($i = 0; $i < count($highestTemperatureForWeek) - 1; $i++) {
     $todayMaxTemperature = $highestTemperatureForWeek[$i + 1];
-    error_log("Today's max temperature: {$todayMaxTemperature}");
     $yesterdayMaxTemperature = $highestTemperatureForWeek[$i];
-    error_log("Yesterday's max temperature: {$yesterdayMaxTemperature}");
     $temperatureDifference = ceil(($todayMaxTemperature - $yesterdayMaxTemperature) * 10) / 10;
-    error_log("Temperature difference: {$temperatureDifference}");
     $formattedDifference = $temperatureDifference >= 0 ? "(+{$temperatureDifference})" : "(-" . abs($temperatureDifference) . ")";
-    error_log("Formatted temperature difference: {$formattedDifference}");
 
     $highestTemperatureDifferencesForWeek[] = $formattedDifference;
   };
 
-  for ($i = -1; $i < count($lowestTemperatureForWeek) - 1; $i++) {
+  for ($i = 0; $i < count($lowestTemperatureForWeek) - 1; $i++) {
     $todayMinTemperature = $lowestTemperatureForWeek[$i + 1];
     $yesterdayMinTemperature = $lowestTemperatureForWeek[$i];
     $temperatureDifference = ceil(($todayMinTemperature - $yesterdayMinTemperature) * 10) / 10;
@@ -295,13 +183,13 @@ function fetchWeatherDataWithCache($apiUrl, $cacheFile = 'weather_cache.json', $
     if (isset($weatherNamesForWeek[$index])) {
       $dailyData[] = [
         'day' => $dateInfo,
-        'name' => $weatherNamesForWeek[$index + 2],
-        'image' => $weatherImageForWeek[$index + 2],
-        'highestTemperature' => $highestTemperatureForWeek[$index + 2],
-        'lowestTemperature' => $lowestTemperatureForWeek[$index + 2],
-        'maximumTemperatureComparison' => $highestTemperatureDifferencesForWeek[$index + 2], // null合体演算子を使用して、インデックスが存在しない場合に備える
-        'lowestTemperatureComparison' => $lowestTemperatureDifferencesForWeek[$index + 2] ?? null,
-        'rainProbability' => $rainProbability1[$index + 2] ?? null, // インデックス調整 (+1 されているので存在しない場合に備える)
+        'name' => $weatherNamesForWeek[$index + 1],
+        'image' => $weatherImageForWeek[$index + 1],
+        'highestTemperature' => $highestTemperatureForWeek[$index + 1],
+        'lowestTemperature' => $lowestTemperatureForWeek[$index + 1],
+        'maximumTemperatureComparison' => $highestTemperatureDifferencesForWeek[$index + 1], // null合体演算子を使用して、インデックスが存在しない場合に備える
+        'lowestTemperatureComparison' => $lowestTemperatureDifferencesForWeek[$index + 1] ?? null,
+        'rainProbability' => $rainProbability1[$index + 1] ?? null, // インデックス調整 (+1 されているので存在しない場合に備える)
       ];
       // 最初の要素を今日の天気データとして取得
       if (isset($dailyData[0])) {
