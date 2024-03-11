@@ -1,2 +1,3 @@
 node_modules
-JWeatherCustomizer_Cache/
+!JWeatherCustomizer_Cache
+JWeatherCustomizer_Cache/*
