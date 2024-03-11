@@ -4,57 +4,73 @@ include 'weather_api_client.php';
 
 function checkWeatherCache($apiUrl)
 {
-  error_log('API URL: ' . $apiUrl);
-  if (empty($apiUrl)) {
-    error_log('Error: API URL is empty.');
-  }
   // キャッシュファイル名とキャッシュの有効期間を関数内で定義
   $cacheFile = 'weather_cache.json';
-  $cacheTime = 14400; // 4時間
+  $cacheTime = 14400; // 4時間（秒単位）
   $cacheFilePath = JWEATHERCUSTOMIZER_CACHE_DIR . $cacheFile;
-  $apiUrl = $apiUrl ?: 'https://api.open-meteo.com/v1/forecast?latitude=35.68&longitude=139.78&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&current_weather=true';
+  $apiUrl = $apiUrl ?: 'https://api.open-meteo.com/v1/forecast?latitude=35.6895&longitude=139.6917&hourly=precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14';
 
   // キャッシュデータを取得する関数
   $cacheData = getCacheData($cacheFile);
+  error_log("Cache url: " . print_r($apiUrl, true));
 
-  if ($cacheData && $cacheData['url'] === $apiUrl && time() - filemtime($cacheFilePath) < $cacheTime && !empty($cacheData['data'])) {
-    // キャッシュデータが存在する場合の処理
+  if (
+    file_exists($cacheFilePath) && $cacheData && $cacheData['url'] === $apiUrl &&
+    (time() - filemtime($cacheFilePath)) < $cacheTime &&
+    date('Y-m-d', filemtime($cacheFilePath)) == date('Y-m-d')
+  ) {
+    // キャッシュデータが存在し、有効な場合はキャッシュからデータを返す
+    error_log("Fetching weather data from API cache.");
     return $cacheData['data'];
   } else {
-    // キャッシュデータが存在しない場合の処理
-    // 属性からURLを取得
-
-    // error_log("Fetching weather data from API URL: " . $apiUrl);
-
-    // apiUrlをdebug.logに記録
-
-    $apiResponse = file_get_contents($apiUrl);
-    $data = json_decode($apiResponse, true);
-
-    // 新しいデータとURLをキャッシュに保存
-    saveCacheData($cacheFile, ['url' => $apiUrl, 'data' => $data]);
-    return $data;
+    // キャッシュの状態を再確認
+    clearstatcache(); // キャッシュされたファイル状態情報をクリア
+    if (
+      !file_exists($cacheFilePath) || (time() - filemtime($cacheFilePath)) >= $cacheTime ||
+      date('Y-m-d', filemtime($cacheFilePath)) != date('Y-m-d')
+    ) {
+      // APIからデータを取得し、キャッシュに保存する
+      $apiResponse = file_get_contents($apiUrl);
+      $data = json_decode($apiResponse, true);
+      saveCacheData($cacheFile, ['url' => $apiUrl, 'data' => $data]);
+      error_log("Data fetched from API and cache updated.");
+      return $data;
+    } else {
+      // キャッシュが更新されていた場合は、更新されたキャッシュからデータを返す
+      $updatedCacheData = getCacheData($cacheFile);
+      error_log("Fetching updated weather data from cache.");
+      return $updatedCacheData['data'];
+    }
   }
 }
+
+
 // キャッシュデータを取得する関数
 function getCacheData($cacheFile)
 {
   ensureCacheDirectoryExists(); // キャッシュディレクトリの確認と作成
-  $cachePath = $cacheFile;
+  $cachePath = JWEATHERCUSTOMIZER_CACHE_DIR . $cacheFile;
   if (file_exists($cachePath) && is_readable($cachePath)) {
+    error_log("Cache file exists and is readable.");
     $jsonData = file_get_contents($cachePath);
     return json_decode($jsonData, true);
+  } else {
+    error_log("Cache file does not exist or is not readable.");
+    return false;
   }
-  return false;
 }
 
 // キャッシュデータを保存する関数
 function saveCacheData($cacheFile, $data)
 {
   ensureCacheDirectoryExists(); // キャッシュディレクトリの確認と作成
-  $cachePath = $cacheFile;
+  $cachePath = JWEATHERCUSTOMIZER_CACHE_DIR . $cacheFile;
   $jsonData = json_encode($data);
-  file_put_contents($cachePath, $jsonData);
+  if (file_put_contents($cachePath, $jsonData)) {
+    error_log("Cache data saved successfully.");
+  } else {
+    error_log("Failed to save cache data.");
+  }
 }
 
 /**
@@ -93,9 +109,19 @@ function fetchDataWithCache($url, $cachePath = 'holidays_cache.json', $cacheDura
 
 function isCacheValid($cachePath, $cacheDuration)
 {
-  return file_exists($cachePath) &&
-    (time() - filemtime($cachePath) < $cacheDuration) &&
-    date('Y-m-d', filemtime($cachePath)) == date('Y-m-d');
+  if (file_exists($cachePath)) {
+    $timeSinceLastModification = time() - filemtime($cachePath);
+    if ($timeSinceLastModification < $cacheDuration) {
+      error_log("Cache is valid. Time since last modification: " . $timeSinceLastModification . " seconds.");
+      return true;
+    } else {
+      error_log("Cache is invalid. Time since last modification exceeds cache duration.");
+      return false;
+    }
+  } else {
+    error_log("Cache file does not exist.");
+    return false;
+  }
 }
 
 /**
@@ -108,14 +134,3 @@ function logMessage($message)
 {
   error_log("[" . date('Y-m-d H:i:s') . "] " . $message);
 }
-
-// ディレクトリが存在しない場合に作成する関数
-function ensureCacheDirectoryExists()
-{
-  if (!file_exists(JWEATHERCUSTOMIZER_CACHE_DIR)) {
-    mkdir(JWEATHERCUSTOMIZER_CACHE_DIR, 0755, true);
-  }
-}
-
-// タイムゾーンを日本時間に設定
-date_default_timezone_set('Asia/Tokyo');

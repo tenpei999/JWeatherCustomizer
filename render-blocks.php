@@ -83,7 +83,6 @@ function jWeatherCustomizer_render_block($attr, $content)
 
   // API URLの設定 (ダミーのURLとして設定しています。実際のURLに置き換えてください)
   $apiUrl = $attr['selectedCity']['url'];
-  error_log('API URL in render_block: ' . print_r($apiUrl, true));
   // キャッシュファイルのパス
   $cacheFile = WP_CONTENT_DIR . '/uploads/weather_cache.json';
 

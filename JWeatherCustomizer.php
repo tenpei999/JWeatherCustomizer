@@ -14,7 +14,7 @@
  * @package           create-block
  */
 
-define('JWEATHERCUSTOMIZER_CACHE_DIR', WP_CONTENT_DIR . '/uploads/JWeatherCustomizer_Cache/');
+define('JWEATHERCUSTOMIZER_CACHE_DIR', plugin_dir_path(__FILE__) . 'JWeatherCustomizer_Cache/');
 define('JWEATHERCUSTOMIZER_URL', plugin_dir_url(__FILE__));
 define('HOLIDAYS_API_URL', 'https://holidays-jp.github.io/api/v1/date.json');
 
@@ -78,3 +78,15 @@ add_action('rest_api_init', function () {
 });
 
 add_action('wp_loaded', 'checkWeatherCache');
+
+
+// ディレクトリが存在しない場合に作成する関数
+function ensureCacheDirectoryExists()
+{
+	if (!file_exists(JWEATHERCUSTOMIZER_CACHE_DIR)) {
+		mkdir(JWEATHERCUSTOMIZER_CACHE_DIR, 0755, true);
+	}
+}
+
+// タイムゾーンを日本時間に設定
+date_default_timezone_set('Asia/Tokyo');

@@ -111,7 +111,6 @@ function validateTemperature($temperature)
 function fetchWeatherDataWithCache($apiUrl)
 {
 
-  error_log("Fetching weather data from API URL: " . $apiUrl);
   $data = checkWeatherCache($apiUrl);
   // error_log("Data: " . print_r($data, true));
 
@@ -127,6 +126,8 @@ function fetchWeatherDataWithCache($apiUrl)
     $info = getWeatherInfo($code); // getWeatherInfo()がコードに基づいて天気情報を返すように定義されていることを確認してください
     return $info['label'];
   }, $weatherCodesForWeek);
+  // error_log('weather' . print_r($data, true));
+
   $weatherImageForWeek = array_map(function ($code) {
     $info = getWeatherInfo($code);
     return sanitizeImageUrl($info['icon']); // sanitizeImageUrl()が画像URLを適切にサニタイズするように定義されていることを確認してください
@@ -134,13 +135,13 @@ function fetchWeatherDataWithCache($apiUrl)
   $highestTemperatureForWeek = array_map(function ($temp) {
     return validateTemperature($temp) ? $temp : null; // validateTemperature()が温度を適切に検証するように定義されていることを確認してください
   }, $data['daily']['temperature_2m_max']);
-
   $lowestTemperatureForWeek = array_map(function ($temp) {
     return validateTemperature($temp) ? $temp : null;
   }, $data['daily']['temperature_2m_min']);
   $highestTemperatureDifferencesForWeek = [];
   $lowestTemperatureDifferencesForWeek = [];
   $rainProbability1 = [];
+
 
   for ($i = 0; $i < count($highestTemperatureForWeek) - 1; $i++) {
     $todayMaxTemperature = $highestTemperatureForWeek[$i + 1];
@@ -171,6 +172,7 @@ function fetchWeatherDataWithCache($apiUrl)
       ];
     }
   }
+  // error_log("Data: " . print_r($data, true));
 
   $todayWeather = [];
   $tomorrowWeather = [];
