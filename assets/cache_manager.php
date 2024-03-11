@@ -12,7 +12,6 @@ function checkWeatherCache($apiUrl)
 
   // キャッシュデータを取得する関数
   $cacheData = getCacheData($cacheFile);
-  error_log("Cache url: " . print_r($apiUrl, true));
 
   if (
     file_exists($cacheFilePath) && $cacheData && $cacheData['url'] === $apiUrl &&
@@ -20,7 +19,6 @@ function checkWeatherCache($apiUrl)
     date('Y-m-d', filemtime($cacheFilePath)) == date('Y-m-d')
   ) {
     // キャッシュデータが存在し、有効な場合はキャッシュからデータを返す
-    error_log("Fetching weather data from API cache.");
     return $cacheData['data'];
   } else {
     // キャッシュの状態を再確認
@@ -33,12 +31,10 @@ function checkWeatherCache($apiUrl)
       $apiResponse = file_get_contents($apiUrl);
       $data = json_decode($apiResponse, true);
       saveCacheData($cacheFile, ['url' => $apiUrl, 'data' => $data]);
-      error_log("Data fetched from API and cache updated.");
       return $data;
     } else {
       // キャッシュが更新されていた場合は、更新されたキャッシュからデータを返す
       $updatedCacheData = getCacheData($cacheFile);
-      error_log("Fetching updated weather data from cache.");
       return $updatedCacheData['data'];
     }
   }
@@ -51,11 +47,9 @@ function getCacheData($cacheFile)
   ensureCacheDirectoryExists(); // キャッシュディレクトリの確認と作成
   $cachePath = JWEATHERCUSTOMIZER_CACHE_DIR . $cacheFile;
   if (file_exists($cachePath) && is_readable($cachePath)) {
-    error_log("Cache file exists and is readable.");
     $jsonData = file_get_contents($cachePath);
     return json_decode($jsonData, true);
   } else {
-    error_log("Cache file does not exist or is not readable.");
     return false;
   }
 }
@@ -67,9 +61,7 @@ function saveCacheData($cacheFile, $data)
   $cachePath = JWEATHERCUSTOMIZER_CACHE_DIR . $cacheFile;
   $jsonData = json_encode($data);
   if (file_put_contents($cachePath, $jsonData)) {
-    error_log("Cache data saved successfully.");
   } else {
-    error_log("Failed to save cache data.");
   }
 }
 
@@ -87,12 +79,10 @@ function fetchDataWithCache($url, $cachePath = 'holidays_cache.json', $cacheDura
   // キャッシュが有効かどうかを確認
   if (isCacheValid($cachePath, $cacheDuration)) {
     $data = json_decode(file_get_contents($cachePath), true);
-    logMessage("Data fetched from cache.");
   } else {
     $data = fetchDataFromApi($url);
     if ($data) {
       file_put_contents($cachePath, json_encode($data));
-      logMessage("Data fetched from API and cache updated.");
     }
   }
 
@@ -112,14 +102,11 @@ function isCacheValid($cachePath, $cacheDuration)
   if (file_exists($cachePath)) {
     $timeSinceLastModification = time() - filemtime($cachePath);
     if ($timeSinceLastModification < $cacheDuration) {
-      error_log("Cache is valid. Time since last modification: " . $timeSinceLastModification . " seconds.");
       return true;
     } else {
-      error_log("Cache is invalid. Time since last modification exceeds cache duration.");
       return false;
     }
   } else {
-    error_log("Cache file does not exist.");
     return false;
   }
 }

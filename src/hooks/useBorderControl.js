@@ -89,7 +89,6 @@ export function useBorderControl(attributes, setAttributes) {
           bottom: newBorderSet,
           left: newBorderSet
         };
-        // console.log('flat')
       } else if (isSplitMode(newBorderSet)) {
         // Splitモードの場合、各辺を個別に更新
         updatedBorders = {
@@ -98,7 +97,6 @@ export function useBorderControl(attributes, setAttributes) {
           bottom: { ...borders.bottom, ...newBorderSet.bottom },
           left: { ...borders.left, ...newBorderSet.left }
         };
-        // console.log('split')
       }
 
       // 更新されたボーダー設定を適用

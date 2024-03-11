@@ -94,11 +94,6 @@ function jWeatherCustomizer_render_block($attr, $content)
   $tomorrowWeather = $weatherData['tomorrow'] ?? [];
   $weeklyWeather = $weatherData['weekly'] ?? [];
 
-  // エラーログにデータを出力
-  // error_log("Today's Weather: " . print_r($todayWeather, true));
-  // error_log("Tomorrow's Weather: " . print_r($tomorrowWeather, true));
-  // error_log("Weekly Weather: " . print_r($weeklyWeather, true));
-
   function setTextColor($day)
   {
     if ($day['isHoliday'] ?? false) {

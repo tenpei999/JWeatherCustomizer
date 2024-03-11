@@ -51,7 +51,6 @@ function getWeatherInfo($weatherCode)
   // プラグインの画像パスを指定
   // 注意: このパスはプラグインの構造に合わせて適宜調整してください。
   $pluginImagePaths = JWEATHERCUSTOMIZER_URL . 'images/';
-  // error_log("Plugin image paths: " . $pluginImagePaths);
 
   // 天気コードに基づいてラベルとアイコンを返す
   if ($weatherCode === 0) {
@@ -112,28 +111,23 @@ function fetchWeatherDataWithCache($apiUrl)
 {
 
   $data = checkWeatherCache($apiUrl);
-  // error_log("Data: " . print_r($data, true));
 
   if (!$data) {
-    // error_log("Failed to fetch weather data.");
     return [];
   }
 
-  // error_log(print_r($data['daily'], true));
-
   $weatherCodesForWeek = $data['daily']['weathercode'];
   $weatherNamesForWeek = array_map(function ($code) {
-    $info = getWeatherInfo($code); // getWeatherInfo()がコードに基づいて天気情報を返すように定義されていることを確認してください
+    $info = getWeatherInfo($code);
     return $info['label'];
   }, $weatherCodesForWeek);
-  // error_log('weather' . print_r($data, true));
 
   $weatherImageForWeek = array_map(function ($code) {
     $info = getWeatherInfo($code);
-    return sanitizeImageUrl($info['icon']); // sanitizeImageUrl()が画像URLを適切にサニタイズするように定義されていることを確認してください
+    return sanitizeImageUrl($info['icon']); 
   }, $weatherCodesForWeek);
   $highestTemperatureForWeek = array_map(function ($temp) {
-    return validateTemperature($temp) ? $temp : null; // validateTemperature()が温度を適切に検証するように定義されていることを確認してください
+    return validateTemperature($temp) ? $temp : null; 
   }, $data['daily']['temperature_2m_max']);
   $lowestTemperatureForWeek = array_map(function ($temp) {
     return validateTemperature($temp) ? $temp : null;
@@ -172,7 +166,6 @@ function fetchWeatherDataWithCache($apiUrl)
       ];
     }
   }
-  // error_log("Data: " . print_r($data, true));
 
   $todayWeather = [];
   $tomorrowWeather = [];
@@ -189,9 +182,9 @@ function fetchWeatherDataWithCache($apiUrl)
         'image' => $weatherImageForWeek[$index + 1],
         'highestTemperature' => $highestTemperatureForWeek[$index + 1],
         'lowestTemperature' => $lowestTemperatureForWeek[$index + 1],
-        'maximumTemperatureComparison' => $highestTemperatureDifferencesForWeek[$index + 1], // null合体演算子を使用して、インデックスが存在しない場合に備える
+        'maximumTemperatureComparison' => $highestTemperatureDifferencesForWeek[$index + 1], 
         'lowestTemperatureComparison' => $lowestTemperatureDifferencesForWeek[$index + 1] ?? null,
-        'rainProbability' => $rainProbability1[$index + 1] ?? null, // インデックス調整 (+1 されているので存在しない場合に備える)
+        'rainProbability' => $rainProbability1[$index + 1] ?? null, 
       ];
       // 最初の要素を今日の天気データとして取得
       if (isset($dailyData[0])) {

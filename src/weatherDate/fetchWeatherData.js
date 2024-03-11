@@ -35,7 +35,6 @@ async function fetchWeatherData(cityUrl) {
 
   // キャッシュが存在し、有効期限内で、URLが変更されていないかをチェック
   if (localStorage.getItem(cacheKey) && timePassed < cacheDuration && storedUrl === cityUrl) {
-    console.log(`Cache hit: Data fetched from cache.`);
     return JSON.parse(localStorage.getItem(cacheKey));
   } else {
     isApiError.isError = false;
@@ -53,7 +52,6 @@ async function fetchWeatherData(cityUrl) {
       localStorage.setItem(cacheKey, JSON.stringify(data));
       localStorage.setItem(cacheTimestampKey, currentTimestamp.toString());
       localStorage.setItem(cacheUrlKey, cityUrl); // 現在のURLをキャッシュに保存
-      console.log('Data fetched from API and cache updated.');
 
       return data;
     } catch (error) {

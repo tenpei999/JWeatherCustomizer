@@ -19,7 +19,6 @@ export const handleWeatherError = (isApiError) => {
       icon: `${pluginImagePaths}default-error-icon.svg`, // 例: デフォルトのエラーアイコンパス
     };
   }
-  console.log(messageForStatusCode)
 
   return messageForStatusCode;
 };
