@@ -90,3 +90,37 @@ function ensureCacheDirectoryExists()
 
 // タイムゾーンを日本時間に設定
 date_default_timezone_set('Asia/Tokyo');
+
+// プラグインの無効化時に実行される関数を登録
+register_deactivation_hook(__FILE__, 'JWeatherCustomizer_cleanup');
+
+function JWeatherCustomizer_cleanup()
+{
+	// 削除したいディレクトリのパス
+	$cacheDir = plugin_dir_path(__FILE__) . 'JWeatherCustomizer_Cache/';
+
+	// ディレクトリを再帰的に削除するカスタム関数
+	JWeatherCustomizer_recursive_delete($cacheDir);
+}
+
+function JWeatherCustomizer_recursive_delete($directory)
+{
+	if (!file_exists($directory)) {
+		return;
+	}
+
+	if (!is_dir($directory)) {
+		unlink($directory);
+		return;
+	}
+
+	$items = new FilesystemIterator($directory);
+	foreach ($items as $item) {
+		if ($item->isDir() && !$item->isLink()) {
+			JWeatherCustomizer_recursive_delete($item->getPathname());
+		} else {
+			unlink($item->getPathname());
+		}
+	}
+	rmdir($directory);
+}
