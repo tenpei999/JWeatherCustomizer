@@ -124,3 +124,22 @@ function JWeatherCustomizer_recursive_delete($directory)
 	}
 	rmdir($directory);
 }
+
+function JWeatherCustomizer_checkAndClearCacheIfNecessary()
+{
+	$cacheDir = JWEATHERCUSTOMIZER_CACHE_DIR; // キャッシュディレクトリのパス
+	$files = glob($cacheDir . '*'); // ディレクトリ内の全ファイルを取得
+	$fileCount = count($files); // ファイルの数をカウント
+	$threshold = 10; // ファイル数の閾値
+
+	// ファイル数が閾値を超えた場合、全ファイルを削除
+	if ($fileCount > $threshold) {
+		foreach ($files as $file) {
+			if (is_file($file)) {
+				unlink($file); // ファイルを削除
+			}
+		}
+	}
+}
+
+add_action('wp_loaded', 'JWeatherCustomizer_checkAndClearCacheIfNecessary');

@@ -4,8 +4,10 @@ include 'weather_api_client.php';
 
 function checkWeatherCache($apiUrl)
 {
-  // キャッシュファイル名とキャッシュの有効期間を関数内で定義
-  $cacheFile = 'weather_cache.json';
+  // ハッシュ関数を使用してAPI URLから一意のキーを生成
+  $uniqueKey = hash('sha256', $apiUrl);
+  // この一意のキーをファイル名に含める
+  $cacheFile = 'weather_cache_' . $uniqueKey . '.json';
   $cacheTime = 14400; // 4時間（秒単位）
   $cacheFilePath = JWEATHERCUSTOMIZER_CACHE_DIR . $cacheFile;
   $apiUrl = $apiUrl ?: 'https://api.open-meteo.com/v1/forecast?latitude=35.6895&longitude=139.6917&hourly=precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14';

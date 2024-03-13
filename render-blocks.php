@@ -94,17 +94,16 @@ function jWeatherCustomizer_render_block($attr, $content)
   $tomorrowWeather = $weatherData['tomorrow'] ?? [];
   $weeklyWeather = $weatherData['weekly'] ?? [];
 
-  function setTextColor($day)
-  {
+  $setTextColor = function($day) {
     if ($day['isHoliday'] ?? false) {
-      return ' style="color: red"';
+        return ' style="color: red"';
     } elseif ($day['isSunday'] ?? false) {
-      return ' style="color: red"';
+        return ' style="color: red"';
     } elseif ($day['isSaturday'] ?? false) {
-      return ' style="color: blue"';
+        return ' style="color: blue"';
     }
     return '';
-  }
+};
 
   // Styles
   $colorStyle = 'color: ' . esc_attr($attr['textColor']) . ';';
@@ -123,14 +122,14 @@ function jWeatherCustomizer_render_block($attr, $content)
 
   if ($attr['showTodayWeather'] && isset($attr['todayWeather'])) {
     $data = $todayWeather;
-    $textColor = setTextColor($data['day'] ?? []);
+    $textColor = $setTextColor($data['day'] ?? []);
 
     $output .= generateWeatherOutput($data, $textColor, $time_ranges, $attr['showHoliday'], $attr['showPrecipitation'], esc_html__('今日の天気', 'j-weather-customizer'), $commonStyle, esc_attr($attr['balanceOption']));
   }
 
   if ($attr['showTomorrowWeather'] && isset($attr['tomorrowWeather'])) {
     $data = $tomorrowWeather;
-    $textColor = setTextColor($data['day'] ?? []);
+    $textColor = $setTextColor($data['day'] ?? []);
     $output .= generateWeatherOutput($data, $textColor, $time_ranges, $attr['showHoliday'], $attr['showPrecipitation'], esc_html__('明日の天気', 'j-weather-customizer'), $commonStyle, esc_attr($attr['balanceOption']));
   }
 
@@ -143,7 +142,7 @@ function jWeatherCustomizer_render_block($attr, $content)
     foreach ($weeklyWeather as $i => $dayWeather) {
       if ($i <= $maxDays) { // 0番目から5番目までの要素に対してのみ処理を実行
         $data = $weeklyWeather[$i]; // 週間天気データを $data に設定
-        $textColor = setTextColor($data['day'] ?? []);
+        $textColor = $setTextColor($data['day'] ?? []);
         $output .= generateWeeklyWeatherOutput($data, $textColor, $attr['showHoliday']); // 週間天気用の出力関数を呼び出し
       } else {
         break; // 5番目の要素を処理した後、ループから抜け出す
