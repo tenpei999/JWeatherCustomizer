@@ -80,9 +80,12 @@ add_action('rest_api_init', function () {
 // ディレクトリが存在しない場合に作成する関数
 function ensureCacheDirectoryExists()
 {
-	if (!file_exists(JWEATHERCUSTOMIZER_CACHE_DIR)) {
-		mkdir(JWEATHERCUSTOMIZER_CACHE_DIR, 0755, true);
-	}
+  if (!file_exists(JWEATHERCUSTOMIZER_CACHE_DIR) || !is_dir(JWEATHERCUSTOMIZER_CACHE_DIR)) {
+    if (!mkdir(JWEATHERCUSTOMIZER_CACHE_DIR, 0755, true)) {
+      logMessage("Failed to create cache directory: " . JWEATHERCUSTOMIZER_CACHE_DIR);
+      exit;
+    }
+  }
 }
 
 // タイムゾーンを日本時間に設定

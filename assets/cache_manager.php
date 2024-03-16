@@ -8,35 +8,43 @@ function checkWeatherCache($apiUrl, $uniqueID)
   // この一意のキーをファイル名に含める
   $cacheTime = 14400; // 4時間（秒単位）
   $cacheFilePath = JWEATHERCUSTOMIZER_CACHE_DIR . $cacheFile;
-  $apiUrl = $apiUrl ?: 'https://api.open-meteo.com/v1/forecast?latitude=35.6895&longitude=139.6917&hourly=precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14';
+  // デフォルトのAPI URL
+  $defaultApiUrl = 'https://api.open-meteo.com/v1/forecast?latitude=35.6895&longitude=139.6917&hourly=precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14';
+  $apiUrl = $apiUrl ?: $defaultApiUrl;
 
   // キャッシュデータを取得する関数
   $cacheData = getCacheData($cacheFile);
+  error_log("casheDateUrl" . $cacheData['url']);
+  error_log("apiUrl" . $apiUrl);
+  error_log($cacheData['url'] === $apiUrl);
 
   if (
     file_exists($cacheFilePath) && $cacheData && $cacheData['url'] === $apiUrl &&
     (time() - filemtime($cacheFilePath)) < $cacheTime &&
     date('Y-m-d', filemtime($cacheFilePath)) == date('Y-m-d')
+    && $cacheData['url'] === $apiUrl
   ) {
     // キャッシュデータが存在し、有効な場合はキャッシュからデータを返す
     return $cacheData['data'];
   } else {
     // キャッシュの状態を再確認
     clearstatcache(); // キャッシュされたファイル状態情報をクリア
-    if (
-      !file_exists($cacheFilePath) || (time() - filemtime($cacheFilePath)) >= $cacheTime ||
-      date('Y-m-d', filemtime($cacheFilePath)) != date('Y-m-d')
-    ) {
-      // APIからデータを取得し、キャッシュに保存する
+    
+      // 新しいURLでAPIからデータを取得してキャッシュを更新
       $apiResponse = file_get_contents($apiUrl);
-      $data = json_decode($apiResponse, true);
-      saveCacheData($cacheFile, ['url' => $apiUrl, 'data' => $data]);
-      return $data;
-    } else {
-      // キャッシュが更新されていた場合は、更新されたキャッシュからデータを返す
-      $updatedCacheData = getCacheData($cacheFile);
-      return $updatedCacheData['data'];
+    if ($apiResponse === FALSE) {
+      logMessage("API request failed for URL: " . $apiUrl);
+      return [];
     }
+    $data = json_decode($apiResponse, true);
+    if ($data === NULL) {
+      logMessage("Failed to decode JSON response from URL: " . $apiUrl);
+      return [];
+    }
+
+    // URLが変更された場合やキャッシュが無効の場合はキャッシュを更新
+    saveCacheData($cacheFile, ['url' => $apiUrl, 'data' => $data]);
+    return $data;
   }
 }
 
@@ -61,6 +69,7 @@ function saveCacheData($cacheFile, $data)
   $cachePath = JWEATHERCUSTOMIZER_CACHE_DIR . $cacheFile;
   $jsonData = json_encode($data);
   if (file_put_contents($cachePath, $jsonData)) {
+    logMessage("Failed to save cache data to " . $cachePath);
   } else {
   }
 }

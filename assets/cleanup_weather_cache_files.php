@@ -1,6 +1,5 @@
 <?php
 
-
 function JWeatherCustomizer_checkAndClearCacheIfNecessary()
 {
   $cacheDir = JWEATHERCUSTOMIZER_CACHE_DIR; // キャッシュディレクトリのパス

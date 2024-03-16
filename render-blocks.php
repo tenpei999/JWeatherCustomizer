@@ -20,22 +20,26 @@ function generateBorderStyle($borders, $borderRadiusValue)
 function generateBackgroundStyles($attr)
 {
   $styles = [];
+  if (!isset($attr['backgroundStyleType'])) return '';
+
   switch ($attr['backgroundStyleType']) {
     case 'image':
       if ($attr['backgroundImage']) {
-        $styles[] = 'background-image: url(' . esc_url($attr['backgroundImage']) . ')';
+        if (!empty($attr['backgroundImage'])) {
+          $styles[] = 'background-image: url(' . esc_url($attr['backgroundImage']) . ')';
+        };
         $styles[] = 'background-size: cover';
         $styles[] = 'background-repeat: no-repeat';
         $styles[] = 'background-position: center';
       }
       break;
     case 'color':
-      if ($attr['backgroundColor']) {
+      if (!empty($attr['backgroundColor'])) {
         $styles[] = 'background: ' . esc_attr($attr['backgroundColor']);
       }
       break;
     case 'gradient':
-      if ($attr['backgroundGradient']) {
+      if (!empty($attr['backgroundGradient'])) {
         $styles[] = 'background: ' . esc_attr($attr['backgroundGradient']);
       }
       break;
@@ -46,36 +50,21 @@ function jWeatherCustomizer_render_block($attr, $content)
 {
 
   $attr = array_merge([
-    'uniqueID' => [
-      'type' => 'string',
-      'default' => ''
-    ],
-    'showTodayWeather' => true,
-    'showTomorrowWeather' => true,
-    'showWeeklyWeather' => true,
-    'showHoliday' => null,
-    'showPrecipitation' => null,
-    'borders' => null,
-    'borderRadiusValue' => null,
-    'fontFamily' => 'Noto Sans JP, sans-serif',
-    'textColor' => 'black',
-    'backgroundStyleType' => 'color',
-    'backgroundImage' => '',
-    'backgroundGradient' => '',
-    'backgroundColor' => '#fff',
-    'balanceOption' => 'EmphasizeTheWeather',
-    'todayWeather' => [
-      'type' => 'object',
-      'default' => []
-    ],
-    'tomorrowWeather' => [
-      'type' => 'object',
-      'default' => []
-    ],
-    'weeklyWeather' => [
-      'type' => 'array',
-      'default' => []
-    ],
+    'uniqueID' => sanitize_key($attr['uniqueID'] ?? uniqid('block_', true)),
+    'showTodayWeather' => filter_var($attr['showTodayWeather'] ?? true, FILTER_VALIDATE_BOOLEAN),
+    'showTomorrowWeather' => filter_var($attr['showTomorrowWeather'] ?? true, FILTER_VALIDATE_BOOLEAN),
+    'showWeeklyWeather' => filter_var($attr['showWeeklyWeather'] ?? true, FILTER_VALIDATE_BOOLEAN),
+    'showHoliday' => filter_var($attr['showHoliday'] ?? false, FILTER_VALIDATE_BOOLEAN),
+    'showPrecipitation' => filter_var($attr['showPrecipitation'] ?? false, FILTER_VALIDATE_BOOLEAN),
+    'borders' => $attr['borders'] ?? null,
+    'borderRadiusValue' => sanitize_text_field($attr['borderRadiusValue'] ?? ''),
+    'fontFamily' => sanitize_text_field($attr['fontFamily'] ?? 'Noto Sans JP, sans-serif'),
+    'textColor' => sanitize_hex_color($attr['textColor'] ?? 'black'),
+    'backgroundStyleType' => sanitize_text_field($attr['backgroundStyleType'] ?? 'color'),
+    'backgroundImage' => esc_url_raw($attr['backgroundImage'] ?? ''),
+    'backgroundGradient' => sanitize_text_field($attr['backgroundGradient'] ?? ''),
+    'backgroundColor' => sanitize_hex_color($attr['backgroundColor'] ?? '#fff'),
+    'balanceOption' => sanitize_text_field($attr['balanceOption'] ?? 'EmphasizeTheWeather'),
     'selectedCity' => [
       'type' => 'object',
       'default' => [
