@@ -77,9 +77,6 @@ add_action('rest_api_init', function () {
 	));
 });
 
-add_action('wp_loaded', 'checkWeatherCache');
-
-
 // ディレクトリが存在しない場合に作成する関数
 function ensureCacheDirectoryExists()
 {

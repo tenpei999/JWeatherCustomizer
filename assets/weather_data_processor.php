@@ -107,10 +107,10 @@ function validateTemperature($temperature)
 }
 
 
-function fetchWeatherDataWithCache($apiUrl)
+function fetchWeatherDataWithCache($apiUrl, $uniqueID)
 {
 
-  $data = checkWeatherCache($apiUrl);
+  $data = checkWeatherCache($apiUrl, $uniqueID);
 
   if (!$data) {
     return [];
@@ -124,10 +124,10 @@ function fetchWeatherDataWithCache($apiUrl)
 
   $weatherImageForWeek = array_map(function ($code) {
     $info = getWeatherInfo($code);
-    return sanitizeImageUrl($info['icon']); 
+    return sanitizeImageUrl($info['icon']);
   }, $weatherCodesForWeek);
   $highestTemperatureForWeek = array_map(function ($temp) {
-    return validateTemperature($temp) ? $temp : null; 
+    return validateTemperature($temp) ? $temp : null;
   }, $data['daily']['temperature_2m_max']);
   $lowestTemperatureForWeek = array_map(function ($temp) {
     return validateTemperature($temp) ? $temp : null;
@@ -182,9 +182,9 @@ function fetchWeatherDataWithCache($apiUrl)
         'image' => $weatherImageForWeek[$index + 1],
         'highestTemperature' => $highestTemperatureForWeek[$index + 1],
         'lowestTemperature' => $lowestTemperatureForWeek[$index + 1],
-        'maximumTemperatureComparison' => $highestTemperatureDifferencesForWeek[$index + 1], 
+        'maximumTemperatureComparison' => $highestTemperatureDifferencesForWeek[$index + 1],
         'lowestTemperatureComparison' => $lowestTemperatureDifferencesForWeek[$index + 1] ?? null,
-        'rainProbability' => $rainProbability1[$index + 1] ?? null, 
+        'rainProbability' => $rainProbability1[$index + 1] ?? null,
       ];
       // 最初の要素を今日の天気データとして取得
       if (isset($dailyData[0])) {

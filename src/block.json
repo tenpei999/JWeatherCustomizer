@@ -8,6 +8,10 @@
 	"icon": "flag",
 	"description": "A plugin that allows you to display a weather forecast of your choice on your website.",
 	"attributes": {
+		"uniqueID": {
+			"type": "string",
+			"default": ""
+		},
 		"selectedCity": {
 			"type": "object",
 			"default": {

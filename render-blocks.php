@@ -46,6 +46,10 @@ function jWeatherCustomizer_render_block($attr, $content)
 {
 
   $attr = array_merge([
+    'uniqueID' => [
+      'type' => 'string',
+      'default' => ''
+    ],
     'showTodayWeather' => true,
     'showTomorrowWeather' => true,
     'showWeeklyWeather' => true,
@@ -81,29 +85,33 @@ function jWeatherCustomizer_render_block($attr, $content)
     ],
   ], $attr);
 
-  // API URLの設定 (ダミーのURLとして設定しています。実際のURLに置き換えてください)
-  $apiUrl = $attr['selectedCity']['url'];
-  // キャッシュファイルのパス
-  $cacheFile = WP_CONTENT_DIR . '/uploads/weather_cache.json';
+  error_log("Attributes: " . print_r($attr, true));
 
-  // 天気データを取得
-  $weatherData = fetchWeatherDataWithCache($apiUrl, $cacheFile);
+  $uniqueID = $attr['uniqueID'];
+  error_log("Unique ID: " . $uniqueID);
+  $apiUrl = $attr['selectedCity']['url'];
+
+
+  $uniqueID = (isset($attr['uniqueID']) && !empty($attr['uniqueID'])) ? $attr['uniqueID'] : uniqid('block_', true);
+  // ここで $uniqueID を使用してキャッシュをチェック
+  $weatherData = fetchWeatherDataWithCache($apiUrl, $uniqueID);
+
 
   // 今日の天気データ、明日の天気データ、週間天気データを取得するロジックを実装
   $todayWeather = $weatherData['today'] ?? [];
   $tomorrowWeather = $weatherData['tomorrow'] ?? [];
   $weeklyWeather = $weatherData['weekly'] ?? [];
 
-  $setTextColor = function($day) {
+  $setTextColor = function ($day) {
     if ($day['isHoliday'] ?? false) {
-        return ' style="color: red"';
+      return ' style="color: red"';
     } elseif ($day['isSunday'] ?? false) {
-        return ' style="color: red"';
+      return ' style="color: red"';
     } elseif ($day['isSaturday'] ?? false) {
-        return ' style="color: blue"';
+      return ' style="color: blue"';
     }
     return '';
-};
+  };
 
   // Styles
   $colorStyle = 'color: ' . esc_attr($attr['textColor']) . ';';
@@ -114,7 +122,7 @@ function jWeatherCustomizer_render_block($attr, $content)
 
 
   // Output
-  $output = '<div class="wp-block-create-block-j-weather-customizer" style="">';
+  $output = '<div class="wp-block-create-block-j-weather-customizer" id = "' . esc_attr($uniqueID) . '"  style="">';
   $output .= '<div class="layout"><div class="today-and-tomorrow weather-layout">';
 
   $time_ranges = ['0-6時', '6-12時', '12-18時', '18-24時'];

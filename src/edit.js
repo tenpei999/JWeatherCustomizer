@@ -25,6 +25,9 @@ import { useChangeBalance } from './hooks/useChangeBalance';
 import Preview from './components/Preview';
 
 export default function Edit({ attributes, setAttributes }) {
+
+	console.log(attributes)
+
 	const defaultCityObject = {
 		name: '東京',
 		url: 'https://api.open-meteo.com/v1/forecast?latitude=35.6895&longitude=139.6917&hourly=precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14',
@@ -40,8 +43,17 @@ export default function Edit({ attributes, setAttributes }) {
 	const [selectedMedia, setSelectedMedia] = useState(attributes.selectedMedia);
 	const { showSelection, handleLayoutClick } = useBlockSelection();
 
+	// ブロックにIDがない場合、生成して設定
+	useEffect(() => {
+		if (!attributes.uniqueID) {
+			// ランダムなIDを生成
+			const uniqueID = `block_${Math.random().toString(36).substr(2, 9)}`;
+			setAttributes({ uniqueID });
+		}
+	}, []);
+
 	const blockProps = useBlockProps({
-		className: 'my-first-plugin',
+		className: 'J-Weather-Customizer',
 	});
 
 	const cityOptions = Object.entries(cities).map(([key, city]) => ({
@@ -102,7 +114,7 @@ export default function Edit({ attributes, setAttributes }) {
 	};
 
 	return (
-		<div {...blockProps}  >
+		<div {...blockProps}  id={attributes.uniqueID} >
 			<div onClick={handleLayoutClick} ref={ref}>
 				{showSelection ? (
 					<SettingGroup
