@@ -85,10 +85,8 @@ function jWeatherCustomizer_render_block($attr, $content)
     ],
   ], $attr);
 
-  error_log("Attributes: " . print_r($attr, true));
 
   $uniqueID = $attr['uniqueID'];
-  error_log("Unique ID: " . $uniqueID);
   $apiUrl = $attr['selectedCity']['url'];
 
 

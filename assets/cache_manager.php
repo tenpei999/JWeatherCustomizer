@@ -4,9 +4,7 @@ include 'weather_api_client.php';
 
 function checkWeatherCache($apiUrl, $uniqueID)
 {
-  logMessage("Checking weather cache..." . $uniqueID);
   $cacheFile = 'weather_cache_' . $uniqueID . '.json';
-  logMessage("Cache file name: " . $cacheFile);
   // この一意のキーをファイル名に含める
   $cacheTime = 14400; // 4時間（秒単位）
   $cacheFilePath = JWEATHERCUSTOMIZER_CACHE_DIR . $cacheFile;
