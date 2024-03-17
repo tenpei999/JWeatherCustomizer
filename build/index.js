@@ -1150,7 +1150,7 @@ const VisibilityControl = ({
     ,
     label: setting.label,
     checked: setting.checked,
-    onChange: isChecked => handleVisibilityChange(index + group2.length, isChecked)
+    onChange: isChecked => handleVisibilityChange(index + group1.length, isChecked)
   })))));
 };
 VisibilityControl.propTypes = {
@@ -1197,7 +1197,8 @@ const WeekWeather = ({
   backgroundStyleType,
   selectedMedia,
   backgroundGradient,
-  backgroundColor
+  backgroundColor,
+  showHoliday
 }) => {
   if (!weather || !Array.isArray(weather)) return null;
   const borderStyles = (0,_hooks_useBorderStyles__WEBPACK_IMPORTED_MODULE_2__["default"])(borders);
@@ -1227,7 +1228,7 @@ const WeekWeather = ({
       style: {
         color: textColor
       }
-    }, dayWeather.day.date.month, dayWeather.day.date.day, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("br", null), dayWeather.day.date.dayOfWeek), dayWeather.day.isHoliday && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, displayDate), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    }, dayWeather.day.date.month, dayWeather.day.date.day, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("br", null), dayWeather.day.date.dayOfWeek), dayWeather.day.isHoliday && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, displayDate), showHoliday && weather.day.isHoliday && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, weather.day.holidayName), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
       className: "weather__name"
     }, dayWeather.name), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
       className: "weather__img"
@@ -2190,7 +2191,7 @@ const createVisibilitySettings = ({
   };
   return [{
     label: "今日の天気を表示",
-    checked: attributes.showTodayWeather,
+    checked: showTodayWeather,
     // 属性から現在の値を取得
     onChange: isChecked => {
       // 'showTodayWeather' 属性を更新
@@ -2198,27 +2199,27 @@ const createVisibilitySettings = ({
     }
   }, {
     label: '明日の天気を表示',
-    checked: attributes.showTomorrowWeather,
+    checked: showTomorrowWeather,
     onChange: isChecked => {
       // 'showTodayWeather' 属性を更新
       updateAttribute('showTomorrowWeather', isChecked);
     }
   }, {
     label: '週間天気を表示',
-    checked: attributes.showWeeklyWeather,
+    checked: showWeeklyWeather,
     onChange: isChecked => {
       // 'showTodayWeather' 属性を更新
       updateAttribute('showWeeklyWeather', isChecked);
     }
   }, {
     label: '祝日を表示',
-    checked: attributes.showHoliday,
+    checked: showHoliday,
     onChange: isChecked => {
       updateAttribute('showHoliday', isChecked);
     }
   }, {
     label: '降水確率を表示',
-    checked: attributes.showPrecipitation,
+    checked: showPrecipitation,
     onChange: isChecked => {
       updateAttribute('showPrecipitation', isChecked);
     }

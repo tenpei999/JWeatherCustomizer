@@ -16,12 +16,15 @@ const WeekWeather = ({
   selectedMedia,
   backgroundGradient,
   backgroundColor,
+  showHoliday,
 }) => {
 
   if (!weather || !Array.isArray(weather)) return null;
 
   const borderStyles = useBorderStyles(borders);
   const backgroundStyles = getBackgroundStyles({ backgroundStyleType, selectedMedia, backgroundColor, backgroundGradient });
+
+
 
   return (
     <ul className={`block--weekly weather-layout ${styleVariant}`}
@@ -43,6 +46,10 @@ const WeekWeather = ({
             </h4>
             {dayWeather.day.isHoliday && (
               <p>{displayDate}</p>
+            )}
+            {/* showHolidayがtrueの場合のみ祝日の名前を表示 */}
+            {showHoliday && weather.day.isHoliday && (
+              <p>{weather.day.holidayName}</p>
             )}
             <p className="weather__name">{dayWeather.name}</p>
             <span className="weather__img">

@@ -87,7 +87,7 @@ const VisibilityControl = ({ settings }) => {
                             key={index + group1.length} // インデックスを調整
                             label={setting.label}
                             checked={setting.checked}
-                            onChange={(isChecked) => handleVisibilityChange(index + group2.length, isChecked)}
+                            onChange={(isChecked) => handleVisibilityChange(index + group1.length, isChecked)} 
                         />
                     ))}
                 </div>

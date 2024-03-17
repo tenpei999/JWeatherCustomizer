@@ -18,7 +18,7 @@ export const createVisibilitySettings = ({ attributes, setAttributes }) => {
   return [
     {
       label: "今日の天気を表示",
-      checked: attributes.showTodayWeather, // 属性から現在の値を取得
+      checked: showTodayWeather, // 属性から現在の値を取得
       onChange: (isChecked) => {
         // 'showTodayWeather' 属性を更新
         updateAttribute('showTodayWeather', isChecked);
@@ -26,7 +26,7 @@ export const createVisibilitySettings = ({ attributes, setAttributes }) => {
     },
     {
       label: '明日の天気を表示',
-      checked: attributes.showTomorrowWeather,
+      checked: showTomorrowWeather,
       onChange: (isChecked) => {
         // 'showTodayWeather' 属性を更新
         updateAttribute('showTomorrowWeather', isChecked);
@@ -34,7 +34,7 @@ export const createVisibilitySettings = ({ attributes, setAttributes }) => {
     },
     {
       label: '週間天気を表示',
-      checked: attributes.showWeeklyWeather,
+      checked: showWeeklyWeather,
       onChange: (isChecked) => {
         // 'showTodayWeather' 属性を更新
         updateAttribute('showWeeklyWeather', isChecked);
@@ -42,7 +42,7 @@ export const createVisibilitySettings = ({ attributes, setAttributes }) => {
     },
     {
       label: '祝日を表示',
-      checked: attributes.showHoliday,
+      checked: showHoliday,
       onChange: (isChecked) => {
 
         updateAttribute('showHoliday', isChecked);
@@ -50,7 +50,7 @@ export const createVisibilitySettings = ({ attributes, setAttributes }) => {
     },
     {
       label: '降水確率を表示',
-      checked: attributes.showPrecipitation,
+      checked: showPrecipitation,
       onChange: (isChecked) => {
 
         updateAttribute('showPrecipitation', isChecked);
