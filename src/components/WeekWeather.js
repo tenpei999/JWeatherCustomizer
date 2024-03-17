@@ -44,14 +44,9 @@ const WeekWeather = ({
             <h4 className="c-title__weather" style={{ color: textColor }}>
               {dayWeather.day.date.month}{dayWeather.day.date.day}<br />{dayWeather.day.date.dayOfWeek}
             </h4>
-            {/* {showHoliday && (
-              <p>{dayWeather.day.holidayName}</p>
-            )} */}
-            {/* showHolidayがtrueの場合のみ祝日の名前を表示 */}
             {showHoliday && dayWeather.day.isHoliday && (
               <p>{dayWeather.day.holidayName}</p>
             )}
-            {/* {console.log(dayWeather.day)} */}
             <p className="weather__name">{dayWeather.name}</p>
             <span className="weather__img">
               <img src={dayWeather.image} alt="Weather Icon" />
