@@ -26,8 +26,6 @@ import Preview from './components/Preview';
 
 export default function Edit({ attributes, setAttributes }) {
 
-	console.log(attributes)
-
 	const defaultCityObject = {
 		name: '東京',
 		url: 'https://api.open-meteo.com/v1/forecast?latitude=35.6895&longitude=139.6917&hourly=precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14',
@@ -111,6 +109,8 @@ export default function Edit({ attributes, setAttributes }) {
 		selectedMedia: selectedMedia,
 		backgroundGradient: attributes.backgroundGradient,
 		backgroundColor: attributes.backgroundColor,
+		showHoliday: attributes.showHoliday,
+		showPrecipitation: attributes.showPrecipitation,
 	};
 
 	return (

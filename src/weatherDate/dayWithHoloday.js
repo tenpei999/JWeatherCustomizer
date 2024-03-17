@@ -47,13 +47,12 @@ const dayWithHoliday = async (addBreak = false) => {
     // Get the holidays
     const holidays = await getHolidays();
 
-
     // Create an array of dates with holidays data included
     const oneWeekDatesWithHolidays = oneWeekDates.map(date => {
 
       const weekDays = ["日", "月", "火", "水", "木", "金", "土"];
       const dayOfWeek = weekDays[date.getDay()];
-      const formattedDate = `${String(date.getMonth() + 1)}月${String(date.getDate())}日(${dayOfWeek})`;
+      const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
       return {
         date: {
           month: `${String(date.getMonth() + 1)}月`,

@@ -1208,6 +1208,7 @@ const WeekWeather = ({
     backgroundColor,
     backgroundGradient
   });
+  console.log(showHoliday);
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("ul", {
     className: `block--weekly weather-layout ${styleVariant}`,
     style: {
@@ -1228,7 +1229,7 @@ const WeekWeather = ({
       style: {
         color: textColor
       }
-    }, dayWeather.day.date.month, dayWeather.day.date.day, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("br", null), dayWeather.day.date.dayOfWeek), dayWeather.day.isHoliday && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, displayDate), showHoliday && weather.day.isHoliday && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, weather.day.holidayName), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    }, dayWeather.day.date.month, dayWeather.day.date.day, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("br", null), dayWeather.day.date.dayOfWeek), showHoliday && dayWeather.day.isHoliday && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, dayWeather.day.holidayName), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
       className: "weather__name"
     }, dayWeather.name), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
       className: "weather__img"
@@ -1301,7 +1302,6 @@ function Edit({
   attributes,
   setAttributes
 }) {
-  console.log(attributes);
   const defaultCityObject = {
     name: '東京',
     url: 'https://api.open-meteo.com/v1/forecast?latitude=35.6895&longitude=139.6917&hourly=precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14'
@@ -1389,7 +1389,9 @@ function Edit({
     backgroundStyleType: attributes.backgroundStyleType,
     selectedMedia: selectedMedia,
     backgroundGradient: attributes.backgroundGradient,
-    backgroundColor: attributes.backgroundColor
+    backgroundColor: attributes.backgroundColor,
+    showHoliday: attributes.showHoliday,
+    showPrecipitation: attributes.showPrecipitation
   };
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     ...blockProps,
@@ -2319,7 +2321,7 @@ const dayWithHoliday = async (addBreak = false) => {
     const oneWeekDatesWithHolidays = oneWeekDates.map(date => {
       const weekDays = ["日", "月", "火", "水", "木", "金", "土"];
       const dayOfWeek = weekDays[date.getDay()];
-      const formattedDate = `${String(date.getMonth() + 1)}月${String(date.getDate())}日(${dayOfWeek})`;
+      const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
       return {
         date: {
           month: `${String(date.getMonth() + 1)}月`,
