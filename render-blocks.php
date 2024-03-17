@@ -88,7 +88,7 @@ function jWeatherCustomizer_render_block($attr, $content)
   // ここで $uniqueID を使用してキャッシュをチェック
   $weatherData = fetchWeatherDataWithCache($apiUrl, $uniqueID);
 
-
+error_log("weatherData" . print_r($weatherData, true));
   // 今日の天気データ、明日の天気データ、週間天気データを取得するロジックを実装
   $todayWeather = $weatherData['today'] ?? [];
   $tomorrowWeather = $weatherData['tomorrow'] ?? [];

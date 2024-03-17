@@ -56,7 +56,6 @@ function validateWeatherData($data)
   // 'hourly_units' 構造を検証
   $hourlyUnitsRequiredKeys = [
     'time' => 'string',
-    'temperature_2m' => 'string',
     'precipitation_probability' => 'string',
     'weathercode' => 'string'
   ];

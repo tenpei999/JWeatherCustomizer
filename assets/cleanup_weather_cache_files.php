@@ -53,7 +53,7 @@ function get_unique_ids_from_content($content)
 
 function trigger_cleanup_after_post_save($post_id, $post)
 {
-  error_log("trigger_cleanup_after_post_save called for post ID: " . $post_id);
+  // error_log("trigger_cleanup_after_post_save called for post ID: " . $post_id);
   // 投稿タイプをチェックして、特定のタイプの投稿でのみ実行
   if ('page' === $post->post_type || 'post' === $post->post_type) {
     $content = $post->post_content;
@@ -65,7 +65,7 @@ function trigger_cleanup_after_post_save($post_id, $post)
 function cleanup_weather_cache_files($validUniqueIDs)
 {
   $cacheDir = JWEATHERCUSTOMIZER_CACHE_DIR;
-  error_log("Valid Unique IDs: " . implode(", ", $validUniqueIDs));
+  // error_log("Valid Unique IDs: " . implode(", ", $validUniqueIDs));
 
   foreach (glob($cacheDir . 'weather_cache_*.json') as $file) {
     if (preg_match('/weather_cache_(.+)\.json$/', basename($file), $matches)) {

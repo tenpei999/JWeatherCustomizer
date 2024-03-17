@@ -112,7 +112,6 @@ function fetchWeatherDataWithCache($apiUrl, $uniqueID)
     return [];
   }
 
-  error_log("data" . print_r($data, true));
   $weatherCodesForWeek = $data['daily']['weathercode'];
   $weatherNamesForWeek = array_map(function ($code) {
     $info = getWeatherInfo($code);
