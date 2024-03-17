@@ -1,6 +1,7 @@
 <?
 include 'holiday_api_client.php';
 include 'cache_manager.php';
+include 'validation_functions.php';
 
 function getDateRangeArray($startDate, $endDate)
 {
@@ -100,22 +101,18 @@ function sanitizeImageUrl($url)
   return $sanitizedUrl ? $sanitizedUrl : '';
 };
 
-function validateTemperature($temperature)
-{
-  // 温度データが数値であることを検証
-  return is_numeric($temperature) && is_finite($temperature);
-}
-
-
 function fetchWeatherDataWithCache($apiUrl, $uniqueID)
 {
 
   $data = checkWeatherCache($apiUrl, $uniqueID);
 
-  if (!$data) {
+  if (!validateWeatherData($data)) {
+    // 天気データが無効な場合、処理を中断
+    logMessage("Weather data validation failed.");
     return [];
   }
 
+  error_log("data" . print_r($data, true));
   $weatherCodesForWeek = $data['daily']['weathercode'];
   $weatherNamesForWeek = array_map(function ($code) {
     $info = getWeatherInfo($code);

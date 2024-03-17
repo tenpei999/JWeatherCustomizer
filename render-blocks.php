@@ -78,6 +78,11 @@ function jWeatherCustomizer_render_block($attr, $content)
   $uniqueID = $attr['uniqueID'];
   $apiUrl = $attr['selectedCity']['url'];
 
+  // URLの形式を検証
+  if (filter_var($apiUrl, FILTER_VALIDATE_URL) === false) {
+    // URLが無効である場合のエラーハンドリング
+    return 'エラー: 指定されたURLが無効です。';
+  }
 
   $uniqueID = (isset($attr['uniqueID']) && !empty($attr['uniqueID'])) ? $attr['uniqueID'] : uniqid('block_', true);
   // ここで $uniqueID を使用してキャッシュをチェック

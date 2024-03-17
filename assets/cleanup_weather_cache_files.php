@@ -8,16 +8,23 @@ function JWeatherCustomizer_checkAndClearCacheIfNecessary()
   $threshold = 10; // ファイル数の閾値
   $expiration = 14410; // キャッシュの有効期限（秒）
 
-  foreach ($files as $file) {
-    if (is_file($file)) {
-      // ファイルの最終更新時刻を取得
-      $filemtime = filemtime($file);
-      // 現在時刻との差を計算
-      $timeDiff = time() - $filemtime;
+  if ($fileCount <= $threshold) {
+    // ファイル数が閾値以下の場合、期限切れファイルのみをチェック
+    foreach ($files as $file) {
+      if (is_file($file) && (time() - filemtime($file)) > $expiration) {
+        unlink($file); // 期限切れファイルを削除
+      }
+    }
+  } else {
+    // ファイル数が閾値を超えた場合、古いファイルから順に削除
+    array_multisort(array_map('filemtime', $files), SORT_NUMERIC, SORT_ASC, $files);
+    $filesToDelete = count($files) - $threshold;
 
-      // ファイルが有効期限を超えている、またはファイル数が閾値を超えた場合に削除
-      if ($timeDiff > $expiration || $fileCount > $threshold) {
+    foreach ($files as $file) {
+      if ($filesToDelete-- > 0) {
         unlink($file); // ファイルを削除
+      } else {
+        break; // 残りのファイルは保持
       }
     }
   }

@@ -2,8 +2,30 @@
 
 include 'weather_api_client.php';
 
+function sanitizeUniqueID($uniqueID)
+{
+  // 簡単な例として、英数字とダッシュ、アンダースコアのみを許可します
+  return preg_replace('/[^a-zA-Z0-9_-]/', '', $uniqueID);
+}
+
+function fetchApiData($apiUrl)
+{
+  $curl = curl_init();
+  curl_setopt($curl, CURLOPT_URL, $apiUrl);
+  curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+  curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, true);
+  $response = curl_exec($curl);
+  if ($response === false) {
+    logMessage("API request failed for URL: " . $apiUrl . " Error: " . curl_error($curl));
+    curl_close($curl);
+    return false;
+  }
+  curl_close($curl);
+  return json_decode($response, true);
+}
 function checkWeatherCache($apiUrl, $uniqueID)
 {
+  $uniqueID = sanitizeUniqueID($uniqueID); // サニタイズ処理
   $cacheFile = 'weather_cache_' . $uniqueID . '.json';
   // この一意のキーをファイル名に含める
   $cacheTime = 14400; // 4時間（秒単位）
@@ -14,9 +36,9 @@ function checkWeatherCache($apiUrl, $uniqueID)
 
   // キャッシュデータを取得する関数
   $cacheData = getCacheData($cacheFile);
-  error_log("casheDateUrl" . $cacheData['url']);
-  error_log("apiUrl" . $apiUrl);
-  error_log($cacheData['url'] === $apiUrl);
+  // error_log("casheDateUrl" . $cacheData['url']);
+  // error_log("apiUrl" . $apiUrl);
+  // error_log($cacheData['url'] === $apiUrl);
 
   if (
     file_exists($cacheFilePath) && $cacheData && $cacheData['url'] === $apiUrl &&
@@ -29,15 +51,29 @@ function checkWeatherCache($apiUrl, $uniqueID)
   } else {
     // キャッシュの状態を再確認
     clearstatcache(); // キャッシュされたファイル状態情報をクリア
-    
-      // 新しいURLでAPIからデータを取得してキャッシュを更新
-      $apiResponse = file_get_contents($apiUrl);
+    // cURLを使用してAPIからデータを取得
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $apiUrl);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+    // 新しいURLでAPIからデータを取得してキャッシュを更新
+    $apiResponse = curl_exec($ch);
+
     if ($apiResponse === FALSE) {
       logMessage("API request failed for URL: " . $apiUrl);
       return [];
     }
+
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    if ($httpCode != 200) {
+      logMessage("API request returned HTTP code " . $httpCode . " for URL: " . $apiUrl);
+      curl_close($ch);
+      return [];
+    }
+
+    curl_close($ch);
     $data = json_decode($apiResponse, true);
-    if ($data === NULL) {
+    if ($data === null) {
       logMessage("Failed to decode JSON response from URL: " . $apiUrl);
       return [];
     }
