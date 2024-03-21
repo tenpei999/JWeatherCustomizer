@@ -35,7 +35,7 @@ const dayWithHoliday = async (addBreak = false) => {
     }
 
     return dateArray;
-  }
+  };
 
   async function getOneWeekDatesWithHolidays(addBreak = false) {
     const today = new Date();
@@ -70,6 +70,6 @@ const dayWithHoliday = async (addBreak = false) => {
   }
 
   return await getOneWeekDatesWithHolidays(addBreak);
-}
+};
 
 export default dayWithHoliday;

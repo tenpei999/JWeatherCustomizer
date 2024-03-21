@@ -47,4 +47,4 @@ export function useChangeCity(selectedCity) {
     fetchData();
   }, [selectedCity]);
   return weatherData;
-}
+};

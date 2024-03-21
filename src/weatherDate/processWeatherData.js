@@ -22,7 +22,7 @@ async function processWeatherData(data, addBreak = false) {
   const datesForWeek = await dayWithHoliday(addBreak);
   if (!datesForWeek || datesForWeek.length !== 7) {
     throw new Error("Unexpected date array length from dayWithHoliday.");
-  }
+  };
 
   const weatherCodesForWeek = data.daily.weathercode; // 本日から6日後までの天気コード
 
@@ -85,6 +85,6 @@ async function processWeatherData(data, addBreak = false) {
   return {
     dailyData, // 加工された日毎の天気データ
   };
-}
+};
 
 export default processWeatherData;

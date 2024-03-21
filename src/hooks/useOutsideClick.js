@@ -35,6 +35,6 @@ function useBlockSelection() {
     };
 
     return { showSelection, handleLayoutClick };
-}
+};
 
 export default useBlockSelection;

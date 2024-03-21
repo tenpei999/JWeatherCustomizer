@@ -63,4 +63,4 @@ export default function Preview({ attributes, commonProps }) {
       )}
     </>
   );
-}
+};

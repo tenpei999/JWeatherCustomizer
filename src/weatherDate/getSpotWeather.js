@@ -62,4 +62,4 @@ export const cities = {
     name: 'パリ',
     url: createCityWeatherUrl(48.8534, 2.3488),
   },
-}
+};

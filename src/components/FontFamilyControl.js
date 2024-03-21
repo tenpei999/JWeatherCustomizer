@@ -19,16 +19,16 @@ function FontFamilyControl({ fontFamily, setFontFamily }) {
     width: '100%',
     textAlign: 'left',
     paddingTop: '15px',
-  }
+  };
 
   const validErrorStyle = {
     color: 'red',
     transform: 'translateX(23%)'
-  }
+  };
 
   const changeFontLavel = (
     <span style={{ display: 'block', transform: 'translateX(33%)' }}> フォントを選択</span>
-  )
+  );
 
   return (
     <>
@@ -49,6 +49,6 @@ function FontFamilyControl({ fontFamily, setFontFamily }) {
       {error && <p style={validErrorStyle}>{error}</p>}
     </>
   );
-}
+};
 
 export default FontFamilyControl;

@@ -13,6 +13,6 @@ function useBorderStyles(borders) {
   }, [borders]); 
 
   return borderStyles;
-}
+};
 
 export default useBorderStyles;

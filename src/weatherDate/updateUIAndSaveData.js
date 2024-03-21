@@ -14,6 +14,6 @@ async function updateUIAndSaveData(cityurl, setTodayWeather, setTomorrowWeather,
   } catch (error) {
     console.error('Error in updateUIAndSaveData:', error);
   }
-}
+};
 
 export default updateUIAndSaveData;

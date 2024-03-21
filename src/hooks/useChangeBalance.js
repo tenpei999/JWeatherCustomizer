@@ -35,4 +35,4 @@ export function useChangeBalance(initialOption, setAttributes) {
     fontBalanceOptions,
     applyFontBalance
   };
-}
+};

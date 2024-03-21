@@ -500,6 +500,7 @@ function FontFamilyControl({
     style: validErrorStyle
   }, error));
 }
+;
 /* harmony default export */ __webpack_exports__["default"] = (FontFamilyControl);
 
 /***/ }),
@@ -581,6 +582,7 @@ function Preview({
     ...commonProps
   })));
 }
+;
 
 /***/ }),
 
@@ -929,6 +931,7 @@ function TextColorControl({
     style: validErrorStyle
   }, error));
 }
+;
 /* harmony default export */ __webpack_exports__["default"] = (TextColorControl);
 
 /***/ }),
@@ -1806,6 +1809,8 @@ function useBorderControl(attributes, setAttributes) {
   };
 }
 
+;
+
 /***/ }),
 
 /***/ "./src/hooks/useBorderStyles.js":
@@ -1831,6 +1836,7 @@ function useBorderStyles(borders) {
   }, [borders]);
   return borderStyles;
 }
+;
 /* harmony default export */ __webpack_exports__["default"] = (useBorderStyles);
 
 /***/ }),
@@ -1891,6 +1897,7 @@ function useChangeBalance(initialOption, setAttributes) {
     applyFontBalance
   };
 }
+;
 
 /***/ }),
 
@@ -1947,6 +1954,7 @@ function useChangeCity(selectedCity) {
   }, [selectedCity]);
   return weatherData;
 }
+;
 
 /***/ }),
 
@@ -1980,6 +1988,7 @@ function useFontFamilyControl(attributes, setAttributes) {
     onChangeFontFamily
   };
 }
+;
 
 /***/ }),
 
@@ -2030,6 +2039,7 @@ function useBlockSelection() {
     handleLayoutClick
   };
 }
+;
 /* harmony default export */ __webpack_exports__["default"] = (useBlockSelection);
 
 /***/ }),
@@ -2308,6 +2318,7 @@ const dayWithHoliday = async (addBreak = false) => {
     }
     return dateArray;
   }
+  ;
   async function getOneWeekDatesWithHolidays(addBreak = false) {
     const today = new Date();
     const sixDaysLater = new Date(today);
@@ -2385,6 +2396,7 @@ async function fetchWeatherData(cityUrl) {
   if (!cityUrl || !isValidUrl(cityUrl)) {
     throw new Error(`Invalid URL: ${cityUrl}`);
   }
+  ;
   const now = new Date();
   const currentTimestamp = Math.floor(now.getTime() / 1000);
   const storedTimestamp = localStorage.getItem(cacheTimestampKey);
@@ -2530,6 +2542,7 @@ async function processWeatherData(data, addBreak = false) {
   if (!datesForWeek || datesForWeek.length !== 7) {
     throw new Error("Unexpected date array length from dayWithHoliday.");
   }
+  ;
   const weatherCodesForWeek = data.daily.weathercode; // 本日から6日後までの天気コード
 
   // 天気コードを天気名に変換
@@ -2583,6 +2596,7 @@ async function processWeatherData(data, addBreak = false) {
   };
 }
 
+;
 /* harmony default export */ __webpack_exports__["default"] = (processWeatherData);
 
 /***/ }),

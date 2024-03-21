@@ -149,4 +149,4 @@ export function useBorderControl(attributes, setAttributes) {
     handleRangeChangeErrorMessage, // handleRangeChange 用のエラーメッセージ
     handleUnitChangeErrorMessage, // handleUnitChange 用のエラーメッセージ
   };
-}
+};

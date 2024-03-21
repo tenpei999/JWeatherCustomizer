@@ -51,6 +51,6 @@ const CurrentWeather = ({
       {showPrecipitation && <TimeZone weather={weather} />}
     </article>
   )
-}
+};
 
 export { CurrentWeather };

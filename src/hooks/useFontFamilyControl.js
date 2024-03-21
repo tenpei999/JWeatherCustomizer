@@ -16,5 +16,5 @@ export function useFontFamilyControl(attributes, setAttributes) {
     fontFamily,
     onChangeFontFamily
   };
-}
+};
 

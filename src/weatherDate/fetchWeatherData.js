@@ -25,7 +25,7 @@ async function fetchWeatherData(cityUrl) {
   // 提供されたURLの検証
   if (!cityUrl || !isValidUrl(cityUrl)) {
     throw new Error(`Invalid URL: ${cityUrl}`);
-  }
+  };
 
   const now = new Date();
   const currentTimestamp = Math.floor(now.getTime() / 1000);

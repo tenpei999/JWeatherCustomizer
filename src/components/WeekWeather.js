@@ -60,4 +60,3 @@ const WeekWeather = ({
 };
 
 export default WeekWeather;
-

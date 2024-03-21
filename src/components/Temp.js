@@ -17,6 +17,6 @@ const Temp = ({ weather }) => {
       </li>
     </ul>
   )
-}
+};
 
 export default Temp;

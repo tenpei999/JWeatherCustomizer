@@ -30,6 +30,6 @@ const TimeZone = ({ weather }) => {
       </li>
     </ul>
   )
-}
+};
 
 export default TimeZone;

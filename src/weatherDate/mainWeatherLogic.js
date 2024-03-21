@@ -24,6 +24,6 @@ async function mainWeatherLogic(
     console.error('Error in weatherObject function:', error);
     // 必要に応じて、ここでエラーハンドリングを行う
   }
-}
+};
 
 export { mainWeatherLogic };

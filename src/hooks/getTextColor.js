@@ -12,5 +12,4 @@ const getTextColor = (weather) => {
   return ""; // 休日でも土曜日でも日曜日でもない場合は、デフォルトのテキスト色を使用
 };
 
-
 export default getTextColor;
