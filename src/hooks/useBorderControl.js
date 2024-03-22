@@ -10,20 +10,35 @@ export function isValidBorderStyle(style) {
 }
 
 export function isValidBorderWidth(width) {
-  return /^[\d.]+(px|%)?$/.test(width);
+  // '0', '0px', '0%' を無効とし、それ以外の値を許容する
+  return /^(?!0($|px|%))\d+(\.\d+)?(px|%)?$/.test(width);
 }
 
 export function isValidBorder(border) {
+  // 単一のボーダー設定の検証
+  const isValidSingleBorder = (border) => {
+    return (
+      isValidColor(border.color) &&
+      isValidBorderStyle(border.style) &&
+      isValidBorderWidth(border.width)
+    );
+  };
+
+  // ボーダー設定がオブジェクトであるかチェック
   if (!border || typeof border !== 'object') {
     console.error('Invalid border object: ', border);
-    throw new Error('Invalid border object');
+    return false;
   }
-  return (
-    isValidColor(border.color) &&
-    isValidBorderStyle(border.style) &&
-    isValidBorderWidth(border.width)
-  );
+
+  // スプリットモード（複数の辺）の場合の検証
+  if (['top', 'right', 'bottom', 'left'].every(side => border.hasOwnProperty(side))) {
+    return ['top', 'right', 'bottom', 'left'].every(side => isValidSingleBorder(border[side]));
+  }
+
+  // フラットモード（単一の設定）の場合の検証
+  return isValidSingleBorder(border);
 }
+
 
 export function useBorderControl(attributes, setAttributes) {
 
@@ -41,15 +56,15 @@ export function useBorderControl(attributes, setAttributes) {
 
   const [borders, setBorders] = useState(() => {
     // attributes.bordersがSplitモードの構造を持っているかをチェック
-    if (attributes.borders && 
-        typeof attributes.borders.top === 'object' &&
-        typeof attributes.borders.right === 'object' &&
-        typeof attributes.borders.bottom === 'object' &&
-        typeof attributes.borders.left === 'object') {
+    if (attributes.borders &&
+      typeof attributes.borders.top === 'object' &&
+      typeof attributes.borders.right === 'object' &&
+      typeof attributes.borders.bottom === 'object' &&
+      typeof attributes.borders.left === 'object') {
       // Splitモードの場合はそのまま使用
       return attributes.borders;
     }
-  
+
     // Splitモードの構造がなければ、各辺にデフォルトのFlatモードの設定を適用
     return {
       top: defaultBorder,
@@ -79,6 +94,11 @@ export function useBorderControl(attributes, setAttributes) {
 
   const onChangeBorder = (newBorderSet) => {
     try {
+         // 新しいボーダー設定が有効であるかチェック
+    if (!isValidBorder(newBorderSet)) {
+      throw new Error('無効なボーダープロパティ');
+    }
+
       let updatedBorders = {};
 
       if (isFlatMode(newBorderSet)) {
@@ -98,6 +118,8 @@ export function useBorderControl(attributes, setAttributes) {
           left: { ...borders.left, ...newBorderSet.left }
         };
       }
+      
+      console.log(updatedBorders)
 
       // 更新されたボーダー設定を適用
       setAttributes({ ...attributes, borders: updatedBorders });

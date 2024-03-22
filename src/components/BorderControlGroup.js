@@ -3,6 +3,7 @@ import { __ } from '@wordpress/i18n';
 import { RangeControl, SelectControl } from '@wordpress/components';
 import { __experimentalBorderBoxControl as BorderBoxControl } from '@wordpress/components';
 import { useBorderControl } from '../hooks/useBorderControl';
+import styles from '../objects/styles';
 
 export default function BorderControlGroup({ attributes, setAttributes }) {
     const {
@@ -17,48 +18,19 @@ export default function BorderControlGroup({ attributes, setAttributes }) {
         handleUnitChangeErrorMessage, // handleUnitChange 用のエラーメッセージ
     } = useBorderControl(attributes, setAttributes);
 
-    const borderMainStyle = {
-        width: '83.5%',
-        alignSelf: 'end',
-        paddingTop: '15px',
-    }
-
-    const radiusStyle = {
-        paddingTop: '15px',
-        display: 'flex',
-        gap: '10px',
-        alignItems: 'end',
-        alignSelf: 'end',
-        width: '83.5%',
-    }
-
-    const valueStyle = {
-        width: '90%',
-    }
-
-    const unitStyle = {
-        width: '10%',
-    }
-
-    const validErrorStyle = {
-        color: 'red',
-        transform: 'translateX(23%)'
-    }
-
     return (
         <>
-            <div className='jwc-border-main' style={borderMainStyle}>
+            <div className='jwc-border-main' style={styles.borderMainStyle}>
                 <BorderBoxControl
-                    colors={borderColors} // ここを変更しました
+                    colors={borderColors} 
                     label={('枠線の色と形')}
                     onChange={onChangeBorder}
                     value={borders}
-
                 />
-                {newBorderSetErrorMessage && <p style={validErrorStyle}>{newBorderSetErrorMessage}</p>}
+                {newBorderSetErrorMessage && <p style={styles.validErrorStyle}>{newBorderSetErrorMessage}</p>}
             </div>
-            <div className='jwc-border-radius' style={radiusStyle}>
-                <div style={valueStyle}>
+            <div className='jwc-border-radius' style={styles.radiusStyle}>
+                <div style={styles.valueStyle}>
                     <RangeControl
                         label="丸み"
                         value={parseInt(attributes.borderRadiusValue, 10)}
@@ -66,15 +38,15 @@ export default function BorderControlGroup({ attributes, setAttributes }) {
                         min={0}
                         max={(attributes.borderRadiusValue && attributes.borderRadiusValue.includes('px')) ? 100 : 100}
                     />
-                    {handleRangeChangeErrorMessage && <p style={validErrorStyle}>{handleRangeChangeErrorMessage}</p>}
+                    {handleRangeChangeErrorMessage && <p style={styles.validErrorStyle}>{handleRangeChangeErrorMessage}</p>}
                 </div>
-                <div style={unitStyle}>
+                <div style={styles.unitStyle}>
                     <SelectControl
                         value={attributes.borderRadiusValue && attributes.borderRadiusValue.replace(/[0-9]/g, '')}
                         options={units}
                         onChange={handleUnitChange}
                     />
-                    {handleUnitChangeErrorMessage && <p style={validErrorStyle}>{handleUnitChangeErrorMessage}</p>}
+                    {handleUnitChangeErrorMessage && <p style={styles.validErrorStyle}>{handleUnitChangeErrorMessage}</p>}
                 </div>
             </div>
         </>

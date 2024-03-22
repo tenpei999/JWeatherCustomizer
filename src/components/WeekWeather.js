@@ -24,8 +24,6 @@ const WeekWeather = ({
   const borderStyles = useBorderStyles(borders);
   const backgroundStyles = getBackgroundStyles({ backgroundStyleType, selectedMedia, backgroundColor, backgroundGradient });
 
-  console.log(showHoliday)
-
   return (
     <ul className={`block--weekly weather-layout ${styleVariant}`}
       style={{

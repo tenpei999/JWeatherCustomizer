@@ -1,6 +1,7 @@
 import { useState } from '@wordpress/element';
 import { MediaUpload, MediaUploadCheck } from '@wordpress/block-editor';
 import { SelectControl, Button, ColorPalette, GradientPicker } from '@wordpress/components';
+import styles from '../objects/styles';
 
 const BackgroundSelector = ({ attributes, setAttributes }) => {
   const { backgroundStyleType } = attributes;
@@ -61,41 +62,13 @@ const BackgroundSelector = ({ attributes, setAttributes }) => {
     setAttributes({ ...attributes, backgroundStyleType: newStyleType });
   };
 
-  const formStyle = {
-    width: '100%',
-    textAlign: 'center',
-    textAlign: 'left',
-    paddingTop: '15px',
-  }
-
-  const flexCol = {
-    display: 'flex',
-    flexDirection: 'column',
-  }
-
-  const selectorStyle = {
-    width: '83%',
-    alignSelf: 'end',
-    paddingTop: '10px',
-  }
-
-  const imageUploadButton = {
-    textAlign: 'center',
-    width: '50%',
-  }
-
-  const validErrorStyle = {
-    color: 'red',
-    transform: 'translateX(23%)'
-  }
-
   const backgroundControlLabel = (
     <span style={{ display: 'block', transform: 'translateX(33%)' }}>背景</span>
   )
 
   return (
-    <div style={flexCol} className='jwc-back-ground--wrapper'>
-      <div className='jwc-back-ground' style={formStyle}>
+    <div style={styles.flexCol} className='jwc-back-ground--wrapper'>
+      <div className='jwc-back-ground' style={styles.formStyle}>
         <SelectControl
           label={backgroundControlLabel}
           value={attributes.backgroundStyleType} // 現在の値をattributesから取得
@@ -106,11 +79,11 @@ const BackgroundSelector = ({ attributes, setAttributes }) => {
           ]}
           onChange={handleBackgroundStyleChange} // ここで新しい関数を使用します
         />
-        {urlError && <p style={validErrorStyle}>{urlError}</p>}
-        {colorError && <p style={validErrorStyle}>{colorError}</p>}
-        {gradientError && <p style={validErrorStyle}>{gradientError}</p>}
+        {urlError && <p style={styles.validErrorStyle}>{urlError}</p>}
+        {colorError && <p style={styles.validErrorStyle}>{colorError}</p>}
+        {gradientError && <p style={styles.validErrorStyle}>{gradientError}</p>}
       </div>
-      <div style={{ ...selectorStyle, ...imageUploadButton }} className='jwc-back-ground__image'>
+      <div style={{ ...styles.selectorStyle, ...styles.imageUploadButton }} className='jwc-back-ground__image'>
         {backgroundStyleType === 'image' && (
           <div>
             <MediaUploadCheck>

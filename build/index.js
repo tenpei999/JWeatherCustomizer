@@ -15,6 +15,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _objects_styles__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../objects/styles */ "./src/objects/styles.js");
+
 
 
 
@@ -86,29 +88,6 @@ const BackgroundSelector = ({
       backgroundStyleType: newStyleType
     });
   };
-  const formStyle = {
-    width: '100%',
-    textAlign: 'center',
-    textAlign: 'left',
-    paddingTop: '15px'
-  };
-  const flexCol = {
-    display: 'flex',
-    flexDirection: 'column'
-  };
-  const selectorStyle = {
-    width: '83%',
-    alignSelf: 'end',
-    paddingTop: '10px'
-  };
-  const imageUploadButton = {
-    textAlign: 'center',
-    width: '50%'
-  };
-  const validErrorStyle = {
-    color: 'red',
-    transform: 'translateX(23%)'
-  };
   const backgroundControlLabel = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     style: {
       display: 'block',
@@ -116,11 +95,11 @@ const BackgroundSelector = ({
     }
   }, "\u80CC\u666F");
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    style: flexCol,
+    style: _objects_styles__WEBPACK_IMPORTED_MODULE_3__["default"].flexCol,
     className: "jwc-back-ground--wrapper"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "jwc-back-ground",
-    style: formStyle
+    style: _objects_styles__WEBPACK_IMPORTED_MODULE_3__["default"].formStyle
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
     label: backgroundControlLabel,
     value: attributes.backgroundStyleType // 現在の値をattributesから取得
@@ -137,15 +116,15 @@ const BackgroundSelector = ({
     }],
     onChange: handleBackgroundStyleChange // ここで新しい関数を使用します
   }), urlError && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
-    style: validErrorStyle
+    style: _objects_styles__WEBPACK_IMPORTED_MODULE_3__["default"].validErrorStyle
   }, urlError), colorError && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
-    style: validErrorStyle
+    style: _objects_styles__WEBPACK_IMPORTED_MODULE_3__["default"].validErrorStyle
   }, colorError), gradientError && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
-    style: validErrorStyle
+    style: _objects_styles__WEBPACK_IMPORTED_MODULE_3__["default"].validErrorStyle
   }, gradientError)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     style: {
-      ...selectorStyle,
-      ...imageUploadButton
+      ..._objects_styles__WEBPACK_IMPORTED_MODULE_3__["default"].selectorStyle,
+      ..._objects_styles__WEBPACK_IMPORTED_MODULE_3__["default"].imageUploadButton
     },
     className: "jwc-back-ground__image"
   }, backgroundStyleType === 'image' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.MediaUploadCheck, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.MediaUpload, {
@@ -195,6 +174,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _objects_styles__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../objects/styles */ "./src/objects/styles.js");
+
 
 
 
@@ -213,16 +194,6 @@ const BalanceControl = ({
       setError('選択されたオプションが見つかりません。');
     }
   };
-  const formStyle = {
-    width: '100%',
-    textAlign: 'center',
-    textAlign: 'left',
-    paddingTop: '15px'
-  };
-  const validErrorStyle = {
-    color: 'red',
-    transform: 'translateX(23%)'
-  };
   const balanceControlLabel = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     style: {
       display: 'block',
@@ -231,7 +202,7 @@ const BalanceControl = ({
   }, " \u30D0\u30E9\u30F3\u30B9");
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "jwc-font-balance",
-    style: formStyle
+    style: _objects_styles__WEBPACK_IMPORTED_MODULE_2__["default"].formStyle
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
     label: balanceControlLabel,
     value: selectedOption.label,
@@ -241,7 +212,7 @@ const BalanceControl = ({
     })),
     onChange: handleOptionChange
   }), error && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
-    style: validErrorStyle
+    style: _objects_styles__WEBPACK_IMPORTED_MODULE_2__["default"].validErrorStyle
   }, error));
 };
 /* harmony default export */ __webpack_exports__["default"] = (BalanceControl);
@@ -266,8 +237,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _hooks_useBorderControl__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../hooks/useBorderControl */ "./src/hooks/useBorderControl.js");
+/* harmony import */ var _objects_styles__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../objects/styles */ "./src/objects/styles.js");
 
 // BorderControlGroup.js
+
 
 
 
@@ -289,45 +262,21 @@ function BorderControlGroup({
     // handleRangeChange 用のエラーメッセージ
     handleUnitChangeErrorMessage // handleUnitChange 用のエラーメッセージ
   } = (0,_hooks_useBorderControl__WEBPACK_IMPORTED_MODULE_3__.useBorderControl)(attributes, setAttributes);
-  const borderMainStyle = {
-    width: '83.5%',
-    alignSelf: 'end',
-    paddingTop: '15px'
-  };
-  const radiusStyle = {
-    paddingTop: '15px',
-    display: 'flex',
-    gap: '10px',
-    alignItems: 'end',
-    alignSelf: 'end',
-    width: '83.5%'
-  };
-  const valueStyle = {
-    width: '90%'
-  };
-  const unitStyle = {
-    width: '10%'
-  };
-  const validErrorStyle = {
-    color: 'red',
-    transform: 'translateX(23%)'
-  };
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "jwc-border-main",
-    style: borderMainStyle
+    style: _objects_styles__WEBPACK_IMPORTED_MODULE_4__["default"].borderMainStyle
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.__experimentalBorderBoxControl, {
-    colors: borderColors // ここを変更しました
-    ,
+    colors: borderColors,
     label: '枠線の色と形',
     onChange: onChangeBorder,
     value: borders
   }), newBorderSetErrorMessage && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
-    style: validErrorStyle
+    style: _objects_styles__WEBPACK_IMPORTED_MODULE_4__["default"].validErrorStyle
   }, newBorderSetErrorMessage)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "jwc-border-radius",
-    style: radiusStyle
+    style: _objects_styles__WEBPACK_IMPORTED_MODULE_4__["default"].radiusStyle
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    style: valueStyle
+    style: _objects_styles__WEBPACK_IMPORTED_MODULE_4__["default"].valueStyle
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {
     label: "\u4E38\u307F",
     value: parseInt(attributes.borderRadiusValue, 10),
@@ -335,15 +284,15 @@ function BorderControlGroup({
     min: 0,
     max: attributes.borderRadiusValue && attributes.borderRadiusValue.includes('px') ? 100 : 100
   }), handleRangeChangeErrorMessage && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
-    style: validErrorStyle
+    style: _objects_styles__WEBPACK_IMPORTED_MODULE_4__["default"].validErrorStyle
   }, handleRangeChangeErrorMessage)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    style: unitStyle
+    style: _objects_styles__WEBPACK_IMPORTED_MODULE_4__["default"].unitStyle
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
     value: attributes.borderRadiusValue && attributes.borderRadiusValue.replace(/[0-9]/g, ''),
     options: units,
     onChange: handleUnitChange
   }), handleUnitChangeErrorMessage && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
-    style: validErrorStyle
+    style: _objects_styles__WEBPACK_IMPORTED_MODULE_4__["default"].validErrorStyle
   }, handleUnitChangeErrorMessage))));
 }
 
@@ -1211,7 +1160,6 @@ const WeekWeather = ({
     backgroundColor,
     backgroundGradient
   });
-  console.log(showHoliday);
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("ul", {
     className: `block--weekly weather-layout ${styleVariant}`,
     style: {
@@ -1668,14 +1616,28 @@ function isValidBorderStyle(style) {
   return ['none', 'solid', 'dashed', 'dotted'].includes(style);
 }
 function isValidBorderWidth(width) {
-  return /^[\d.]+(px|%)?$/.test(width);
+  // '0', '0px', '0%' を無効とし、それ以外の値を許容する
+  return /^(?!0($|px|%))\d+(\.\d+)?(px|%)?$/.test(width);
 }
 function isValidBorder(border) {
+  // 単一のボーダー設定の検証
+  const isValidSingleBorder = border => {
+    return isValidColor(border.color) && isValidBorderStyle(border.style) && isValidBorderWidth(border.width);
+  };
+
+  // ボーダー設定がオブジェクトであるかチェック
   if (!border || typeof border !== 'object') {
     console.error('Invalid border object: ', border);
-    throw new Error('Invalid border object');
+    return false;
   }
-  return isValidColor(border.color) && isValidBorderStyle(border.style) && isValidBorderWidth(border.width);
+
+  // スプリットモード（複数の辺）の場合の検証
+  if (['top', 'right', 'bottom', 'left'].every(side => border.hasOwnProperty(side))) {
+    return ['top', 'right', 'bottom', 'left'].every(side => isValidSingleBorder(border[side]));
+  }
+
+  // フラットモード（単一の設定）の場合の検証
+  return isValidSingleBorder(border);
 }
 function useBorderControl(attributes, setAttributes) {
   const [newBorderSetErrorMessage, setNewBorderSetErrorMessage] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
@@ -1720,6 +1682,10 @@ function useBorderControl(attributes, setAttributes) {
   };
   const onChangeBorder = newBorderSet => {
     try {
+      // 新しいボーダー設定が有効であるかチェック
+      if (!isValidBorder(newBorderSet)) {
+        throw new Error('無効なボーダープロパティ');
+      }
       let updatedBorders = {};
       if (isFlatMode(newBorderSet)) {
         // Flatモードの場合、すべての辺に同じ設定を適用
@@ -1750,6 +1716,7 @@ function useBorderControl(attributes, setAttributes) {
           }
         };
       }
+      console.log(updatedBorders);
 
       // 更新されたボーダー設定を適用
       setAttributes({
@@ -1825,13 +1792,22 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 
 function useBorderStyles(borders) {
+  const defaultBorderStyle = {
+    width: '0px',
+    style: 'none',
+    color: '#000000'
+  }; // デフォルトスタイル
   const [borderStyles, setBorderStyles] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({});
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    const borderTop = borders.top || defaultBorderStyle;
+    const borderRight = borders.right || defaultBorderStyle;
+    const borderBottom = borders.bottom || defaultBorderStyle;
+    const borderLeft = borders.left || defaultBorderStyle;
     setBorderStyles({
-      borderTop: `${borders.top.width} ${borders.top.style} ${borders.top.color}`,
-      borderRight: `${borders.right.width} ${borders.right.style} ${borders.right.color}`,
-      borderBottom: `${borders.bottom.width} ${borders.bottom.style} ${borders.bottom.color}`,
-      borderLeft: `${borders.left.width} ${borders.left.style} ${borders.left.color}`
+      borderTop: `${borderTop.width} ${borderTop.style} ${borderTop.color}`,
+      borderRight: `${borderRight.width} ${borderRight.style} ${borderRight.color}`,
+      borderBottom: `${borderBottom.width} ${borderBottom.style} ${borderBottom.color}`,
+      borderLeft: `${borderLeft.width} ${borderLeft.style} ${borderLeft.color}`
     });
   }, [borders]);
   return borderStyles;
@@ -2170,6 +2146,62 @@ const responseErrorMessage = pluginImagePaths => ({
 
 /***/ }),
 
+/***/ "./src/objects/styles.js":
+/*!*******************************!*\
+  !*** ./src/objects/styles.js ***!
+  \*******************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+// styles.js
+const styles = {
+  formStyle: {
+    width: '100%',
+    textAlign: 'left',
+    paddingTop: '15px'
+  },
+  flexCol: {
+    display: 'flex',
+    flexDirection: 'column'
+  },
+  selectorStyle: {
+    width: '83%',
+    alignSelf: 'end',
+    paddingTop: '10px'
+  },
+  imageUploadButton: {
+    textAlign: 'center',
+    width: '50%'
+  },
+  validErrorStyle: {
+    color: 'red',
+    transform: 'translateX(23%)'
+  },
+  borderMainStyle: {
+    width: '83.5%',
+    alignSelf: 'end',
+    paddingTop: '15px'
+  },
+  radiusStyle: {
+    paddingTop: '15px',
+    display: 'flex',
+    gap: '10px',
+    alignItems: 'end',
+    alignSelf: 'end',
+    width: '83.5%'
+  },
+  valueStyle: {
+    width: '90%'
+  },
+  unitStyle: {
+    width: '10%'
+  }
+};
+/* harmony default export */ __webpack_exports__["default"] = (styles);
+
+/***/ }),
+
 /***/ "./src/objects/visibilitySettings.js":
 /*!*******************************************!*\
   !*** ./src/objects/visibilitySettings.js ***!
@@ -2273,6 +2305,7 @@ async function mainWeatherLogic(cityurl, setTodayWeather, setTomorrowWeather, se
   }
 }
 
+;
 
 
 /***/ }),
