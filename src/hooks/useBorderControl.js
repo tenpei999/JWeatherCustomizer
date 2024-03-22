@@ -39,7 +39,6 @@ export function isValidBorder(border) {
   return isValidSingleBorder(border);
 }
 
-
 export function useBorderControl(attributes, setAttributes) {
 
   const [newBorderSetErrorMessage, setNewBorderSetErrorMessage] = useState(null);

@@ -389,6 +389,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _objects_styles__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../objects/styles */ "./src/objects/styles.js");
+
 
 
 
@@ -407,15 +409,6 @@ function FontFamilyControl({
       setError('無効なフォントが選択されました');
     }
   };
-  const formStyle = {
-    width: '100%',
-    textAlign: 'left',
-    paddingTop: '15px'
-  };
-  const validErrorStyle = {
-    color: 'red',
-    transform: 'translateX(23%)'
-  };
   const changeFontLavel = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     style: {
       display: 'block',
@@ -423,7 +416,7 @@ function FontFamilyControl({
     }
   }, " \u30D5\u30A9\u30F3\u30C8\u3092\u9078\u629E");
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    style: formStyle,
+    style: _objects_styles__WEBPACK_IMPORTED_MODULE_2__["default"].formStyle,
     className: "jwc-change-font"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
     label: changeFontLavel,
@@ -446,7 +439,7 @@ function FontFamilyControl({
     }],
     onChange: handleOnChange
   })), error && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
-    style: validErrorStyle
+    style: _objects_styles__WEBPACK_IMPORTED_MODULE_2__["default"].validErrorStyle
   }, error));
 }
 ;
@@ -650,8 +643,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _objects_styles__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../objects/styles */ "./src/objects/styles.js");
+
 
 
 
@@ -660,14 +655,6 @@ const SelectCity = ({
   cityOptions,
   handleCityChange
 }) => {
-  const labelStyle = {
-    width: '50%'
-  };
-  const formStyle = {
-    width: '100%',
-    textAlign: 'center',
-    textAlign: 'left'
-  };
   const selectedCityLabel = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     style: {
       display: 'block',
@@ -675,7 +662,7 @@ const SelectCity = ({
     }
   }, " \u90FD\u5E02\u3092\u9078\u629E");
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    style: formStyle,
+    style: _objects_styles__WEBPACK_IMPORTED_MODULE_2__["default"].formStyle,
     className: "jwc-select-city"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
     value: selectedCity.name,
@@ -690,14 +677,14 @@ const SelectCity = ({
 
 // プロパティのバリデーション
 SelectCity.propTypes = {
-  selectedCity: prop_types__WEBPACK_IMPORTED_MODULE_2___default().shape({
-    name: (prop_types__WEBPACK_IMPORTED_MODULE_2___default().string).isRequired
+  selectedCity: prop_types__WEBPACK_IMPORTED_MODULE_3___default().shape({
+    name: (prop_types__WEBPACK_IMPORTED_MODULE_3___default().string).isRequired
   }).isRequired,
-  cityOptions: prop_types__WEBPACK_IMPORTED_MODULE_2___default().arrayOf(prop_types__WEBPACK_IMPORTED_MODULE_2___default().shape({
-    value: (prop_types__WEBPACK_IMPORTED_MODULE_2___default().string).isRequired,
-    label: (prop_types__WEBPACK_IMPORTED_MODULE_2___default().string).isRequired
+  cityOptions: prop_types__WEBPACK_IMPORTED_MODULE_3___default().arrayOf(prop_types__WEBPACK_IMPORTED_MODULE_3___default().shape({
+    value: (prop_types__WEBPACK_IMPORTED_MODULE_3___default().string).isRequired,
+    label: (prop_types__WEBPACK_IMPORTED_MODULE_3___default().string).isRequired
   })).isRequired,
-  handleCityChange: (prop_types__WEBPACK_IMPORTED_MODULE_2___default().func).isRequired
+  handleCityChange: (prop_types__WEBPACK_IMPORTED_MODULE_3___default().func).isRequired
 };
 /* harmony default export */ __webpack_exports__["default"] = (SelectCity);
 

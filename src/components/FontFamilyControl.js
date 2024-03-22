@@ -1,5 +1,6 @@
 import { useState } from '@wordpress/element';
 import { SelectControl } from '@wordpress/components';
+import styles from '../objects/styles';
 
 function FontFamilyControl({ fontFamily, setFontFamily }) {
 
@@ -15,24 +16,13 @@ function FontFamilyControl({ fontFamily, setFontFamily }) {
     }
   };
 
-  const formStyle = {
-    width: '100%',
-    textAlign: 'left',
-    paddingTop: '15px',
-  };
-
-  const validErrorStyle = {
-    color: 'red',
-    transform: 'translateX(23%)'
-  };
-
   const changeFontLavel = (
     <span style={{ display: 'block', transform: 'translateX(33%)' }}> フォントを選択</span>
   );
 
   return (
     <>
-      <div style={formStyle} className='jwc-change-font'>
+      <div style={styles.formStyle} className='jwc-change-font'>
         <SelectControl
           label={changeFontLavel}
           value={fontFamily}
@@ -46,7 +36,7 @@ function FontFamilyControl({ fontFamily, setFontFamily }) {
           onChange={handleOnChange}
         />
       </div>
-      {error && <p style={validErrorStyle}>{error}</p>}
+      {error && <p style={styles.validErrorStyle}>{error}</p>}
     </>
   );
 };
