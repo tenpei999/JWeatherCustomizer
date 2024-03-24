@@ -78,18 +78,12 @@ function jWeatherCustomizer_render_block($attr, $content)
   $uniqueID = $attr['uniqueID'];
   $apiUrl = $attr['selectedCity']['url'];
 
-  // URLの形式を検証
   if (filter_var($apiUrl, FILTER_VALIDATE_URL) === false) {
-    // URLが無効である場合のエラーハンドリング
     return 'エラー: 指定されたURLが無効です。';
   }
 
   $uniqueID = (isset($attr['uniqueID']) && !empty($attr['uniqueID'])) ? $attr['uniqueID'] : uniqid('block_', true);
-  // ここで $uniqueID を使用してキャッシュをチェック
   $weatherData = fetchWeatherDataWithCache($apiUrl, $uniqueID);
-
-error_log("weatherData" . print_r($weatherData, true));
-  // 今日の天気データ、明日の天気データ、週間天気データを取得するロジックを実装
   $todayWeather = $weatherData['today'] ?? [];
   $tomorrowWeather = $weatherData['tomorrow'] ?? [];
   $weeklyWeather = $weatherData['weekly'] ?? [];
@@ -140,12 +134,12 @@ error_log("weatherData" . print_r($weatherData, true));
 
     $maxDays = 4;
     foreach ($weeklyWeather as $i => $dayWeather) {
-      if ($i <= $maxDays) { // 0番目から5番目までの要素に対してのみ処理を実行
-        $data = $weeklyWeather[$i]; // 週間天気データを $data に設定
+      if ($i <= $maxDays) {
+        $data = $weeklyWeather[$i];
         $textColor = $setTextColor($data['day'] ?? []);
-        $output .= generateWeeklyWeatherOutput($data, $textColor, $attr['showHoliday']); // 週間天気用の出力関数を呼び出し
+        $output .= generateWeeklyWeatherOutput($data, $textColor, $attr['showHoliday']);
       } else {
-        break; // 5番目の要素を処理した後、ループから抜け出す
+        break;
       }
     }
     $output .= '</ul>';

@@ -44,16 +44,12 @@ function getOneWeekDatesWithHolidays($addBreak = false)
   }, $oneWeekDates);
 }
 
-// この関数を呼び出して1週間の日付と祝日の情報を取得
 $datesWithHoliday = getOneWeekDatesWithHolidays();
 
 function getWeatherInfo($weatherCode)
 {
-  // プラグインの画像パスを指定
-  // 注意: このパスはプラグインの構造に合わせて適宜調整してください。
   $pluginImagePaths = JWEATHERCUSTOMIZER_URL . 'images/';
 
-  // 天気コードに基づいてラベルとアイコンを返す
   if ($weatherCode === 0) {
     return ['label' => "快晴", 'icon' => $pluginImagePaths . '100.svg'];
   }
@@ -88,16 +84,13 @@ function getWeatherInfo($weatherCode)
     return ['label' => "雷雨", 'icon' => $pluginImagePaths . '300.svg'];
   }
 
-  // 未定義のコードはエラーとする
   return ['label' => "ERROR", 'icon' => ""];
 }
 
 function sanitizeImageUrl($url)
 {
-  // FILTER_VALIDATE_URLフィルターでURLを検証
   $sanitizedUrl = filter_var($url, FILTER_VALIDATE_URL);
 
-  // URLが有効ならそのURLを、そうでなければ空文字列を返す
   return $sanitizedUrl ? $sanitizedUrl : '';
 };
 
@@ -107,7 +100,6 @@ function fetchWeatherDataWithCache($apiUrl, $uniqueID)
   $data = checkWeatherCache($apiUrl, $uniqueID);
 
   if (!validateWeatherData($data)) {
-    // 天気データが無効な場合、処理を中断
     logMessage("Weather data validation failed.");
     return [];
   }
@@ -170,7 +162,6 @@ function fetchWeatherDataWithCache($apiUrl, $uniqueID)
 
   $datesWithHoliday = getOneWeekDatesWithHolidays();
   foreach ($datesWithHoliday as $index => $dateInfo) {
-    // $weatherNamesForWeekや他の天気情報配列が日付情報配列と同じ長さであることを確認
     if (isset($weatherNamesForWeek[$index])) {
       $dailyData[] = [
         'day' => $dateInfo,
@@ -182,17 +173,14 @@ function fetchWeatherDataWithCache($apiUrl, $uniqueID)
         'lowestTemperatureComparison' => $lowestTemperatureDifferencesForWeek[$index + 1] ?? null,
         'rainProbability' => $rainProbability1[$index + 1] ?? null,
       ];
-      // 最初の要素を今日の天気データとして取得
       if (isset($dailyData[0])) {
         $todayWeather = $dailyData[0];
       }
 
-      // 2番目の要素を明日の天気データとして取得
       if (isset($dailyData[1])) {
         $tomorrowWeather = $dailyData[1];
       }
 
-      // 3番目以降の要素を週間の天気データとして取得
       if (count($dailyData) > 2) {
         $weeklyWeather = array_slice($dailyData, 2);
       }

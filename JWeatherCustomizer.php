@@ -39,16 +39,14 @@ add_action('init', 'test_rest_url');
 
 function enqueue_jWeatherCustomizer_script()
 {
-	// ブロックエディタ用のスクリプトを登録
 	wp_register_script(
 		'j-weather-customizer-script',
 		plugins_url('build/index.js', __FILE__),
-		array('wp-blocks'), // 必要に応じて依存関係を記述
+		array('wp-blocks'), 
 		'1.0.0',
 		true
 	);
 
-	// データをローカライズしてセキュアな方法でスクリプトに渡します。
 	$plugin_data = array(
 		'pluginImagePath' => plugin_dir_url(__FILE__) . 'images/',
 		'restUrl'         => rest_url('j-weather-customizer/save-data/'),
@@ -56,10 +54,7 @@ function enqueue_jWeatherCustomizer_script()
 		'siteUrl'         => get_site_url(),
 	);
 
-	// ローカライズスクリプト
 	wp_localize_script('j-weather-customizer-script', 'JWeatherCustomizerData', $plugin_data);
-
-	// スクリプトをエンキューします。
 	wp_enqueue_script('j-weather-customizer-script');
 }
 
@@ -77,7 +72,6 @@ add_action('rest_api_init', function () {
 	));
 });
 
-// ディレクトリが存在しない場合に作成する関数
 function ensureCacheDirectoryExists()
 {
   if (!file_exists(JWEATHERCUSTOMIZER_CACHE_DIR) || !is_dir(JWEATHERCUSTOMIZER_CACHE_DIR)) {
@@ -88,18 +82,12 @@ function ensureCacheDirectoryExists()
   }
 }
 
-// タイムゾーンを日本時間に設定
 date_default_timezone_set('Asia/Tokyo');
-
-// プラグインの無効化時に実行される関数を登録
 register_deactivation_hook(__FILE__, 'JWeatherCustomizer_cleanup');
 
 function JWeatherCustomizer_cleanup()
 {
-	// 削除したいディレクトリのパス
 	$cacheDir = plugin_dir_path(__FILE__) . 'JWeatherCustomizer_Cache/';
-
-	// ディレクトリを再帰的に削除するカスタム関数
 	JWeatherCustomizer_recursive_delete($cacheDir);
 }
 

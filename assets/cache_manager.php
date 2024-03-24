@@ -4,7 +4,6 @@ include 'weather_api_client.php';
 
 function sanitizeUniqueID($uniqueID)
 {
-  // 簡単な例として、英数字とダッシュ、アンダースコアのみを許可します
   return preg_replace('/[^a-zA-Z0-9_-]/', '', $uniqueID);
 }
 
@@ -25,20 +24,13 @@ function fetchApiData($apiUrl)
 }
 function checkWeatherCache($apiUrl, $uniqueID)
 {
-  $uniqueID = sanitizeUniqueID($uniqueID); // サニタイズ処理
+  $uniqueID = sanitizeUniqueID($uniqueID); 
   $cacheFile = 'weather_cache_' . $uniqueID . '.json';
-  // この一意のキーをファイル名に含める
-  $cacheTime = 14400; // 4時間（秒単位）
+  $cacheTime = 14400;
   $cacheFilePath = JWEATHERCUSTOMIZER_CACHE_DIR . $cacheFile;
-  // デフォルトのAPI URL
   $defaultApiUrl = 'https://api.open-meteo.com/v1/forecast?latitude=35.6895&longitude=139.6917&hourly=precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14';
   $apiUrl = $apiUrl ?: $defaultApiUrl;
-
-  // キャッシュデータを取得する関数
   $cacheData = getCacheData($cacheFile);
-  // error_log("casheDateUrl" . $cacheData['url']);
-  // error_log("apiUrl" . $apiUrl);
-  // error_log($cacheData['url'] === $apiUrl);
 
   if (
     file_exists($cacheFilePath) && $cacheData && $cacheData['url'] === $apiUrl &&
@@ -46,17 +38,13 @@ function checkWeatherCache($apiUrl, $uniqueID)
     date('Y-m-d', filemtime($cacheFilePath)) == date('Y-m-d')
     && $cacheData['url'] === $apiUrl
   ) {
-    // キャッシュデータが存在し、有効な場合はキャッシュからデータを返す
     return $cacheData['data'];
   } else {
-    // キャッシュの状態を再確認
-    clearstatcache(); // キャッシュされたファイル状態情報をクリア
-    // cURLを使用してAPIからデータを取得
+    clearstatcache(); 
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $apiUrl);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
-    // 新しいURLでAPIからデータを取得してキャッシュを更新
     $apiResponse = curl_exec($ch);
 
     if ($apiResponse === FALSE) {
@@ -78,17 +66,14 @@ function checkWeatherCache($apiUrl, $uniqueID)
       return [];
     }
 
-    // URLが変更された場合やキャッシュが無効の場合はキャッシュを更新
     saveCacheData($cacheFile, ['url' => $apiUrl, 'data' => $data]);
     return $data;
   }
 }
 
-
-// キャッシュデータを取得する関数
 function getCacheData($cacheFile)
 {
-  ensureCacheDirectoryExists(); // キャッシュディレクトリの確認と作成
+  ensureCacheDirectoryExists(); 
   $cachePath = JWEATHERCUSTOMIZER_CACHE_DIR . $cacheFile;
   if (file_exists($cachePath) && is_readable($cachePath)) {
     $jsonData = file_get_contents($cachePath);
@@ -98,10 +83,9 @@ function getCacheData($cacheFile)
   }
 }
 
-// キャッシュデータを保存する関数
 function saveCacheData($cacheFile, $data)
 {
-  ensureCacheDirectoryExists(); // キャッシュディレクトリの確認と作成
+  ensureCacheDirectoryExists(); 
   $cachePath = JWEATHERCUSTOMIZER_CACHE_DIR . $cacheFile;
   $jsonData = json_encode($data);
   if (file_put_contents($cachePath, $jsonData)) {
@@ -110,18 +94,8 @@ function saveCacheData($cacheFile, $data)
   }
 }
 
-/**
- * データをキャッシュから取得またはAPIから取得する。
- *
- * @param string $url APIのURL。
- * @param string $cachePath キャッシュファイルのパス。
- * @param int $cacheDuration キャッシュの有効期間（秒）。
- * @return array データを含む配列。
- */
-
 function fetchDataWithCache($url, $cachePath = 'holidays_cache.json', $cacheDuration = 14400)
 {
-  // キャッシュが有効かどうかを確認
   if (isCacheValid($cachePath, $cacheDuration)) {
     $data = json_decode(file_get_contents($cachePath), true);
   } else {
@@ -133,14 +107,6 @@ function fetchDataWithCache($url, $cachePath = 'holidays_cache.json', $cacheDura
 
   return $data ?? [];
 }
-
-/**
- * キャッシュが有効かどうかをチェックする。
- *
- * @param string $cachePath キャッシュファイルのパス。
- * @param int $cacheDuration キャッシュの有効期間（秒）。
- * @return bool キャッシュが有効な場合はtrue、それ以外の場合はfalse。
- */
 
 function isCacheValid($cachePath, $cacheDuration)
 {
@@ -155,12 +121,6 @@ function isCacheValid($cachePath, $cacheDuration)
     return false;
   }
 }
-
-/**
- * メッセージをログに記録する。
- *
- * @param string $message ログに記録するメッセージ。
- */
 
 function logMessage($message)
 {
