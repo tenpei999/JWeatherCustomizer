@@ -73,7 +73,7 @@ function checkWeatherCache($apiUrl, $uniqueID)
 
 function getCacheData($cacheFile)
 {
-  ensureCacheDirectoryExists(); 
+  jweathercustomizer_ensure_cache_directory_exists(); 
   $cachePath = JWEATHERCUSTOMIZER_CACHE_DIR . $cacheFile;
   if (file_exists($cachePath) && is_readable($cachePath)) {
     $jsonData = file_get_contents($cachePath);
@@ -85,7 +85,7 @@ function getCacheData($cacheFile)
 
 function saveCacheData($cacheFile, $data)
 {
-  ensureCacheDirectoryExists(); 
+  jweathercustomizer_ensure_cache_directory_exists(); 
   $cachePath = JWEATHERCUSTOMIZER_CACHE_DIR . $cacheFile;
   $jsonData = json_encode($data);
   if (file_put_contents($cachePath, $jsonData)) {
