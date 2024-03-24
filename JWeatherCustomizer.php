@@ -18,17 +18,21 @@
 define('JWEATHERCUSTOMIZER_CACHE_DIR', plugin_dir_path(__FILE__) . 'JWeatherCustomizer_Cache/');
 define('JWEATHERCUSTOMIZER_URL', plugin_dir_url(__FILE__));
 define('HOLIDAYS_API_URL', 'https://holidays-jp.github.io/api/v1/date.json');
+define('DEFAULT_WEATHER_API_URL', 'https://api.open-meteo.com/v1/forecast?latitude=35.6895&longitude=139.6917&hourly=precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14');
 
 // Include dependencies.
 require_once dirname(__FILE__) . '/render-blocks.php';
 require_once dirname(__FILE__) . '/assets/cleanup_weather_cache_files.php';
 
+// Register block type and REST API routes.
 add_action('init', 'JWeatherCustomizer_init');
 add_action('rest_api_init', 'jweathercustomizer_register_routes');
 register_deactivation_hook(__FILE__, 'JWeatherCustomizer_cleanup');
-
 date_default_timezone_set('Asia/Tokyo');
 
+/**
+ * Initializes the block type and registers necessary scripts.
+ */
 function JWeatherCustomizer_init()
 {
 	register_block_type(
@@ -54,6 +58,9 @@ function JWeatherCustomizer_init()
 	wp_enqueue_script('j-weather-customizer-script');
 }
 
+/**
+ * Registers REST API routes for the plugin.
+ */
 function  jweathercustomizer_register_routes()
 {
 	register_rest_route('j-weather-customizer', '/save-data/', array(
@@ -66,7 +73,7 @@ function  jweathercustomizer_register_routes()
 };
 
 /**
- * Cleans up the cache directory upon plugin deactivation.
+ * Ensures the cache directory exists.
  */
 function jweathercustomizer_ensure_cache_directory_exists()
 {
@@ -78,7 +85,9 @@ function jweathercustomizer_ensure_cache_directory_exists()
 	}
 }
 
-
+/**
+ * Cleans up the cache directory upon plugin deactivation.
+ */
 function JWeatherCustomizer_cleanup()
 {
 	$cacheDir = plugin_dir_path(__FILE__) . 'JWeatherCustomizer_Cache/';

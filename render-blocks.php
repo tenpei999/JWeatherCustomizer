@@ -69,7 +69,7 @@ function jWeatherCustomizer_render_block($attr, $content)
       'type' => 'object',
       'default' => [
         'name' => '東京',
-        'url' => 'https://api.open-meteo.com/v1/forecast?latitude=35.6895&longitude=139.6917&hourly=precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14'
+        'url' => DEFAULT_WEATHER_API_URL
       ]
     ],
   ], $attr);
