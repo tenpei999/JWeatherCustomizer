@@ -69,7 +69,7 @@ function jWeatherCustomizer_render_block($attr, $content)
       'type' => 'object',
       'default' => [
         'name' => '東京',
-        'url' => DEFAULT_WEATHER_API_URL
+        'url' => JWEATHERCUSTOMIZER_DEFAULT_WEATHER_API_URL
       ]
     ],
   ], $attr);

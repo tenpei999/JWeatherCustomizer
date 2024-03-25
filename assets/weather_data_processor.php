@@ -3,6 +3,13 @@ include 'holiday_api_client.php';
 include 'cache_manager.php';
 include 'validation_functions.php';
 
+/**
+ * Generates an array of dates between two specified dates.
+ *
+ * @param string $startDate Starting date in 'Y-m-d' format.
+ * @param string $endDate Ending date in 'Y-m-d' format.
+ * @return array Array of dates between the start and end date.
+ */
 function getDateRangeArray($startDate, $endDate)
 {
   $dateArray = [];
@@ -14,15 +21,26 @@ function getDateRangeArray($startDate, $endDate)
   return $dateArray;
 }
 
+/**
+ * Fetches dates for one week along with any holidays.
+ *
+ * @param bool $addBreak Determines whether to add breaks between days.
+ * @return array Array containing dates of the week with holiday information.
+ */
 function getOneWeekDatesWithHolidays($addBreak = false)
 {
+  // Initialize cache and date range for one week
   $cache = [];
   $today = date('Y-m-d');
   $sixDaysLater = date('Y-m-d', strtotime("+6 days", strtotime($today)));
 
+  // Get an array of dates for the one-week period
   $oneWeekDates = getDateRangeArray($today, $sixDaysLater);
+
+  // Fetch holidays using cache
   $holidays = fetchHolidaysWithCache();
 
+  // Map dates to their respective holiday information
   return array_map(function ($date) use ($holidays) {
     $timestamp = strtotime($date);
     $dayOfWeek = date('w', $timestamp);
@@ -46,10 +64,18 @@ function getOneWeekDatesWithHolidays($addBreak = false)
 
 $datesWithHoliday = getOneWeekDatesWithHolidays();
 
+/**
+ * Returns weather information based on the provided weather code.
+ *
+ * @param int $weatherCode Numeric code representing the weather condition.
+ * @return array Array containing the label and icon URL for the weather condition.
+ */
 function getWeatherInfo($weatherCode)
 {
+  // Define the base path for weather condition icons
   $pluginImagePaths = JWEATHERCUSTOMIZER_URL . 'images/';
 
+  // Map weather codes to their respective labels and icon URLs
   if ($weatherCode === 0) {
     return ['label' => "快晴", 'icon' => $pluginImagePaths . '100.svg'];
   }
@@ -87,6 +113,12 @@ function getWeatherInfo($weatherCode)
   return ['label' => "ERROR", 'icon' => ""];
 }
 
+/**
+ * Sanitizes a given URL to ensure it is valid.
+ *
+ * @param string $url The URL to be sanitized.
+ * @return string The sanitized URL, or an empty string if invalid.
+ */
 function sanitizeImageUrl($url)
 {
   $sanitizedUrl = filter_var($url, FILTER_VALIDATE_URL);
@@ -94,16 +126,28 @@ function sanitizeImageUrl($url)
   return $sanitizedUrl ? $sanitizedUrl : '';
 };
 
+/**
+ * Fetches weather data for a given API URL and unique ID, utilizing caching.
+ * Validates the fetched weather data and processes it to extract and format
+ * required information for display.
+ *
+ * @param string $apiUrl The API URL to fetch weather data from.
+ * @param string $uniqueID A unique identifier for caching purposes.
+ * @return array Array containing processed weather data for display.
+ */
 function fetchWeatherDataWithCache($apiUrl, $uniqueID)
 {
 
+  // Check cache for existing weather data and validate it
   $data = checkWeatherCache($apiUrl, $uniqueID);
 
+  // Validate the retrieved data. If invalid, log a message and return an empty array.
   if (!validateWeatherData($data)) {
     logMessage("Weather data validation failed.");
     return [];
   }
 
+  // Process and extract necessary weather information from the data.
   $weatherCodesForWeek = $data['daily']['weathercode'];
   $weatherNamesForWeek = array_map(function ($code) {
     $info = getWeatherInfo($code);
@@ -114,16 +158,21 @@ function fetchWeatherDataWithCache($apiUrl, $uniqueID)
     $info = getWeatherInfo($code);
     return sanitizeImageUrl($info['icon']);
   }, $weatherCodesForWeek);
+
+  // Validate and format temperature data.
   $highestTemperatureForWeek = array_map(function ($temp) {
     return validateTemperature($temp) ? $temp : null;
   }, $data['daily']['temperature_2m_max']);
   $lowestTemperatureForWeek = array_map(function ($temp) {
     return validateTemperature($temp) ? $temp : null;
   }, $data['daily']['temperature_2m_min']);
+
+  // Calculate and format temperature differences for comparison.
   $highestTemperatureDifferencesForWeek = [];
   $lowestTemperatureDifferencesForWeek = [];
-  $rainProbability1 = [];
 
+  // Prepare and format precipitation probability data for display.
+  $rainProbability1 = [];
 
   for ($i = 0; $i < count($highestTemperatureForWeek) - 1; $i++) {
     $todayMaxTemperature = $highestTemperatureForWeek[$i + 1];
@@ -155,14 +204,15 @@ function fetchWeatherDataWithCache($apiUrl, $uniqueID)
     }
   }
 
+  // Extract today's and tomorrow's weather, along with the remainder of the week.
   $todayWeather = [];
   $tomorrowWeather = [];
   $weeklyWeather = [];
 
-
   $datesWithHoliday = getOneWeekDatesWithHolidays();
   foreach ($datesWithHoliday as $index => $dateInfo) {
     if (isset($weatherNamesForWeek[$index])) {
+      // Aggregate and prepare daily weather data for the week, incorporating the processed information.
       $dailyData[] = [
         'day' => $dateInfo,
         'name' => $weatherNamesForWeek[$index + 1],

@@ -17,8 +17,9 @@
 // Define constants to avoid repetition of directory paths and URLs.
 define('JWEATHERCUSTOMIZER_CACHE_DIR', plugin_dir_path(__FILE__) . 'JWeatherCustomizer_Cache/');
 define('JWEATHERCUSTOMIZER_URL', plugin_dir_url(__FILE__));
-define('HOLIDAYS_API_URL', 'https://holidays-jp.github.io/api/v1/date.json');
-define('DEFAULT_WEATHER_API_URL', 'https://api.open-meteo.com/v1/forecast?latitude=35.6895&longitude=139.6917&hourly=precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14');
+define('JWEATHERCUSTOMIZER_HOLIDAYS_API_URL', 'https://holidays-jp.github.io/api/v1/date.json');
+define('JWEATHERCUSTOMIZER_DEFAULT_WEATHER_API_URL', 'https://api.open-meteo.com/v1/forecast?latitude=35.6895&longitude=139.6917&hourly=precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14');
+define('JWEATHERCUSTOMIZER_WEATHER_CACHE_DURATION', 14400); 
 
 // Include dependencies.
 require_once dirname(__FILE__) . '/render-blocks.php';

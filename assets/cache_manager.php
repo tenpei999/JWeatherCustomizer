@@ -49,9 +49,9 @@ function checkWeatherCache($apiUrl, $uniqueID)
 {
   $uniqueID = sanitizeUniqueID($uniqueID);
   $cacheFile = 'weather_cache_' . $uniqueID . '.json';
-  $cacheTime = 14400;
+  $cacheTime = JWEATHERCUSTOMIZER_WEATHER_CACHE_DURATION;
   $cacheFilePath = JWEATHERCUSTOMIZER_CACHE_DIR . $cacheFile;
-  $apiUrl = $apiUrl ?: DEFAULT_WEATHER_API_URL;
+  $apiUrl = $apiUrl ?: JWEATHERCUSTOMIZER_DEFAULT_WEATHER_API_URL;
   $cacheData = getCacheData($cacheFile);
 
   if (
@@ -128,7 +128,7 @@ function saveCacheData($cacheFile, $data)
  * @param int $cacheDuration The duration for which the cache is considered valid.
  * @return array The fetched or cached data.
  */
-function fetchDataWithCache($url, $cachePath = 'holidays_cache.json', $cacheDuration = 14400)
+function fetchDataWithCache($url, $cachePath = 'holidays_cache.json', $cacheDuration = JWEATHERCUSTOMIZER_WEATHER_CACHE_DURATION)
 {
   if (isCacheValid($cachePath, $cacheDuration)) {
     $data = json_decode(file_get_contents($cachePath), true);
@@ -149,7 +149,8 @@ function fetchDataWithCache($url, $cachePath = 'holidays_cache.json', $cacheDura
  * @param int $cacheDuration The duration (in seconds) for which the cache is considered valid.
  * @return bool Returns true if the cache is valid, otherwise false.
  */
-function isCacheValid($cachePath, $cacheDuration) {
+function isCacheValid($cachePath, $cacheDuration)
+{
   return file_exists($cachePath) && (time() - filemtime($cachePath) < $cacheDuration);
 }
 
