@@ -5,6 +5,13 @@ import { getBackgroundStyles } from '../hooks/getBackgroundStyles';
 import getTextColor from '../hooks/getTextColor';
 import '../style.scss';
 
+/**
+ * Renders the current weather conditions with customizable styles.
+ * Utilizes custom hooks and components to display weather data dynamically based on props.
+ * 
+ * @param {Object} props - Properties passed to the component including weather data and style preferences.
+ * @returns JSX.Element | null - The CurrentWeather component or null if weather data is missing.
+ */
 const CurrentWeather = ({
   borders,
   borderRadius,
@@ -22,6 +29,8 @@ const CurrentWeather = ({
 }) => {
 
   const textColor = getTextColor(weather);
+
+  // Return null early if weather data is not provided.
   if (!weather || !weather.day) return null;
 
   const borderStyles = useBorderStyles(borders);
@@ -38,6 +47,7 @@ const CurrentWeather = ({
       <h3>{title}</h3>
       <h4 style={{ color: textColor }}>{weather.day.date.fullDate}</h4>
 
+      {/* Conditionally render holiday name if available and applicable. */}
       {showHoliday && weather.day.isHoliday && (
         <p>{weather.day.holidayName}</p>
       )}
@@ -45,7 +55,7 @@ const CurrentWeather = ({
       <p className="weather__name">{weather.name}</p>
       <img src={weather.image} alt="weather icon" />
       <Temp weather={weather} />
-      
+
       {showPrecipitation && <TimeZone weather={weather} />}
     </article>
   )

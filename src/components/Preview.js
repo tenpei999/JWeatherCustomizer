@@ -6,6 +6,14 @@ import { isApiError } from '../weatherDate/fetchWeatherData';
 import { handleWeatherError } from '../hooks/handleWeatherError';
 import { ResponseError } from './ResponseError';
 
+/**
+ * The Preview component displays current and weekly weather information based on the attributes passed to it.
+ * It handles API errors and displays appropriate error messages when necessary.
+ * 
+ * @param {Object} props The component props.
+ * @param {Object} props.attributes Attributes passed from the parent component, including weather data and display preferences.
+ * @param {Object} props.commonProps Common properties passed to child components.
+ */
 export default function Preview({ attributes, commonProps }) {
   const {
     showTodayWeather,
@@ -19,6 +27,8 @@ export default function Preview({ attributes, commonProps }) {
   } = attributes;
 
   const [errorMessage, setErrorMessage] = useState(null);
+
+   // Effect hook to check for API errors and set an appropriate error message using a custom handler.
   useEffect(() => {
     if (isApiError.isError) {
       const message = handleWeatherError(isApiError);
@@ -28,6 +38,13 @@ export default function Preview({ attributes, commonProps }) {
     }
   }, [isApiError]);
 
+    /**
+   * Renders the CurrentWeather component for a given weather data set and title.
+   * 
+   * @param {Object} weather The weather data for the day.
+   * @param {string} title The title to display for this weather data set.
+   * @returns JSX.Element | null A CurrentWeather component or null if no weather data is provided.
+   */
   const renderCurrentWeather = (weather, title) => {
     if (!weather || !weather.day) return null;
 
@@ -47,6 +64,7 @@ export default function Preview({ attributes, commonProps }) {
     );
   };
 
+   // Main render method of the Preview component. Displays an error message if there is an API error, otherwise renders weather information.
   return (
     <>
       {isApiError.isError ? (

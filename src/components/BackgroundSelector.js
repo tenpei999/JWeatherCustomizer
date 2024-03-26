@@ -3,12 +3,17 @@ import { MediaUpload, MediaUploadCheck } from '@wordpress/block-editor';
 import { SelectControl, Button, ColorPalette, GradientPicker } from '@wordpress/components';
 import styles from '../objects/styles';
 
+/**
+ * A control component for selecting a background style.
+ * It allows users to select an option and updates the parent component's state accordingly.
+ */
 const BackgroundSelector = ({ attributes, setAttributes }) => {
   const { backgroundStyleType } = attributes;
   const [urlError, setUrlError] = useState('');
   const [colorError, setColorError] = useState('');
   const [gradientError, setGradientError] = useState('');
 
+  // Validates if the provided URL is correctly formatted.
   const isValidUrl = (url) => {
     try {
       new URL(url);
@@ -17,9 +22,14 @@ const BackgroundSelector = ({ attributes, setAttributes }) => {
       return false;
     }
   };
+
+  // Validates if the provided color is in a valid hex format.
   const isValidColor = (color) => /^#[0-9A-F]{6}$/i.test(color);
+
+  // Validates if the provided gradient string is in a valid linear-gradient format.
   const isValidGradient = (gradient) => /^linear-gradient\((.+)\)$/i.test(gradient);
 
+  // Handles media selection from the WordPress media library.
   const handleMediaSelect = (media) => {
     if (!media || !isValidUrl(media.url)) {
       setUrlError('不正な画像URLです。');
@@ -36,6 +46,7 @@ const BackgroundSelector = ({ attributes, setAttributes }) => {
     });
   };
 
+  // Handles changes to the background color, including validation.
   const handleColorChange = (color) => {
     if (!isValidColor(color)) {
       setColorError('不正なカラーコードです。');
@@ -45,6 +56,7 @@ const BackgroundSelector = ({ attributes, setAttributes }) => {
     setAttributes({ backgroundColor: color });
   };
 
+  // Handles changes to the background gradient, including validation.
   const handleGradientChange = (newGradient) => {
     if (!isValidGradient(newGradient)) {
       setGradientError('不正なグラディエントです。');
@@ -54,6 +66,7 @@ const BackgroundSelector = ({ attributes, setAttributes }) => {
     setAttributes({ backgroundGradient: newGradient });
   };
 
+  // Updates the attribute for the background style type when it's changed.
   const handleBackgroundStyleChange = (newStyleType) => {
     setAttributes({ ...attributes, backgroundStyleType: newStyleType });
   };
@@ -67,13 +80,13 @@ const BackgroundSelector = ({ attributes, setAttributes }) => {
       <div className='jwc-back-ground' style={styles.formStyle}>
         <SelectControl
           label={backgroundControlLabel}
-          value={attributes.backgroundStyleType}
+          value={attributes.backgroundStyleType} // Current selection value.
           options={[
             { label: '画像', value: 'image' },
             { label: 'カラー', value: 'color' },
             { label: 'グラデーション', value: 'gradient' },
           ]}
-          onChange={handleBackgroundStyleChange}
+          onChange={handleBackgroundStyleChange} // Function to execute on selection change.
         />
         {urlError && <p style={styles.validErrorStyle}>{urlError}</p>}
         {colorError && <p style={styles.validErrorStyle}>{colorError}</p>}
@@ -84,7 +97,7 @@ const BackgroundSelector = ({ attributes, setAttributes }) => {
           <div>
             <MediaUploadCheck>
               <MediaUpload
-                onSelect={handleMediaSelect}
+                onSelect={handleMediaSelect} // Function to call when a media item is selected.
                 allowedTypes={['image']}
                 value={attributes.backgroundImage}
                 render={({ open }) => <Button className='button-insert' onClick={open}>メディアライブラリを開いて画像を選択</Button>}
@@ -94,7 +107,7 @@ const BackgroundSelector = ({ attributes, setAttributes }) => {
         )}
         {backgroundStyleType === 'color' && (
           <ColorPalette
-            onChange={handleColorChange}
+            onChange={handleColorChange} // Function to call when a new color is selected.
             value={attributes.backgroundColor}
           />
         )}
@@ -102,7 +115,7 @@ const BackgroundSelector = ({ attributes, setAttributes }) => {
           <div>
             <GradientPicker
               value={attributes.backgroundGradient}
-              onChange={handleGradientChange}
+              onChange={handleGradientChange} // Function to call when a new gradient is selected.
               gradients={[
                 {
                   name: 'JShine',
