@@ -1,6 +1,5 @@
 const Temp = ({ weather }) => {
 
-    // weather プロパティのバリデーション
     if (!weather || typeof weather !== 'object') {
       return null;
     }

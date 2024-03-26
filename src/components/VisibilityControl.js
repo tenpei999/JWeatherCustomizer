@@ -14,7 +14,6 @@ const VisibilityControl = ({ settings }) => {
         setLocalSettings(settings);
     }, [settings]);
 
-
     useEffect(() => {
         if (isSpecialCheckboxClicked) {
             const timer = setTimeout(() => {

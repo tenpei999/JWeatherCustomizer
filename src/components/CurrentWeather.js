@@ -22,7 +22,7 @@ const CurrentWeather = ({
 }) => {
 
   const textColor = getTextColor(weather);
-  if (!weather || !weather.day) return null; // weather と weather.day の存在を確認
+  if (!weather || !weather.day) return null;
 
   const borderStyles = useBorderStyles(borders);
   const backgroundStyles = getBackgroundStyles({ backgroundStyleType, selectedMedia, backgroundColor, backgroundGradient });
@@ -38,7 +38,6 @@ const CurrentWeather = ({
       <h3>{title}</h3>
       <h4 style={{ color: textColor }}>{weather.day.date.fullDate}</h4>
 
-      {/* showHolidayがtrueの場合のみ祝日の名前を表示 */}
       {showHoliday && weather.day.isHoliday && (
         <p>{weather.day.holidayName}</p>
       )}
@@ -46,8 +45,7 @@ const CurrentWeather = ({
       <p className="weather__name">{weather.name}</p>
       <img src={weather.image} alt="weather icon" />
       <Temp weather={weather} />
-
-      {/* showPrecipitationがtrueの場合のみTimeZoneコンポーネントを表示 */}
+      
       {showPrecipitation && <TimeZone weather={weather} />}
     </article>
   )

@@ -26,7 +26,7 @@ export function useChangeBalance(initialOption, setAttributes) {
 
   useEffect(() => {
     applyFontBalance(selectedOption);
-    setAttributes({ balanceOption: selectedOption.value }); // ここで属性を更新
+    setAttributes({ balanceOption: selectedOption.value });
   }, [selectedOption]);
 
   return {

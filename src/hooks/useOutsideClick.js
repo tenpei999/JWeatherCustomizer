@@ -9,12 +9,10 @@ function useBlockSelection() {
         const unsubscribe = subscribe(() => {
             const selectedBlockId = select('core/block-editor').getSelectedBlockClientId();
 
-            // 新しくブロックが選択された場合
             if (selectedBlockId && previouslySelectedBlockId !== selectedBlockId) {
                 setShowSelection(true);
             }
 
-            // ブロックの選択が解除された場合
             if (!selectedBlockId && previouslySelectedBlockId) {
                 setShowSelection(false);
             }
@@ -22,7 +20,6 @@ function useBlockSelection() {
             previouslySelectedBlockId = selectedBlockId;
         });
 
-        // コンポーネントのクリーンアップ時に購読を解除する
         return () => unsubscribe();
 
     }, []);

@@ -117,8 +117,6 @@ export function useBorderControl(attributes, setAttributes) {
           left: { ...borders.left, ...newBorderSet.left }
         };
       }
-      
-      console.log(updatedBorders)
 
       // 更新されたボーダー設定を適用
       setAttributes({ ...attributes, borders: updatedBorders });

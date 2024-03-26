@@ -1,4 +1,3 @@
-// BorderControlGroup.js
 import { __ } from '@wordpress/i18n';
 import { RangeControl, SelectControl } from '@wordpress/components';
 import { __experimentalBorderBoxControl as BorderBoxControl } from '@wordpress/components';
@@ -13,9 +12,9 @@ export default function BorderControlGroup({ attributes, setAttributes }) {
         handleUnitChange,
         borderColors,
         units,
-        newBorderSetErrorMessage, // newBorderSet 用のエラーメッセージ
-        handleRangeChangeErrorMessage, // handleRangeChange 用のエラーメッセージ
-        handleUnitChangeErrorMessage, // handleUnitChange 用のエラーメッセージ
+        newBorderSetErrorMessage,
+        handleRangeChangeErrorMessage,
+        handleUnitChangeErrorMessage,
     } = useBorderControl(attributes, setAttributes);
 
     return (

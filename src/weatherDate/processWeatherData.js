@@ -4,16 +4,14 @@ import dayWithHoliday from "./dayWithHoloday";
 async function processWeatherData(data, addBreak = false) {
 
   const sanitizeImageUrl = (url) => {
-    // 画像URLをサニタイズする関数。不正なURLを除去または修正
     try {
       return new URL(url).toString();
     } catch (e) {
-      return ''; // 不正なURLは空文字列に置き換える
+      return '';
     }
   };
 
   const validateTemperature = (temperature) => {
-    // 温度データが数値であることを検証
     return !isNaN(temperature) && isFinite(temperature);
   };
   if (!data || !data.daily) {
@@ -24,10 +22,7 @@ async function processWeatherData(data, addBreak = false) {
     throw new Error("Unexpected date array length from dayWithHoliday.");
   };
 
-  const weatherCodesForWeek = data.daily.weathercode; // 本日から6日後までの天気コード
-
-
-  // 天気コードを天気名に変換
+  const weatherCodesForWeek = data.daily.weathercode;
   const weatherNamesForWeek = weatherCodesForWeek.map(code => getWeatherInfo(code).label);
   const weatherImageForWeek = weatherCodesForWeek.map(code => sanitizeImageUrl(getWeatherInfo(code).icon));
   const highestTemperatureForWeek = data.daily.temperature_2m_max.map(temp => validateTemperature(temp) ? temp : null);
@@ -39,7 +34,6 @@ async function processWeatherData(data, addBreak = false) {
     const yesterdayMaxTemperature = highestTemperatureForWeek[i];
     const temperatureDifference = Math.ceil((todayMaxTemperature - yesterdayMaxTemperature) * 10) / 10;
     const formattedDifference = (temperatureDifference >= 0) ? `(+${temperatureDifference})` : `(-${Math.abs(temperatureDifference)})`;
-
     highestTemperatureDifferencesForWeek.push(formattedDifference);
   }
 
@@ -77,13 +71,12 @@ async function processWeatherData(data, addBreak = false) {
       lowestTemperature: lowestTemperatureForWeek[index + 1],
       maximumTemperatureComparison: highestTemperatureDifferencesForWeek[index + 1],
       lowestTemperatureComparison: lowestTemperatureDifferencesForWeek[index + 1],
-      rainProbability: rainProbability1[index + 1], // インデックス調整
+      rainProbability: rainProbability1[index + 1],
     }
   }).filter((_, index) => index < datesForWeek.length);
 
-  // 加工された全データを返す
   return {
-    dailyData, // 加工された日毎の天気データ
+    dailyData,
   };
 };
 

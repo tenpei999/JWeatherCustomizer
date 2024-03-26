@@ -1,4 +1,3 @@
-// styles.js
 const styles = {
   formStyle: {
     width: '100%',

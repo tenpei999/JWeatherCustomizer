@@ -19,7 +19,6 @@ export default function Preview({ attributes, commonProps }) {
   } = attributes;
 
   const [errorMessage, setErrorMessage] = useState(null);
-  // isApiErrorの状態を監視
   useEffect(() => {
     if (isApiError.isError) {
       const message = handleWeatherError(isApiError);
@@ -27,7 +26,7 @@ export default function Preview({ attributes, commonProps }) {
         setErrorMessage(message);
       }
     }
-  }, [isApiError]); // isApiErrorが変更された時にのみ実行
+  }, [isApiError]);
 
   const renderCurrentWeather = (weather, title) => {
     if (!weather || !weather.day) return null;

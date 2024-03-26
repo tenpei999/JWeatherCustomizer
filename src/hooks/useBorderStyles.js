@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
 function useBorderStyles(borders) {
-  const defaultBorderStyle = {width: '0px', style: 'none', color: '#000000'}; // デフォルトスタイル
+  const defaultBorderStyle = {width: '0px', style: 'none', color: '#000000'};
   const [borderStyles, setBorderStyles] = useState({});
 
   useEffect(() => {

@@ -5,13 +5,10 @@ import styles from '../objects/styles';
 
 const BackgroundSelector = ({ attributes, setAttributes }) => {
   const { backgroundStyleType } = attributes;
-
-  // エラーメッセージの状態
   const [urlError, setUrlError] = useState('');
   const [colorError, setColorError] = useState('');
   const [gradientError, setGradientError] = useState('');
 
-  // バリデーションチェック関数
   const isValidUrl = (url) => {
     try {
       new URL(url);
@@ -23,7 +20,6 @@ const BackgroundSelector = ({ attributes, setAttributes }) => {
   const isValidColor = (color) => /^#[0-9A-F]{6}$/i.test(color);
   const isValidGradient = (gradient) => /^linear-gradient\((.+)\)$/i.test(gradient);
 
-  // ハンドラ関数
   const handleMediaSelect = (media) => {
     if (!media || !isValidUrl(media.url)) {
       setUrlError('不正な画像URLです。');
@@ -71,13 +67,13 @@ const BackgroundSelector = ({ attributes, setAttributes }) => {
       <div className='jwc-back-ground' style={styles.formStyle}>
         <SelectControl
           label={backgroundControlLabel}
-          value={attributes.backgroundStyleType} // 現在の値をattributesから取得
+          value={attributes.backgroundStyleType}
           options={[
             { label: '画像', value: 'image' },
             { label: 'カラー', value: 'color' },
             { label: 'グラデーション', value: 'gradient' },
           ]}
-          onChange={handleBackgroundStyleChange} // ここで新しい関数を使用します
+          onChange={handleBackgroundStyleChange}
         />
         {urlError && <p style={styles.validErrorStyle}>{urlError}</p>}
         {colorError && <p style={styles.validErrorStyle}>{colorError}</p>}

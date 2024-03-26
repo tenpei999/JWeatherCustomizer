@@ -3,7 +3,6 @@ import { mainWeatherLogic } from '../weatherDate/MainWeatherLogic';
 
 export function useChangeCity(selectedCity) {
 
-  // 天気データを状態として保存します。
   const [weatherData, setWeatherData] = useState({
     today: null,
     tomorrow: null,
@@ -14,10 +13,9 @@ export function useChangeCity(selectedCity) {
     async function fetchData() {
       if (!selectedCity || !selectedCity.url) {
         console.error(`No URL found for city: ${selectedCity ? selectedCity.name : "Unknown city"}`);
-        return; // selectedCityオブジェクトがない、またはURLがない場合、ここで処理を終了します。
+        return;
       }
 
-      // 'selectedCity'が存在し、URLが含まれている場合、以下の処理を行います。
       const cityUrl = selectedCity.url;
 
       await mainWeatherLogic(

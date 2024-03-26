@@ -13,12 +13,12 @@ const dayWithHoliday = async (addBreak = false) => {
       return data;
     } catch (error) {
       console.error('Error fetching holidays:', error);
-      return {}; // 空のオブジェクトを返し、処理を続行
+      return {};
     }
   };
   
   const getHolidays = async () => {
-    const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD形式
+    const today = new Date().toISOString().slice(0, 10);
     if (!cache[today]) {
       cache[today] = await fetchHolidays();
     }
@@ -41,13 +41,8 @@ const dayWithHoliday = async (addBreak = false) => {
     const today = new Date();
     const sixDaysLater = new Date(today);
     sixDaysLater.setDate(today.getDate() + 6);
-
     const oneWeekDates = getDateRangeArray(today, sixDaysLater);
-
-    // Get the holidays
     const holidays = await getHolidays();
-
-    // Create an array of dates with holidays data included
     const oneWeekDatesWithHolidays = oneWeekDates.map(date => {
 
       const weekDays = ["日", "月", "火", "水", "木", "金", "土"];
@@ -60,8 +55,8 @@ const dayWithHoliday = async (addBreak = false) => {
           dayOfWeek: `(${dayOfWeek})`,
           fullDate: `${String(date.getMonth() + 1)}月${String(date.getDate())}日(${dayOfWeek})`
         },
-        isHoliday: !!holidays[formattedDate],  // this will be true if the date is a holiday, otherwise false
-        holidayName: holidays[formattedDate] || null,  // this will have the holiday name if the date is a holiday, otherwise null
+        isHoliday: !!holidays[formattedDate],
+        holidayName: holidays[formattedDate] || null,
         isSaturday: date.getDay() === 6,
         isSunday: date.getDay() === 0,
       };
