@@ -1,7 +1,14 @@
 import { useState, useEffect } from 'react';
 
+/**
+ * A custom hook for generating CSS border styles from a given borders object. 
+ * This hook creates a consistent border style object for use in React component styling.
+ * 
+ * @param {Object} borders - An object containing border properties for each side of an element (top, right, bottom, left).
+ * @returns {Object} A CSS-in-JS style object containing the border styles for each side.
+ */
 function useBorderStyles(borders) {
-  const defaultBorderStyle = {width: '0px', style: 'none', color: '#000000'};
+  const defaultBorderStyle = { width: '0px', style: 'none', color: '#000000' };
   const [borderStyles, setBorderStyles] = useState({});
 
   useEffect(() => {

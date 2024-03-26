@@ -1,21 +1,32 @@
 import { useState, useEffect } from '@wordpress/element';
 
-// バリデーション関数をモジュールの外部に移動
+/**
+ * Checks if a given color is valid. A valid color is either undefined or matches a hex color format.
+ */
 export function isValidColor(color) {
   return color === undefined || /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(color);
 }
 
+/**
+ * Validates if the given border style is one of the allowed values.
+ */
 export function isValidBorderStyle(style) {
   return ['none', 'solid', 'dashed', 'dotted'].includes(style);
 }
 
+/**
+ * Validates if the given border width is a positive number and optionally ends with 'px' or '%'.
+ */
 export function isValidBorderWidth(width) {
-  // '0', '0px', '0%' を無効とし、それ以外の値を許容する
   return /^(?!0($|px|%))\d+(\.\d+)?(px|%)?$/.test(width);
 }
 
+/**
+ * Validates if the provided border object has valid color, style, and width properties.
+ * Supports validation for individual border sides when specified as top, right, bottom, and left properties.
+ */
 export function isValidBorder(border) {
-  // 単一のボーダー設定の検証
+  // Helper function to validate each border side or a single border when not split into sides.
   const isValidSingleBorder = (border) => {
     return (
       isValidColor(border.color) &&
@@ -24,21 +35,22 @@ export function isValidBorder(border) {
     );
   };
 
-  // ボーダー設定がオブジェクトであるかチェック
   if (!border || typeof border !== 'object') {
     console.error('Invalid border object: ', border);
     return false;
   }
 
-  // スプリットモード（複数の辺）の場合の検証
+  // Validates all four sides if specified, otherwise validates the single border object.
   if (['top', 'right', 'bottom', 'left'].every(side => border.hasOwnProperty(side))) {
     return ['top', 'right', 'bottom', 'left'].every(side => isValidSingleBorder(border[side]));
   }
 
-  // フラットモード（単一の設定）の場合の検証
   return isValidSingleBorder(border);
 }
 
+/**
+ * Custom hook to manage border settings and provide utility functions for changing these settings.
+ */
 export function useBorderControl(attributes, setAttributes) {
 
   const [newBorderSetErrorMessage, setNewBorderSetErrorMessage] = useState(null);
@@ -53,18 +65,17 @@ export function useBorderControl(attributes, setAttributes) {
     width: '1px',
   };
 
+  // Initialize borders state with attributes or defaults.
   const [borders, setBorders] = useState(() => {
-    // attributes.bordersがSplitモードの構造を持っているかをチェック
+    // Supports split mode with individual borders defined.
     if (attributes.borders &&
       typeof attributes.borders.top === 'object' &&
       typeof attributes.borders.right === 'object' &&
       typeof attributes.borders.bottom === 'object' &&
       typeof attributes.borders.left === 'object') {
-      // Splitモードの場合はそのまま使用
       return attributes.borders;
     }
 
-    // Splitモードの構造がなければ、各辺にデフォルトのFlatモードの設定を適用
     return {
       top: defaultBorder,
       right: defaultBorder,
@@ -78,12 +89,14 @@ export function useBorderControl(attributes, setAttributes) {
     { label: '%', value: '%' },
   ];
 
+  // Checks if borders are defined in a flat mode (single border for all sides).
   const isFlatMode = borders => {
     return borders && typeof borders.color === 'string' &&
       typeof borders.style === 'string' &&
       typeof borders.width === 'string';
   };
 
+  // Checks if borders are defined in a split mode (individual borders for each side).
   const isSplitMode = borders => {
     return borders && typeof borders.top === 'object' &&
       typeof borders.right === 'object' &&
@@ -91,17 +104,17 @@ export function useBorderControl(attributes, setAttributes) {
       typeof borders.left === 'object';
   };
 
+  // Function to update border settings and validate them. Provides error handling.
   const onChangeBorder = (newBorderSet) => {
     try {
-         // 新しいボーダー設定が有効であるかチェック
-    if (!isValidBorder(newBorderSet)) {
-      throw new Error('無効なボーダープロパティ');
-    }
+      if (!isValidBorder(newBorderSet)) {
+        throw new Error('無効なボーダープロパティ');
+      }
 
       let updatedBorders = {};
 
+      // Updates all borders if in flat mode or merges new settings with existing ones in split mode.
       if (isFlatMode(newBorderSet)) {
-        // Flatモードの場合、すべての辺に同じ設定を適用
         updatedBorders = {
           top: newBorderSet,
           right: newBorderSet,
@@ -109,7 +122,6 @@ export function useBorderControl(attributes, setAttributes) {
           left: newBorderSet
         };
       } else if (isSplitMode(newBorderSet)) {
-        // Splitモードの場合、各辺を個別に更新
         updatedBorders = {
           top: { ...borders.top, ...newBorderSet.top },
           right: { ...borders.right, ...newBorderSet.right },
@@ -118,7 +130,6 @@ export function useBorderControl(attributes, setAttributes) {
         };
       }
 
-      // 更新されたボーダー設定を適用
       setAttributes({ ...attributes, borders: updatedBorders });
       setBorders(updatedBorders);
       setNewBorderSetErrorMessage(null);
@@ -128,13 +139,14 @@ export function useBorderControl(attributes, setAttributes) {
     }
   };
 
-
+  // Effect hook to synchronize the component's border state with its attributes.
   useEffect(() => {
     if (attributes.borders) {
       setBorders(attributes.borders);
     }
   }, [attributes.borders]);
 
+  // Handles changes in border radius value ensuring it falls within a valid range.
   const handleRangeChange = (newValue) => {
     const currentUnit = attributes.borderRadiusValue?.replace(/[0-9]/g, '') || 'px';
     if (!isNaN(newValue) && newValue >= 0 && newValue <= 100) {
@@ -145,10 +157,11 @@ export function useBorderControl(attributes, setAttributes) {
     }
   };
 
+   // Handles changes in the unit of border radius (px or %), ensuring it's a valid unit.
   const handleUnitChange = (newUnit) => {
 
-    const validUnits = units.map(option => option.value); // 有効な単位の一覧を取得
-    if (validUnits.includes(newUnit)) { // 新しい単位が有効な単位の中に含まれているかチェック
+    const validUnits = units.map(option => option.value);
+    if (validUnits.includes(newUnit)) {
       const currentValue = parseInt(attributes.borderRadiusValue || '0', 10);
       setAttributes({ ...attributes, borderRadiusValue: `${currentValue}${newUnit}` });
       setHandleUnitChangeErrorMessage(null);
@@ -164,8 +177,8 @@ export function useBorderControl(attributes, setAttributes) {
     handleUnitChange,
     borderColors,
     units,
-    newBorderSetErrorMessage, // newBorderSet 用のエラーメッセージ
-    handleRangeChangeErrorMessage, // handleRangeChange 用のエラーメッセージ
-    handleUnitChangeErrorMessage, // handleUnitChange 用のエラーメッセージ
+    newBorderSetErrorMessage,
+    handleRangeChangeErrorMessage,
+    handleUnitChangeErrorMessage,
   };
 };

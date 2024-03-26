@@ -1,3 +1,14 @@
+/**
+ * Generates an array of settings for managing the visibility of different weather information components.
+ * This utility function simplifies the process of creating consistent visibility controls for various weather data aspects,
+ * such as today's weather, tomorrow's weather, weekly forecast, holidays, and precipitation probability.
+ * 
+ * @param {Object} params - The parameters object.
+ * @param {Object} params.attributes - The current block attributes, containing visibility flags for various components.
+ * @param {Function} params.setAttributes - Function provided by WordPress to update block attributes.
+ * @returns {Array} - An array of visibility settings, each containing a label, a checked state, and an onChange handler.
+ */
+
 export const createVisibilitySettings = ({ attributes, setAttributes }) => {
   const {
     showTomorrowWeather,
