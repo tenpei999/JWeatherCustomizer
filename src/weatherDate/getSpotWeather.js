@@ -1,9 +1,24 @@
+// Base URL for the Open-Meteo API to fetch weather forecasts.
 const apiBaseUrl = 'https://api.open-meteo.com/v1/forecast';
 
+/**
+ * Constructs a URL for fetching weather data from the Open-Meteo API for a specific latitude and longitude.
+ * It specifies parameters for the API call to include temperature, precipitation probability, and weather code
+ * information on an hourly and daily basis, along with the timezone setting for Asia/Tokyo.
+ * 
+ * @param {number} latitude - The latitude of the city.
+ * @param {number} longitude - The longitude of the city.
+ * @returns {string} - A complete URL string for the API call.
+ */
 const createCityWeatherUrl = (latitude, longitude) => {
   return `${apiBaseUrl}?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m,precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14`;
 };
 
+/**
+ * A collection of cities with their names and corresponding URLs for fetching weather data.
+ * Each city object contains the city name and a URL generated with the `createCityWeatherUrl`
+ * function, using the city's latitude and longitude.
+ */
 export const cities = {
 
   札幌: {
