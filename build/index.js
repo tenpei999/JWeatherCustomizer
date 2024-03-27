@@ -21,6 +21,11 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
+/**
+ * A control component for selecting a background style.
+ * It allows users to select an option and updates the parent component's state accordingly.
+ */
 const BackgroundSelector = ({
   attributes,
   setAttributes
@@ -28,13 +33,11 @@ const BackgroundSelector = ({
   const {
     backgroundStyleType
   } = attributes;
-
-  // エラーメッセージの状態
   const [urlError, setUrlError] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)('');
   const [colorError, setColorError] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)('');
   const [gradientError, setGradientError] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)('');
 
-  // バリデーションチェック関数
+  // Validates if the provided URL is correctly formatted.
   const isValidUrl = url => {
     try {
       new URL(url);
@@ -43,10 +46,14 @@ const BackgroundSelector = ({
       return false;
     }
   };
+
+  // Validates if the provided color is in a valid hex format.
   const isValidColor = color => /^#[0-9A-F]{6}$/i.test(color);
+
+  // Validates if the provided gradient string is in a valid linear-gradient format.
   const isValidGradient = gradient => /^linear-gradient\((.+)\)$/i.test(gradient);
 
-  // ハンドラ関数
+  // Handles media selection from the WordPress media library.
   const handleMediaSelect = media => {
     if (!media || !isValidUrl(media.url)) {
       setUrlError('不正な画像URLです。');
@@ -62,6 +69,8 @@ const BackgroundSelector = ({
       selectedMedia: media.url
     });
   };
+
+  // Handles changes to the background color, including validation.
   const handleColorChange = color => {
     if (!isValidColor(color)) {
       setColorError('不正なカラーコードです。');
@@ -72,6 +81,8 @@ const BackgroundSelector = ({
       backgroundColor: color
     });
   };
+
+  // Handles changes to the background gradient, including validation.
   const handleGradientChange = newGradient => {
     if (!isValidGradient(newGradient)) {
       setGradientError('不正なグラディエントです。');
@@ -82,6 +93,8 @@ const BackgroundSelector = ({
       backgroundGradient: newGradient
     });
   };
+
+  // Updates the attribute for the background style type when it's changed.
   const handleBackgroundStyleChange = newStyleType => {
     setAttributes({
       ...attributes,
@@ -102,7 +115,7 @@ const BackgroundSelector = ({
     style: _objects_styles__WEBPACK_IMPORTED_MODULE_3__["default"].formStyle
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
     label: backgroundControlLabel,
-    value: attributes.backgroundStyleType // 現在の値をattributesから取得
+    value: attributes.backgroundStyleType // Current selection value.
     ,
     options: [{
       label: '画像',
@@ -114,7 +127,7 @@ const BackgroundSelector = ({
       label: 'グラデーション',
       value: 'gradient'
     }],
-    onChange: handleBackgroundStyleChange // ここで新しい関数を使用します
+    onChange: handleBackgroundStyleChange // Function to execute on selection change.
   }), urlError && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
     style: _objects_styles__WEBPACK_IMPORTED_MODULE_3__["default"].validErrorStyle
   }, urlError), colorError && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
@@ -128,7 +141,8 @@ const BackgroundSelector = ({
     },
     className: "jwc-back-ground__image"
   }, backgroundStyleType === 'image' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.MediaUploadCheck, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.MediaUpload, {
-    onSelect: handleMediaSelect,
+    onSelect: handleMediaSelect // Function to call when a media item is selected.
+    ,
     allowedTypes: ['image'],
     value: attributes.backgroundImage,
     render: ({
@@ -138,11 +152,13 @@ const BackgroundSelector = ({
       onClick: open
     }, "\u30E1\u30C7\u30A3\u30A2\u30E9\u30A4\u30D6\u30E9\u30EA\u3092\u958B\u3044\u3066\u753B\u50CF\u3092\u9078\u629E")
   }))), backgroundStyleType === 'color' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ColorPalette, {
-    onChange: handleColorChange,
+    onChange: handleColorChange // Function to call when a new color is selected.
+    ,
     value: attributes.backgroundColor
   }), backgroundStyleType === 'gradient' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.GradientPicker, {
     value: attributes.backgroundGradient,
-    onChange: handleGradientChange,
+    onChange: handleGradientChange // Function to call when a new gradient is selected.
+    ,
     gradients: [{
       name: 'JShine',
       gradient: 'linear-gradient(135deg,#12c2e9 0%,#c471ed 50%,#f64f59 100%)',
@@ -179,21 +195,41 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
+/**
+ * A control component for selecting a font balance option.
+ * It allows users to select an option and updates the parent component's state accordingly.
+ * 
+ * @param {Object} props Component properties.
+ * @param {Object} props.selectedOption The currently selected option.
+ * @param {Function} props.setSelectedOption Function to update the parent component's state with the selected option.
+ * @param {Array} props.fontBalanceOptions An array of options for the font balance.
+ * @returns JSX.Element The rendered component.
+ */
 const BalanceControl = ({
   selectedOption,
   setSelectedOption,
   fontBalanceOptions
 }) => {
-  const [error, setError] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)('');
+  const [error, setError] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(''); // State for managing validation error messages.
+
+  /**
+   * Handles changes to the selected option. It validates the selection and updates the state accordingly.
+   * If the selected option is valid, it updates the parent component's state; otherwise, sets an error message.
+   * 
+   * @param {string} label The label of the selected option.
+   */
   const handleOptionChange = label => {
     const option = fontBalanceOptions.find(opt => opt.label === label);
     if (option) {
-      setSelectedOption(option);
-      setError('');
+      setSelectedOption(option); // Update the parent component's state with the selected option.
+      setError(''); // Clear any existing error message.
     } else {
       setError('選択されたオプションが見つかりません。');
     }
   };
+
+  // Label for the balance control with custom styles applied.
   const balanceControlLabel = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     style: {
       display: 'block',
@@ -210,7 +246,7 @@ const BalanceControl = ({
       label: opt.label,
       value: opt.label
     })),
-    onChange: handleOptionChange
+    onChange: handleOptionChange // Handler for when a new option is selected.
   }), error && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
     style: _objects_styles__WEBPACK_IMPORTED_MODULE_2__["default"].validErrorStyle
   }, error));
@@ -239,16 +275,34 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _hooks_useBorderControl__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../hooks/useBorderControl */ "./src/hooks/useBorderControl.js");
 /* harmony import */ var _objects_styles__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../objects/styles */ "./src/objects/styles.js");
 
-// BorderControlGroup.js
 
 
 
 
 
+
+/**
+ * The BorderControlGroup component provides a comprehensive UI for editing border properties
+ * of a block or element. It leverages the WordPress components library and a custom hook to
+ * offer controls for setting the border color, style, radius, and unit. It showcases how to
+ * compose a functional component with stateful logic and conditional rendering based on
+ * user interaction and validation.
+ * 
+ * Features:
+ * - Border color and style customization through BorderBoxControl.
+ * - Border radius adjustment with a RangeControl.
+ * - Selection of border radius units (e.g., px, em) using SelectControl.
+ * - Integration of custom hook logic for state management and validation.
+ * - Dynamic error messaging based on validation to guide the user.
+ * 
+ * @param {Object} attributes - Contains the current values of the attributes related to the border.
+ * @param {Function} setAttributes - A function provided by WordPress to update attribute values.
+ */
 function BorderControlGroup({
   attributes,
   setAttributes
 }) {
+  // Destructuring properties and methods from the custom hook to manage border attributes and validation.
   const {
     borders,
     onChangeBorder,
@@ -257,19 +311,19 @@ function BorderControlGroup({
     borderColors,
     units,
     newBorderSetErrorMessage,
-    // newBorderSet 用のエラーメッセージ
     handleRangeChangeErrorMessage,
-    // handleRangeChange 用のエラーメッセージ
-    handleUnitChangeErrorMessage // handleUnitChange 用のエラーメッセージ
+    handleUnitChangeErrorMessage
   } = (0,_hooks_useBorderControl__WEBPACK_IMPORTED_MODULE_3__.useBorderControl)(attributes, setAttributes);
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "jwc-border-main",
     style: _objects_styles__WEBPACK_IMPORTED_MODULE_4__["default"].borderMainStyle
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.__experimentalBorderBoxControl, {
-    colors: borderColors,
+    colors: borderColors // Assigns the available border colors.
+    ,
     label: '枠線の色と形',
-    onChange: onChangeBorder,
-    value: borders
+    onChange: onChangeBorder // Handles changes to border color or style.
+    ,
+    value: borders // Sets the current border settings.
   }), newBorderSetErrorMessage && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
     style: _objects_styles__WEBPACK_IMPORTED_MODULE_4__["default"].validErrorStyle
   }, newBorderSetErrorMessage)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -280,17 +334,21 @@ function BorderControlGroup({
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {
     label: "\u4E38\u307F",
     value: parseInt(attributes.borderRadiusValue, 10),
-    onChange: handleRangeChange,
-    min: 0,
-    max: attributes.borderRadiusValue && attributes.borderRadiusValue.includes('px') ? 100 : 100
+    onChange: handleRangeChange // Function to call on value change.
+    ,
+    min: 0 // Minimum value for the control.
+    ,
+    max: attributes.borderRadiusValue && attributes.borderRadiusValue.includes('px') ? 100 : 100 // Maximum value for the control, dynamic based on the unit.
   }), handleRangeChangeErrorMessage && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
     style: _objects_styles__WEBPACK_IMPORTED_MODULE_4__["default"].validErrorStyle
   }, handleRangeChangeErrorMessage)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     style: _objects_styles__WEBPACK_IMPORTED_MODULE_4__["default"].unitStyle
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
-    value: attributes.borderRadiusValue && attributes.borderRadiusValue.replace(/[0-9]/g, ''),
-    options: units,
-    onChange: handleUnitChange
+    value: attributes.borderRadiusValue && attributes.borderRadiusValue.replace(/[0-9]/g, '') // Extracts and sets the current unit for border-radius.
+    ,
+    options: units // Available unit options.
+    ,
+    onChange: handleUnitChange // Function to call on unit change.
   }), handleUnitChangeErrorMessage && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
     style: _objects_styles__WEBPACK_IMPORTED_MODULE_4__["default"].validErrorStyle
   }, handleUnitChangeErrorMessage))));
@@ -324,6 +382,14 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
+/**
+ * Renders the current weather conditions with customizable styles.
+ * Utilizes custom hooks and components to display weather data dynamically based on props.
+ * 
+ * @param {Object} props - Properties passed to the component including weather data and style preferences.
+ * @returns JSX.Element | null - The CurrentWeather component or null if weather data is missing.
+ */
 const CurrentWeather = ({
   borders,
   borderRadius,
@@ -340,8 +406,9 @@ const CurrentWeather = ({
   backgroundColor
 }) => {
   const textColor = (0,_hooks_getTextColor__WEBPACK_IMPORTED_MODULE_5__["default"])(weather);
-  if (!weather || !weather.day) return null; // weather と weather.day の存在を確認
 
+  // Return null early if weather data is not provided.
+  if (!weather || !weather.day) return null;
   const borderStyles = (0,_hooks_useBorderStyles__WEBPACK_IMPORTED_MODULE_3__["default"])(borders);
   const backgroundStyles = (0,_hooks_getBackgroundStyles__WEBPACK_IMPORTED_MODULE_4__.getBackgroundStyles)({
     backgroundStyleType,
@@ -394,13 +461,33 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
+/**
+ * Provides a control for selecting a font family from a predefined list of allowed fonts.
+ * Validates the selected font and updates the parent component's state with the new selection.
+ * Displays an error message if an invalid font is selected.
+ * 
+ * @param {Object} props The component props.
+ * @param {string} props.fontFamily The current font family selected.
+ * @param {Function} props.setFontFamily The function to update the font family in the parent component.
+ */
 function FontFamilyControl({
   fontFamily,
   setFontFamily
 }) {
+  // List of allowed fonts that users can select from.
   const allowedFonts = ["NotoSans, sans-serif", "NotoSerif, serif", "MPLUS1, sans-serif", "KosugiMaru, sans-serif", "SawarabiGothic, sans-serif"];
   const [error, setError] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)('');
+
+  // Validates if the selected font family is allowed.
   const isValidFontFamily = font => allowedFonts.includes(font);
+
+  /**
+  * Handles changes to the font family selection. Updates the parent component's state
+  * with the new selection if it is valid, or sets an error message otherwise.
+  * 
+  * @param {string} newFontFamily The new font family selected by the user.
+  */
   const handleOnChange = newFontFamily => {
     if (isValidFontFamily(newFontFamily)) {
       setFontFamily(newFontFamily);
@@ -475,6 +562,15 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
+/**
+ * The Preview component displays current and weekly weather information based on the attributes passed to it.
+ * It handles API errors and displays appropriate error messages when necessary.
+ * 
+ * @param {Object} props The component props.
+ * @param {Object} props.attributes Attributes passed from the parent component, including weather data and display preferences.
+ * @param {Object} props.commonProps Common properties passed to child components.
+ */
 function Preview({
   attributes,
   commonProps
@@ -490,7 +586,8 @@ function Preview({
     showPrecipitation
   } = attributes;
   const [errorMessage, setErrorMessage] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
-  // isApiErrorの状態を監視
+
+  // Effect hook to check for API errors and set an appropriate error message using a custom handler.
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     if (_weatherDate_fetchWeatherData__WEBPACK_IMPORTED_MODULE_4__.isApiError.isError) {
       const message = (0,_hooks_handleWeatherError__WEBPACK_IMPORTED_MODULE_5__.handleWeatherError)(_weatherDate_fetchWeatherData__WEBPACK_IMPORTED_MODULE_4__.isApiError);
@@ -498,8 +595,15 @@ function Preview({
         setErrorMessage(message);
       }
     }
-  }, [_weatherDate_fetchWeatherData__WEBPACK_IMPORTED_MODULE_4__.isApiError]); // isApiErrorが変更された時にのみ実行
+  }, [_weatherDate_fetchWeatherData__WEBPACK_IMPORTED_MODULE_4__.isApiError]);
 
+  /**
+  * Renders the CurrentWeather component for a given weather data set and title.
+  * 
+  * @param {Object} weather The weather data for the day.
+  * @param {string} title The title to display for this weather data set.
+  * @returns JSX.Element | null A CurrentWeather component or null if no weather data is provided.
+  */
   const renderCurrentWeather = (weather, title) => {
     if (!weather || !weather.day) return null;
     const isHoliday = weather.day.isHoliday || weather.day.isSunday;
@@ -513,6 +617,8 @@ function Preview({
       textColor: textColor
     });
   };
+
+  // Main render method of the Preview component. Displays an error message if there is an API error, otherwise renders weather information.
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, _weatherDate_fetchWeatherData__WEBPACK_IMPORTED_MODULE_4__.isApiError.isError ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_ResponseError__WEBPACK_IMPORTED_MODULE_6__.ResponseError, {
     errorMessage: errorMessage
   }) : (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -546,9 +652,8 @@ const ResponseError = ({
   errorMessage
 }) => {
   if (!errorMessage) {
-    return null; // エラーメッセージがない場合は何も表示しない
+    return null;
   }
-
   const grid = {
     display: 'grid',
     gridTemplateColumn: '1fr',
@@ -650,6 +755,17 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
+/**
+ * Renders a select control for choosing a city from a list of options.
+ * 
+ * @param {Object} props - The properties passed to the component.
+ * @param {Object} props.selectedCity - The currently selected city.
+ * @param {Array} props.cityOptions - An array of city options to choose from.
+ * @param {Function} props.handleCityChange - The function to call when a new city is selected.
+ * @returns JSX.Element - A rendered select control component for selecting a city.
+ */
+
 const SelectCity = ({
   selectedCity,
   cityOptions,
@@ -675,17 +791,21 @@ const SelectCity = ({
   }));
 };
 
-// プロパティのバリデーション
+// Define prop types for component validation.
 SelectCity.propTypes = {
   selectedCity: prop_types__WEBPACK_IMPORTED_MODULE_3___default().shape({
-    name: (prop_types__WEBPACK_IMPORTED_MODULE_3___default().string).isRequired
+    name: (prop_types__WEBPACK_IMPORTED_MODULE_3___default().string).isRequired // The name property of the selectedCity object must be a string.
   }).isRequired,
+  // selectedCity object is required.
   cityOptions: prop_types__WEBPACK_IMPORTED_MODULE_3___default().arrayOf(prop_types__WEBPACK_IMPORTED_MODULE_3___default().shape({
     value: (prop_types__WEBPACK_IMPORTED_MODULE_3___default().string).isRequired,
-    label: (prop_types__WEBPACK_IMPORTED_MODULE_3___default().string).isRequired
+    // Each city option must have a value property as a string.
+    label: (prop_types__WEBPACK_IMPORTED_MODULE_3___default().string).isRequired // Each city option must have a label property as a string.
   })).isRequired,
-  handleCityChange: (prop_types__WEBPACK_IMPORTED_MODULE_3___default().func).isRequired
+  // cityOptions array is required.
+  handleCityChange: (prop_types__WEBPACK_IMPORTED_MODULE_3___default().func).isRequired // handleCityChange function is required.
 };
+
 /* harmony default export */ __webpack_exports__["default"] = (SelectCity);
 
 /***/ }),
@@ -706,6 +826,15 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
+
+/**
+ * A container component that groups together various UI controls for settings.
+ * This component encapsulates controls for selecting a city, adjusting visibility,
+ * and modifying UI elements like font family and text color.
+ * 
+ * @param {Object} props - Props containing settings and handler functions.
+ */
 
 const SettingGroup = ({
   selectedCity,
@@ -772,10 +901,18 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
 
+/**
+ * Displays the highest and lowest temperatures for a given day, along with temperature comparisons
+ *
+ * @param {Object} props - Component properties.
+ * @param {Object} props.weather - The weather data containing temperature information.
+ * @returns JSX.Element | null - A list of temperature readings or null if the weather data is not valid.
+ */
+
 const Temp = ({
   weather
 }) => {
-  // weather プロパティのバリデーション
+  // Checks if the weather data is valid. If not, returns null to render nothing.
   if (!weather || typeof weather !== 'object') {
     return null;
   }
@@ -818,12 +955,27 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
+/**
+ * Provides a control for selecting a text color. Validates the selected color
+ * against a list of allowed values and updates the parent component's attributes
+ * with the new selection. Displays an error message if an invalid color is selected.
+ *
+ * @param {Object} props - The component props.
+ * @param {string} props.textColor - The current text color selected.
+ * @param {Function} props.setAttributes - The function to update attributes in the parent component.
+ */
 function TextColorControl({
   textColor,
   setAttributes
 }) {
   const [error, setError] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)('');
+
+  // Function to validate if the selected color is one of the allowed options.
   const isValidTextColor = color => ['black', 'white'].includes(color);
+
+  // Handles changes to the text color selection. Updates the parent component's state if valid,
+  // or sets an error message if invalid.
   const handleOnChangeTextColor = newTextColor => {
     if (isValidTextColor(newTextColor)) {
       setAttributes({
@@ -882,6 +1034,15 @@ function TextColorControl({
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+
+/**
+ * Displays the chance of rain for different times throughout the day.
+ * This component renders a list showing precipitation probabilities at specific intervals.
+ *
+ * @param {Object} props - Component properties.
+ * @param {Object} props.weather - The weather data containing rain probability information.
+ * @returns JSX.Element | null - A list of precipitation probabilities or null if weather data is not provided.
+ */
 
 const TimeZone = ({
   weather
@@ -950,6 +1111,24 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
+/**
+ * Groups together various UI control components for setting font family, text color,
+ * background style, border properties, and font balance. This allows for centralized
+ * management of UI-related settings within a single component.
+ * 
+ * @param {Object} props - The properties passed to the component.
+ * @param {string} props.fontFamily - The current font family.
+ * @param {Function} props.onChangeFontFamily - Function to update the font family.
+ * @param {string} props.selectedOption - The current selected option for font balance.
+ * @param {Function} props.setSelectedOption - Function to update the selected font balance option.
+ * @param {Array} props.fontBalanceOptions - The options available for font balance.
+ * @param {Object} props.attributes - General attributes for UI control settings.
+ * @param {Function} props.setAttributes - Function to update various UI control settings.
+ * 
+ * @returns JSX.Element - The rendered UI control group component.
+ */
+
 const UIControlGroup = ({
   fontFamily,
   onChangeFontFamily,
@@ -1004,20 +1183,36 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_2__);
 
 
- // プロパティのバリデーションのための追加
 
+
+
+/**
+ * Provides a UI for toggling visibility settings of various elements. This component
+ * is divided into two groups and manages local state for immediate feedback and special
+ * conditions for disabling/enabling checkboxes based on certain criteria.
+ * 
+ * @param {Object} props - Component properties.
+ * @param {Array} props.settings - An array of visibility settings, each with a label, checked state, and onChange handler.
+ */
 const VisibilityControl = ({
   settings
 }) => {
+  // Local state to manage the visibility settings and special conditions for interactions.
   const [localSettings, setLocalSettings] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(settings);
   const [isSpecialCheckboxClicked, setIsSpecialCheckboxClicked] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
   const [clickedCheckboxIndex, setClickedCheckboxIndex] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
-  const group1 = settings.slice(0, 3); // 最初の3つ
-  const group2 = settings.slice(3); // 残りの2つ
+
+  // Divide the settings into two groups for separate rendering.
+  const group1 = settings.slice(0, 3);
+  const group2 = settings.slice(3);
   const onCountGroup1 = group1.filter(setting => setting.checked).length;
+
+  // Synchronize local state with props.
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     setLocalSettings(settings);
   }, [settings]);
+
+  // Special condition handling: Resets the special click state after a short delay.
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     if (isSpecialCheckboxClicked) {
       const timer = setTimeout(() => {
@@ -1026,8 +1221,18 @@ const VisibilityControl = ({
       return () => clearTimeout(timer);
     }
   }, [isSpecialCheckboxClicked]);
+
+  /**
+   * Handles changes to visibility checkboxes, including special logic for preventing
+   * the last checkbox in group 1 from being unchecked under certain conditions.
+   * 
+   * @param {number} index - The index of the checkbox being changed.
+   * @param {boolean} isChecked - Whether the checkbox is being checked or unchecked.
+   */
   const handleVisibilityChange = (index, isChecked) => {
     const updatedSettings = [...localSettings];
+
+    // Prevent unchecking the last checkbox in group 1 if it's the only one checked.
     if (onCountGroup1 === 1 && !isChecked && index < 3) {
       setClickedCheckboxIndex(index);
       setIsSpecialCheckboxClicked(true);
@@ -1040,6 +1245,14 @@ const VisibilityControl = ({
     setLocalSettings(updatedSettings);
     updatedSettings[index].onChange(isChecked);
   };
+
+  /**
+   * Determines the class name for checkbox wrappers, applying a special class
+   * for faded effect when necessary based on special click conditions.
+   * 
+   * @param {number} index - The index of the checkbox.
+   * @returns {string} The class name for the checkbox wrapper.
+   */
   const getCheckboxWrapperClass = index => {
     if (isSpecialCheckboxClicked && onCountGroup1 === 1 && index === clickedCheckboxIndex) {
       return 'faded-checkbox';
@@ -1085,20 +1298,28 @@ const VisibilityControl = ({
     className: "visibility-group",
     id: "group2"
   }, group2.map((setting, index) => (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.CheckboxControl, {
-    key: index + group1.length // インデックスを調整
-    ,
+    key: index + group1.length,
     label: setting.label,
     checked: setting.checked,
     onChange: isChecked => handleVisibilityChange(index + group1.length, isChecked)
   })))));
 };
+
+/**
+ * PropTypes validation for the VisibilityControl component.
+ * Ensures that settings passed to the component conform to the expected structure,
+ * containing a label, a checked state, and an onChange handler for each setting.
+ */
 VisibilityControl.propTypes = {
   settings: prop_types__WEBPACK_IMPORTED_MODULE_2___default().arrayOf(prop_types__WEBPACK_IMPORTED_MODULE_2___default().shape({
     label: (prop_types__WEBPACK_IMPORTED_MODULE_2___default().string).isRequired,
+    // The label for the visibility setting.
     checked: (prop_types__WEBPACK_IMPORTED_MODULE_2___default().bool).isRequired,
-    onChange: (prop_types__WEBPACK_IMPORTED_MODULE_2___default().func).isRequired
-  })).isRequired
+    // The current checked state of the setting.
+    onChange: (prop_types__WEBPACK_IMPORTED_MODULE_2___default().func).isRequired // Function to call when the checked state changes.
+  })).isRequired // The settings array is required for the component to function properly.
 };
+
 /* harmony default export */ __webpack_exports__["default"] = (VisibilityControl);
 
 /***/ }),
@@ -1126,6 +1347,27 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
+/**
+ * Renders weather information for the week. Utilizes custom hooks for applying border
+ * and background styles based on component attributes. Each day's weather information
+ * includes temperature, condition name, and an icon.
+ * 
+ * @param {Object} props - Component properties.
+ * @param {Object} props.borders - Border style settings.
+ * @param {string} props.borderRadius - Border radius setting.
+ * @param {string} props.fontFamily - Font family setting.
+ * @param {Array} props.weather - Array containing weather data for each day.
+ * @param {string} props.color - Text color setting.
+ * @param {string} props.styleVariant - Additional CSS class for style variation.
+ * @param {string} props.backgroundStyleType - Background style type (image, color, gradient).
+ * @param {string} props.selectedMedia - URL for the background image, if applicable.
+ * @param {string} props.backgroundGradient - CSS for the background gradient, if applicable.
+ * @param {string} props.backgroundColor - Background color setting.
+ * @param {boolean} props.showHoliday - Flag to display holidays.
+ * 
+ * @returns JSX.Element | null - A list of daily weather conditions for the week or null if no weather data is provided.
+ */
 const WeekWeather = ({
   borders,
   borderRadius,
@@ -1140,6 +1382,8 @@ const WeekWeather = ({
   showHoliday
 }) => {
   if (!weather || !Array.isArray(weather)) return null;
+
+  // Using custom hooks to get styles for borders and background based on the props.
   const borderStyles = (0,_hooks_useBorderStyles__WEBPACK_IMPORTED_MODULE_2__["default"])(borders);
   const backgroundStyles = (0,_hooks_getBackgroundStyles__WEBPACK_IMPORTED_MODULE_3__.getBackgroundStyles)({
     backgroundStyleType,
@@ -1369,7 +1613,21 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   getBackgroundStyles: function() { return /* binding */ getBackgroundStyles; }
 /* harmony export */ });
-// 背景スタイルを設定するためのヘルパー関数ex
+/**
+ * Determines the CSS background styles based on the specified background type and its value.
+ * Supports 'image', 'color', and 'gradient' as background types, providing appropriate
+ * CSS properties for each. If the background type is 'image', it sets the image URL along
+ * with styling for cover size, no repeat, and centered position. For 'color', it sets
+ * the background color directly. For 'gradient', it applies the CSS gradient.
+ * 
+ * @param {Object} params - Parameters containing information about the background style.
+ * @param {string} params.backgroundStyleType - The type of background ('image', 'color', 'gradient').
+ * @param {string} params.selectedMedia - The URL of the selected background image (applicable if type is 'image').
+ * @param {string} params.backgroundColor - The background color value (applicable if type is 'color').
+ * @param {string} params.backgroundGradient - The CSS for the background gradient (applicable if type is 'gradient').
+ * @returns {Object} - An object containing the appropriate CSS properties for the background styling.
+ */
+
 const getBackgroundStyles = ({
   backgroundStyleType,
   selectedMedia,
@@ -1407,19 +1665,27 @@ const getBackgroundStyles = ({
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-// getTextColor.js
-const getTextColor = weather => {
-  if (!weather || !weather.day) return null; // weather と weather.day の存在を確認
+/**
+ * Determines the text color based on the provided weather conditions. 
+ * The function checks if the day is a holiday or a weekend (Saturday or Sunday),
+ * and assigns specific colors for these days. If the day is a holiday or Sunday,
+ * 
+ * @param {Object} weather - The weather object containing information about the day.
+ * @returns {string} - The CSS color value as a string (e.g., "red", "blue", or an empty string for default color).
+ */
 
+const getTextColor = weather => {
+  if (!weather || !weather.day) return null;
   const isHoliday = weather.day.isHoliday;
+
+  // Determines if the current day is a holiday.
   if (isHoliday || weather.day.isSunday) {
     return "red";
   } else if (weather.day.isSaturday) {
     return "blue";
   }
-  return ""; // 休日でも土曜日でも日曜日でもない場合は、デフォルトのテキスト色を使用
+  return "";
 };
-
 /* harmony default export */ __webpack_exports__["default"] = (getTextColor);
 
 /***/ }),
@@ -1551,26 +1817,31 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _objects_responseErrorMessages__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../objects/responseErrorMessages */ "./src/objects/responseErrorMessages.js");
 
+
+/**
+ * Handles API error responses by mapping error status codes to user-friendly error messages.
+ * This function checks if there is an API error and, if so, retrieves a corresponding error message
+ * based on the error's status code. If the status code does not have a predefined error message,
+ * it returns a default unknown error message.
+ * 
+ * @param {Object} isApiError - An object containing information about the API error, including a boolean flag indicating an error and the status code.
+ * @returns {Object|null} - An object containing details about the error message to be displayed to the user, or null if there is no error.
+ */
 const handleWeatherError = isApiError => {
+  // If there is no API error, return null to indicate no error handling is needed.
   if (!isApiError.isError) {
-    // エラーがない場合は何もしない
     return null;
   }
-
-  // エラーがある場合、エラーメッセージを取得
-  const pluginImagePaths = JWeatherCustomizerData.pluginImagePath; // 適切なパス取得方法を用いる
-  const messages = (0,_objects_responseErrorMessages__WEBPACK_IMPORTED_MODULE_0__.responseErrorMessage)(pluginImagePaths); // ステータスコードに応じたエラーメッセージを格納するオブジェクト
-  const messageForStatusCode = messages[isApiError.statusCode]; // ステータスコードに一致するメッセージを選択
-
-  // ステータスコードに一致するエラーメッセージがない場合のデフォルト処理
+  const pluginImagePaths = JWeatherCustomizerData.pluginImagePath;
+  const messages = (0,_objects_responseErrorMessages__WEBPACK_IMPORTED_MODULE_0__.responseErrorMessage)(pluginImagePaths);
+  const messageForStatusCode = messages[isApiError.statusCode];
   if (!messageForStatusCode) {
     return {
       title: 'Unknown Error',
       notice: 'An unknown error occurred.',
-      icon: `${pluginImagePaths}default-error-icon.svg` // 例: デフォルトのエラーアイコンパス
+      icon: `${pluginImagePaths}default-error-icon.svg`
     };
   }
-
   return messageForStatusCode;
 };
 
@@ -1595,37 +1866,51 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
 
 
-// バリデーション関数をモジュールの外部に移動
+/**
+ * Checks if a given color is valid. A valid color is either undefined or matches a hex color format.
+ */
 function isValidColor(color) {
   return color === undefined || /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(color);
 }
+
+/**
+ * Validates if the given border style is one of the allowed values.
+ */
 function isValidBorderStyle(style) {
   return ['none', 'solid', 'dashed', 'dotted'].includes(style);
 }
+
+/**
+ * Validates if the given border width is a positive number and optionally ends with 'px' or '%'.
+ */
 function isValidBorderWidth(width) {
-  // '0', '0px', '0%' を無効とし、それ以外の値を許容する
   return /^(?!0($|px|%))\d+(\.\d+)?(px|%)?$/.test(width);
 }
+
+/**
+ * Validates if the provided border object has valid color, style, and width properties.
+ * Supports validation for individual border sides when specified as top, right, bottom, and left properties.
+ */
 function isValidBorder(border) {
-  // 単一のボーダー設定の検証
+  // Helper function to validate each border side or a single border when not split into sides.
   const isValidSingleBorder = border => {
     return isValidColor(border.color) && isValidBorderStyle(border.style) && isValidBorderWidth(border.width);
   };
-
-  // ボーダー設定がオブジェクトであるかチェック
   if (!border || typeof border !== 'object') {
     console.error('Invalid border object: ', border);
     return false;
   }
 
-  // スプリットモード（複数の辺）の場合の検証
+  // Validates all four sides if specified, otherwise validates the single border object.
   if (['top', 'right', 'bottom', 'left'].every(side => border.hasOwnProperty(side))) {
     return ['top', 'right', 'bottom', 'left'].every(side => isValidSingleBorder(border[side]));
   }
-
-  // フラットモード（単一の設定）の場合の検証
   return isValidSingleBorder(border);
 }
+
+/**
+ * Custom hook to manage border settings and provide utility functions for changing these settings.
+ */
 function useBorderControl(attributes, setAttributes) {
   const [newBorderSetErrorMessage, setNewBorderSetErrorMessage] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
   const [handleRangeChangeErrorMessage, setHandleRangeChangeErrorMessage] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
@@ -1639,14 +1924,13 @@ function useBorderControl(attributes, setAttributes) {
     style: 'dashed',
     width: '1px'
   };
+
+  // Initialize borders state with attributes or defaults.
   const [borders, setBorders] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(() => {
-    // attributes.bordersがSplitモードの構造を持っているかをチェック
+    // Supports split mode with individual borders defined.
     if (attributes.borders && typeof attributes.borders.top === 'object' && typeof attributes.borders.right === 'object' && typeof attributes.borders.bottom === 'object' && typeof attributes.borders.left === 'object') {
-      // Splitモードの場合はそのまま使用
       return attributes.borders;
     }
-
-    // Splitモードの構造がなければ、各辺にデフォルトのFlatモードの設定を適用
     return {
       top: defaultBorder,
       right: defaultBorder,
@@ -1661,21 +1945,27 @@ function useBorderControl(attributes, setAttributes) {
     label: '%',
     value: '%'
   }];
+
+  // Checks if borders are defined in a flat mode (single border for all sides).
   const isFlatMode = borders => {
     return borders && typeof borders.color === 'string' && typeof borders.style === 'string' && typeof borders.width === 'string';
   };
+
+  // Checks if borders are defined in a split mode (individual borders for each side).
   const isSplitMode = borders => {
     return borders && typeof borders.top === 'object' && typeof borders.right === 'object' && typeof borders.bottom === 'object' && typeof borders.left === 'object';
   };
+
+  // Function to update border settings and validate them. Provides error handling.
   const onChangeBorder = newBorderSet => {
     try {
-      // 新しいボーダー設定が有効であるかチェック
       if (!isValidBorder(newBorderSet)) {
         throw new Error('無効なボーダープロパティ');
       }
       let updatedBorders = {};
+
+      // Updates all borders if in flat mode or merges new settings with existing ones in split mode.
       if (isFlatMode(newBorderSet)) {
-        // Flatモードの場合、すべての辺に同じ設定を適用
         updatedBorders = {
           top: newBorderSet,
           right: newBorderSet,
@@ -1683,7 +1973,6 @@ function useBorderControl(attributes, setAttributes) {
           left: newBorderSet
         };
       } else if (isSplitMode(newBorderSet)) {
-        // Splitモードの場合、各辺を個別に更新
         updatedBorders = {
           top: {
             ...borders.top,
@@ -1703,9 +1992,6 @@ function useBorderControl(attributes, setAttributes) {
           }
         };
       }
-      console.log(updatedBorders);
-
-      // 更新されたボーダー設定を適用
       setAttributes({
         ...attributes,
         borders: updatedBorders
@@ -1717,11 +2003,15 @@ function useBorderControl(attributes, setAttributes) {
       setNewBorderSetErrorMessage('無効なボーダープロパティ');
     }
   };
+
+  // Effect hook to synchronize the component's border state with its attributes.
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     if (attributes.borders) {
       setBorders(attributes.borders);
     }
   }, [attributes.borders]);
+
+  // Handles changes in border radius value ensuring it falls within a valid range.
   const handleRangeChange = newValue => {
     const currentUnit = attributes.borderRadiusValue?.replace(/[0-9]/g, '') || 'px';
     if (!isNaN(newValue) && newValue >= 0 && newValue <= 100) {
@@ -1734,10 +2024,11 @@ function useBorderControl(attributes, setAttributes) {
       setHandleRangeChangeErrorMessage('有効な範囲ではありません');
     }
   };
+
+  // Handles changes in the unit of border radius (px or %), ensuring it's a valid unit.
   const handleUnitChange = newUnit => {
-    const validUnits = units.map(option => option.value); // 有効な単位の一覧を取得
+    const validUnits = units.map(option => option.value);
     if (validUnits.includes(newUnit)) {
-      // 新しい単位が有効な単位の中に含まれているかチェック
       const currentValue = parseInt(attributes.borderRadiusValue || '0', 10);
       setAttributes({
         ...attributes,
@@ -1756,13 +2047,10 @@ function useBorderControl(attributes, setAttributes) {
     borderColors,
     units,
     newBorderSetErrorMessage,
-    // newBorderSet 用のエラーメッセージ
     handleRangeChangeErrorMessage,
-    // handleRangeChange 用のエラーメッセージ
-    handleUnitChangeErrorMessage // handleUnitChange 用のエラーメッセージ
+    handleUnitChangeErrorMessage
   };
 }
-
 ;
 
 /***/ }),
@@ -1778,12 +2066,20 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 
+
+/**
+ * A custom hook for generating CSS border styles from a given borders object. 
+ * This hook creates a consistent border style object for use in React component styling.
+ * 
+ * @param {Object} borders - An object containing border properties for each side of an element (top, right, bottom, left).
+ * @returns {Object} A CSS-in-JS style object containing the border styles for each side.
+ */
 function useBorderStyles(borders) {
   const defaultBorderStyle = {
     width: '0px',
     style: 'none',
     color: '#000000'
-  }; // デフォルトスタイル
+  };
   const [borderStyles, setBorderStyles] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({});
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     const borderTop = borders.top || defaultBorderStyle;
@@ -1818,12 +2114,25 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
 
+
+/**
+ * A custom hook to manage and apply font balance options to JWeatherCustomizer blocks.
+ * It allows selecting between predefined font balance options and applies the selected
+ * option by adding a corresponding class to the elements of the current and weekly weather blocks.
+ * 
+ * @param {Object} initialOption - The initial font balance option to be used.
+ * @param {Function} setAttributes - Function provided by WordPress to update block attributes.
+ * @returns {Object} - An object containing the selected option, setter function for the option,
+ * the list of all font balance options, and a function to apply the selected font balance.
+ */
 function useChangeBalance(initialOption, setAttributes) {
   const defaultOption = {
     label: 'EmphasizeTheWeather',
     value: "EmphasizeTheWeather"
   };
   const [selectedOption, setSelectedOption] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(initialOption || defaultOption);
+
+  // List of available font balance options.
   const fontBalanceOptions = [defaultOption, {
     label: 'EmphasizeTheTemperature',
     value: 'EmphasizeTheTemperature'
@@ -1837,11 +2146,22 @@ function useChangeBalance(initialOption, setAttributes) {
     label: 'Simple',
     value: 'Simple'
   }];
+
+  /**
+  * Applies the selected font balance option by adding the corresponding class
+  * to the elements of the current and weekly weather blocks. It first removes all
+  * font balance classes before applying the new one to ensure cleanliness.
+  * 
+  * @param {Object} option - The font balance option to apply.
+  */
   const applyFontBalance = option => {
+    // Remove all font balance classes before applying the new one.
     fontBalanceOptions.forEach(opt => {
       document.querySelectorAll('.block--current').forEach(article => article.classList.remove(opt.value));
       document.querySelectorAll('.block--weekly').forEach(ul => ul.classList.remove(opt.value));
     });
+
+    // Apply the selected font balance class if it's not the default option.
     if (option.value !== "default") {
       document.querySelectorAll('.block--current').forEach(article => article.classList.add(option.value));
       document.querySelectorAll('.block--weekly').forEach(ul => ul.classList.add(option.value));
@@ -1851,7 +2171,7 @@ function useChangeBalance(initialOption, setAttributes) {
     applyFontBalance(selectedOption);
     setAttributes({
       balanceOption: selectedOption.value
-    }); // ここで属性を更新
+    });
   }, [selectedOption]);
   return {
     selectedOption,
@@ -1880,22 +2200,34 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _weatherDate_MainWeatherLogic__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../weatherDate/MainWeatherLogic */ "./src/weatherDate/MainWeatherLogic.js");
 
 
+
+/**
+ * A custom hook for fetching and updating weather data based on the selected city.
+ * It utilizes the `mainWeatherLogic` function to retrieve weather data for today,
+ * tomorrow, and the weekly forecast, then updates the component state accordingly.
+ * 
+ * @param {Object} selectedCity - The city object for which weather data is to be fetched. Must contain a 'url' property.
+ * @returns {Object} An object containing weather data for today, tomorrow, and the weekly forecast.
+ */
 function useChangeCity(selectedCity) {
-  // 天気データを状態として保存します。
+  // Initializes the state with null values for today, tomorrow, and weekly weather data.
   const [weatherData, setWeatherData] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)({
     today: null,
     tomorrow: null,
     weekly: null
   });
+
+  // Effect hook that triggers whenever the selectedCity changes.
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     async function fetchData() {
+      // Checks if the selected city is valid and has a URL for fetching data.
       if (!selectedCity || !selectedCity.url) {
         console.error(`No URL found for city: ${selectedCity ? selectedCity.name : "Unknown city"}`);
-        return; // selectedCityオブジェクトがない、またはURLがない場合、ここで処理を終了します。
+        return;
       }
-
-      // 'selectedCity'が存在し、URLが含まれている場合、以下の処理を行います。
       const cityUrl = selectedCity.url;
+
+      // Calls `mainWeatherLogic` with the city URL and callback functions to update the state with new weather data.
       await (0,_weatherDate_MainWeatherLogic__WEBPACK_IMPORTED_MODULE_1__.mainWeatherLogic)(cityUrl, todayWeather => {
         setWeatherData(prevData => ({
           ...prevData,
@@ -1913,8 +2245,8 @@ function useChangeCity(selectedCity) {
         }));
       });
     }
-    fetchData();
-  }, [selectedCity]);
+    fetchData(); // Calls fetchData to execute the data retrieval.
+  }, [selectedCity]); // Dependency array to re-run the effect if selectedCity changes.
   return weatherData;
 }
 ;
@@ -1935,11 +2267,29 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
 
+
+/**
+ * A custom hook for managing the font family attribute in a JWeatherCustomizer block.
+ * It synchronizes the font family state with the block's attributes and provides
+ * a method to update both the local state and the block's font family attribute.
+ *
+ * @param {Object} attributes - The block's current attributes, including fontFamily.
+ * @param {Function} setAttributes - A function provided by WordPress to update block attributes.
+ * @returns {Object} - An object containing the current font family and a function to update it.
+ */
+
 function useFontFamilyControl(attributes, setAttributes) {
   const [fontFamily, setFontFamily] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(attributes.fontFamily);
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     setFontFamily(attributes.fontFamily);
   }, [attributes.fontFamily]);
+
+  /**
+  * Updates the font family state and the block's font family attribute.
+  * This ensures the local state and block attribute are always in sync.
+  *
+  * @param {string} newFontFamily - The new font family to be applied.
+  */
   const onChangeFontFamily = newFontFamily => {
     setFontFamily(newFontFamily);
     setAttributes({
@@ -1969,28 +2319,47 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__);
 
 
+
+/**
+ * It provides a state and a function to manage the visibility of JWeatherCustomizer UI elements
+ * based on whether a block is selected. It also offers a method to handle click events
+ * on a layout component to toggle this visibility state.
+ *
+ * @returns {Object} - An object containing the visibility state and a click event handler function.
+ */
 function useBlockSelection() {
   const [showSelection, setShowSelection] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
   let previouslySelectedBlockId = null;
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    // Subscribe to the block editor's selection changes.
     const unsubscribe = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_1__.subscribe)(() => {
+      // Get the currently selected block ID.
       const selectedBlockId = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_1__.select)('core/block-editor').getSelectedBlockClientId();
 
-      // 新しくブロックが選択された場合
+      // If there is a new block selected and it's different from the previous one, show the selection.
       if (selectedBlockId && previouslySelectedBlockId !== selectedBlockId) {
         setShowSelection(true);
       }
 
-      // ブロックの選択が解除された場合
+      // If no block is selected and there was a previously selected block, hide the selection.
+
       if (!selectedBlockId && previouslySelectedBlockId) {
         setShowSelection(false);
       }
+
+      // Update the previously selected block ID for the next check.
       previouslySelectedBlockId = selectedBlockId;
     });
-
-    // コンポーネントのクリーンアップ時に購読を解除する
     return () => unsubscribe();
-  }, []);
+  }, []); // Empty dependency array means this effect runs only on mount and unmount.
+
+  /**
+   * Handles click events on the layout component. If the selection is not currently shown,
+   * it sets the state to show the selection. This function can be attached to any clickable
+   * layout component to toggle its associated UI elements based on selection visibility.
+   *
+   * @param {Event} e - The click event object.
+   */
   const handleLayoutClick = e => {
     e.stopPropagation();
     if (!showSelection) {
@@ -2141,7 +2510,6 @@ const responseErrorMessage = pluginImagePaths => ({
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-// styles.js
 const styles = {
   formStyle: {
     width: '100%',
@@ -2200,6 +2568,17 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   createVisibilitySettings: function() { return /* binding */ createVisibilitySettings; }
 /* harmony export */ });
+/**
+ * Generates an array of settings for managing the visibility of different weather information components.
+ * This utility function simplifies the process of creating consistent visibility controls for various weather data aspects,
+ * such as today's weather, tomorrow's weather, weekly forecast, holidays, and precipitation probability.
+ * 
+ * @param {Object} params - The parameters object.
+ * @param {Object} params.attributes - The current block attributes, containing visibility flags for various components.
+ * @param {Function} params.setAttributes - Function provided by WordPress to update block attributes.
+ * @returns {Array} - An array of visibility settings, each containing a label, a checked state, and an onChange handler.
+ */
+
 const createVisibilitySettings = ({
   attributes,
   setAttributes
@@ -2223,23 +2602,19 @@ const createVisibilitySettings = ({
   return [{
     label: "今日の天気を表示",
     checked: showTodayWeather,
-    // 属性から現在の値を取得
     onChange: isChecked => {
-      // 'showTodayWeather' 属性を更新
       updateAttribute('showTodayWeather', isChecked);
     }
   }, {
     label: '明日の天気を表示',
     checked: showTomorrowWeather,
     onChange: isChecked => {
-      // 'showTodayWeather' 属性を更新
       updateAttribute('showTomorrowWeather', isChecked);
     }
   }, {
     label: '週間天気を表示',
     checked: showWeeklyWeather,
     onChange: isChecked => {
-      // 'showTodayWeather' 属性を更新
       updateAttribute('showWeeklyWeather', isChecked);
     }
   }, {
@@ -2274,24 +2649,35 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _processWeatherData__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./processWeatherData */ "./src/weatherDate/processWeatherData.js");
 
 
+
+/**
+ * Orchestrates the fetching and processing of weather data for a specific city and updates
+ * state hooks for today's, tomorrow's, and the weekly weather forecasts.
+ * 
+ * @param {string} cityurl - The URL to fetch weather data for a specific city.
+ * @param {Function} setTodayWeather - State setter function for today's weather.
+ * @param {Function} setTomorrowWeather - State setter function for tomorrow's weather.
+ * @param {Function} setWeeklyWeather - State setter function for the weekly weather forecast.
+ * @param {boolean} addBreak - Optional parameter indicating whether to add a break in the processing of weather data.
+ */
 async function mainWeatherLogic(cityurl, setTodayWeather, setTomorrowWeather, setWeeklyWeather, addBreak = false) {
   try {
-    // 1. 天気データを取得
+    // Fetch raw weather data from the provided city URL.
     const rawData = await (0,_fetchWeatherData__WEBPACK_IMPORTED_MODULE_0__.fetchWeatherData)(cityurl);
-
-    // 2. 天気データを処理（加工）
+    // Process the raw weather data, optionally adding breaks based on the addBreak parameter.
     const processedData = await (0,_processWeatherData__WEBPACK_IMPORTED_MODULE_1__["default"])(rawData, addBreak);
 
-    // 3. UIを更新するためのデータをセット
+    // Update the state for today's weather using the first item from the processed daily data.
     setTodayWeather(processedData.dailyData[0]);
+    // Update the state for tomorrow's weather using the second item from the processed daily data.
     setTomorrowWeather(processedData.dailyData[1]);
-    setWeeklyWeather(processedData.dailyData.slice(2)); // 2日目以降のデータを週間天気として設定
+    // Update the state for the weekly weather forecast using the rest of the items from the processed daily data.
+    setWeeklyWeather(processedData.dailyData.slice(2));
   } catch (error) {
+    // Log any errors that occur during the fetching or processing of weather data.
     console.error('Error in weatherObject function:', error);
-    // 必要に応じて、ここでエラーハンドリングを行う
   }
 }
-
 ;
 
 
@@ -2305,8 +2691,23 @@ async function mainWeatherLogic(cityurl, setTodayWeather, setTomorrowWeather, se
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/**
+ * Asynchronously fetches holiday data from a public API and returns dates for one week,
+ * along with holiday information for each date if available. Optionally, a break can be added between
+ * each date in the returned array.
+ *
+ * @param {boolean} addBreak - Whether to add a break between each date in the returned array.
+ * @returns {Promise<Array>} - A promise that resolves to an array of date objects, each with holiday information.
+ */
+
 const dayWithHoliday = async (addBreak = false) => {
+  // Cache object to store fetched holiday data to prevent multiple requests.
   const cache = {};
+
+  /**
+  * Fetches holiday data from the specified URL and returns it as a JSON object.
+  * If the request fails, logs the error and returns an empty object.
+  */
   const fetchHolidays = async () => {
     const url = 'https://holidays-jp.github.io/api/v1/date.json';
     try {
@@ -2318,17 +2719,24 @@ const dayWithHoliday = async (addBreak = false) => {
       return data;
     } catch (error) {
       console.error('Error fetching holidays:', error);
-      return {}; // 空のオブジェクトを返し、処理を続行
+      return {};
     }
   };
 
+  /**
+  * Retrieves holiday data for today from the cache or fetches it if not cached.
+  */
   const getHolidays = async () => {
-    const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD形式
+    const today = new Date().toISOString().slice(0, 10);
     if (!cache[today]) {
       cache[today] = await fetchHolidays();
     }
     return cache[today];
   };
+
+  /**
+  * Generates an array of dates between the specified start and end dates.
+  */
   function getDateRangeArray(startDate, endDate) {
     const dateArray = [];
     let currentDate = new Date(startDate);
@@ -2339,16 +2747,17 @@ const dayWithHoliday = async (addBreak = false) => {
     return dateArray;
   }
   ;
+
+  /**
+   * Generates an array of dates for one week from today, each annotated with whether it's a holiday
+   * (and the holiday's name if applicable), whether it's Saturday or Sunday, and the date in various formats.
+   */
   async function getOneWeekDatesWithHolidays(addBreak = false) {
     const today = new Date();
     const sixDaysLater = new Date(today);
     sixDaysLater.setDate(today.getDate() + 6);
     const oneWeekDates = getDateRangeArray(today, sixDaysLater);
-
-    // Get the holidays
     const holidays = await getHolidays();
-
-    // Create an array of dates with holidays data included
     const oneWeekDatesWithHolidays = oneWeekDates.map(date => {
       const weekDays = ["日", "月", "火", "水", "木", "金", "土"];
       const dayOfWeek = weekDays[date.getDay()];
@@ -2361,15 +2770,19 @@ const dayWithHoliday = async (addBreak = false) => {
           fullDate: `${String(date.getMonth() + 1)}月${String(date.getDate())}日(${dayOfWeek})`
         },
         isHoliday: !!holidays[formattedDate],
-        // this will be true if the date is a holiday, otherwise false
+        // True if the date is a holiday.
         holidayName: holidays[formattedDate] || null,
-        // this will have the holiday name if the date is a holiday, otherwise null
+        // The holiday's name, if it's a holiday.
         isSaturday: date.getDay() === 6,
-        isSunday: date.getDay() === 0
+        // True if the date is a Saturday.
+        isSunday: date.getDay() === 0 // True if the date is a Sunday.
       };
     });
+
     return oneWeekDatesWithHolidays;
   }
+
+  // Call the async function to generate the array and return its result.
   return await getOneWeekDatesWithHolidays(addBreak);
 };
 /* harmony default export */ __webpack_exports__["default"] = (dayWithHoliday);
@@ -2388,20 +2801,27 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   fetchWeatherData: function() { return /* binding */ fetchWeatherData; },
 /* harmony export */   isApiError: function() { return /* binding */ isApiError; }
 /* harmony export */ });
-// APIエラーを追跡するオブジェクト
+// Initial state for tracking API errors.
 let isApiError = {
   isError: false,
   statusCode: null
 };
 
-// 指定されたURLから天気データを非同期でフェッチする関数
+/**
+ * Asynchronously fetches weather data for a given city URL. Implements caching to reduce API calls.
+ * Updates `isApiError` state in case of fetch failure.
+ * 
+ * @param {string} cityUrl - The URL to fetch weather data from.
+ * @returns {Promise<Object>} The fetched weather data as a JSON object.
+ * @throws {Error} Throws an error if the URL is invalid or the fetch operation fails.
+ */
 async function fetchWeatherData(cityUrl) {
-  const cacheDuration = 14400; // キャッシュの有効期間（秒）
+  const cacheDuration = 14400;
   const cacheKey = 'weatherDataCache';
-  const cacheUrlKey = 'weatherDataUrl'; // キャッシュされたURLを保存するためのキー
+  const cacheUrlKey = 'weatherDataUrl';
   const cacheTimestampKey = 'weatherDataTimestamp';
 
-  // URLが有効かどうかをチェックする関数
+  // Validates if the given URL belongs to the expected base URL.
   const isValidUrl = url => {
     try {
       const validBaseUrl = "https://api.open-meteo.com/v1";
@@ -2412,37 +2832,43 @@ async function fetchWeatherData(cityUrl) {
     }
   };
 
-  // 提供されたURLの検証
+  // Throws an error if the city URL is invalid or not provided.
   if (!cityUrl || !isValidUrl(cityUrl)) {
     throw new Error(`Invalid URL: ${cityUrl}`);
   }
   ;
+
+  // Calculates the current timestamp and retrieves the stored timestamp from localStorage.
   const now = new Date();
   const currentTimestamp = Math.floor(now.getTime() / 1000);
   const storedTimestamp = localStorage.getItem(cacheTimestampKey);
-  const storedUrl = localStorage.getItem(cacheUrlKey); // キャッシュされたURLを取得
+  const storedUrl = localStorage.getItem(cacheUrlKey);
   const timePassed = currentTimestamp - storedTimestamp;
 
-  // キャッシュが存在し、有効期限内で、URLが変更されていないかをチェック
+  // Returns cached data if it's still valid and the URL matches the requested city URL.
   if (localStorage.getItem(cacheKey) && timePassed < cacheDuration && storedUrl === cityUrl) {
     return JSON.parse(localStorage.getItem(cacheKey));
   } else {
+    // Resets API error state before attempting to fetch new data.
     isApiError.isError = false;
     isApiError.statusCode = null;
     try {
+      // Performs the fetch operation.
       const response = await fetch(cityUrl);
       if (!response.ok) {
         isApiError.isError = true;
         isApiError.statusCode = response.status;
         throw new Error(`API response error with status: ${response.status}`);
       }
+
+      // Stores fetched data in localStorage and updates the cache.
       const data = await response.json();
       localStorage.setItem(cacheKey, JSON.stringify(data));
       localStorage.setItem(cacheTimestampKey, currentTimestamp.toString());
-      localStorage.setItem(cacheUrlKey, cityUrl); // 現在のURLをキャッシュに保存
-
+      localStorage.setItem(cacheUrlKey, cityUrl);
       return data;
     } catch (error) {
+      // Logs and rethrows the error in case of fetch failure.
       console.error('Fetch error:', error);
       throw error;
     }
@@ -2464,10 +2890,27 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   cities: function() { return /* binding */ cities; }
 /* harmony export */ });
+// Base URL for the Open-Meteo API to fetch weather forecasts.
 const apiBaseUrl = 'https://api.open-meteo.com/v1/forecast';
+
+/**
+ * Constructs a URL for fetching weather data from the Open-Meteo API for a specific latitude and longitude.
+ * It specifies parameters for the API call to include temperature, precipitation probability, and weather code
+ * information on an hourly and daily basis, along with the timezone setting for Asia/Tokyo.
+ * 
+ * @param {number} latitude - The latitude of the city.
+ * @param {number} longitude - The longitude of the city.
+ * @returns {string} - A complete URL string for the API call.
+ */
 const createCityWeatherUrl = (latitude, longitude) => {
   return `${apiBaseUrl}?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m,precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14`;
 };
+
+/**
+ * A collection of cities with their names and corresponding URLs for fetching weather data.
+ * Each city object contains the city name and a URL generated with the `createCityWeatherUrl`
+ * function, using the city's latitude and longitude.
+ */
 const cities = {
   札幌: {
     name: '札幌',
@@ -2541,35 +2984,52 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _dayWithHoloday__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./dayWithHoloday */ "./src/weatherDate/dayWithHoloday.js");
 
 
+
+/**
+ * Processes raw weather data fetched from an API to enhance it with additional details,
+ * including holiday information, validated temperatures, and computed temperature differences.
+ * 
+ * @param {Object} data - The raw weather data fetched from the API.
+ * @param {boolean} addBreak - Optional parameter to indicate whether to add a break during processing.
+ * @returns {Object} An object containing processed daily weather data.
+ */
 async function processWeatherData(data, addBreak = false) {
+  // Sanitizes a URL to ensure it's valid. Returns an empty string if invalid.
   const sanitizeImageUrl = url => {
-    // 画像URLをサニタイズする関数。不正なURLを除去または修正
     try {
       return new URL(url).toString();
     } catch (e) {
-      return ''; // 不正なURLは空文字列に置き換える
+      return '';
     }
   };
 
+  // Validates a temperature value to ensure it's numeric.
   const validateTemperature = temperature => {
-    // 温度データが数値であることを検証
     return !isNaN(temperature) && isFinite(temperature);
   };
+
+  // Throws an error if the data is in an unexpected format.
   if (!data || !data.daily) {
     throw new Error("Unexpected data format received from the weather API.");
   }
+
+  // Fetches and processes holiday data to be combined with weather data.
   const datesForWeek = await (0,_dayWithHoloday__WEBPACK_IMPORTED_MODULE_1__["default"])(addBreak);
   if (!datesForWeek || datesForWeek.length !== 7) {
     throw new Error("Unexpected date array length from dayWithHoliday.");
   }
   ;
-  const weatherCodesForWeek = data.daily.weathercode; // 本日から6日後までの天気コード
 
-  // 天気コードを天気名に変換
+  // Maps weather codes to human-readable labels and sanitized image URLs.
+  const weatherCodesForWeek = data.daily.weathercode;
   const weatherNamesForWeek = weatherCodesForWeek.map(code => (0,_hooks_getWeatherInfo__WEBPACK_IMPORTED_MODULE_0__["default"])(code).label);
   const weatherImageForWeek = weatherCodesForWeek.map(code => sanitizeImageUrl((0,_hooks_getWeatherInfo__WEBPACK_IMPORTED_MODULE_0__["default"])(code).icon));
+
+  // Validates and stores temperature data.
   const highestTemperatureForWeek = data.daily.temperature_2m_max.map(temp => validateTemperature(temp) ? temp : null);
   const lowestTemperatureForWeek = data.daily.temperature_2m_min.map(temp => validateTemperature(temp) ? temp : null);
+
+  // Calculates daily temperature differences for highs.
   const highestTemperatureDifferencesForWeek = [];
   for (let i = -1; i < highestTemperatureForWeek.length; i++) {
     const todayMaxTemperature = highestTemperatureForWeek[i + 1];
@@ -2578,6 +3038,8 @@ async function processWeatherData(data, addBreak = false) {
     const formattedDifference = temperatureDifference >= 0 ? `(+${temperatureDifference})` : `(-${Math.abs(temperatureDifference)})`;
     highestTemperatureDifferencesForWeek.push(formattedDifference);
   }
+
+  // Similar computation for lows.
   const lowestTemperatureDifferencesForWeek = [];
   for (let i = -1; i < lowestTemperatureForWeek.length; i++) {
     const todayMinTemperature = lowestTemperatureForWeek[i + 1];
@@ -2586,6 +3048,8 @@ async function processWeatherData(data, addBreak = false) {
     const formattedDifference = temperatureDifference >= 0 ? `(+${temperatureDifference})` : `(-${Math.abs(temperatureDifference)})`;
     lowestTemperatureDifferencesForWeek.push(formattedDifference);
   }
+
+  // Organizes hourly precipitation probability data.
   const rainProbability1 = {};
   for (let i = 1; i <= 7; i++) {
     let baseTime = i === 0 ? 0 : 24 * i;
@@ -2597,6 +3061,8 @@ async function processWeatherData(data, addBreak = false) {
       });
     }
   }
+
+  // Combines all processed data into a structured format for each day of the week.
   const dailyData = datesForWeek.map((day, index) => {
     return {
       day: datesForWeek[index],
@@ -2606,16 +3072,17 @@ async function processWeatherData(data, addBreak = false) {
       lowestTemperature: lowestTemperatureForWeek[index + 1],
       maximumTemperatureComparison: highestTemperatureDifferencesForWeek[index + 1],
       lowestTemperatureComparison: lowestTemperatureDifferencesForWeek[index + 1],
-      rainProbability: rainProbability1[index + 1] // インデックス調整
+      rainProbability: rainProbability1[index + 1]
     };
   }).filter((_, index) => index < datesForWeek.length);
 
-  // 加工された全データを返す
+  // Returns the structured daily weather data which now includes additional details
+  // such as holiday information, validated temperatures, computed temperature differences,
+  // and organized precipitation probability data.
   return {
-    dailyData // 加工された日毎の天気データ
+    dailyData
   };
 }
-
 ;
 /* harmony default export */ __webpack_exports__["default"] = (processWeatherData);
 
