@@ -3,7 +3,7 @@
 /**
  * Plugin Name:       JWeatherCustomizer
  * Description:       A plugin that allows you to display a weather forecast of your choice on your website.
- * Version:           1.0
+ * Version:           1.2
  * Requires at least: 6.1
  * Requires PHP:      7.0
  * Author:            tenpei999@gmail.com
