@@ -69,7 +69,7 @@ function jWeatherCustomizer_render_block($attr, $content)
       'type' => 'object',
       'default' => [
         'name' => '東京',
-        'url' => 'https://api.open-meteo.com/v1/forecast?latitude=35.6895&longitude=139.6917&hourly=precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14'
+        'url' => JWEATHERCUSTOMIZER_DEFAULT_WEATHER_API_URL
       ]
     ],
   ], $attr);
@@ -78,13 +78,12 @@ function jWeatherCustomizer_render_block($attr, $content)
   $uniqueID = $attr['uniqueID'];
   $apiUrl = $attr['selectedCity']['url'];
 
+  if (filter_var($apiUrl, FILTER_VALIDATE_URL) === false) {
+    return 'エラー: 指定されたURLが無効です。';
+  }
 
   $uniqueID = (isset($attr['uniqueID']) && !empty($attr['uniqueID'])) ? $attr['uniqueID'] : uniqid('block_', true);
-  // ここで $uniqueID を使用してキャッシュをチェック
   $weatherData = fetchWeatherDataWithCache($apiUrl, $uniqueID);
-
-
-  // 今日の天気データ、明日の天気データ、週間天気データを取得するロジックを実装
   $todayWeather = $weatherData['today'] ?? [];
   $tomorrowWeather = $weatherData['tomorrow'] ?? [];
   $weeklyWeather = $weatherData['weekly'] ?? [];
@@ -135,12 +134,12 @@ function jWeatherCustomizer_render_block($attr, $content)
 
     $maxDays = 4;
     foreach ($weeklyWeather as $i => $dayWeather) {
-      if ($i <= $maxDays) { // 0番目から5番目までの要素に対してのみ処理を実行
-        $data = $weeklyWeather[$i]; // 週間天気データを $data に設定
+      if ($i <= $maxDays) {
+        $data = $weeklyWeather[$i];
         $textColor = $setTextColor($data['day'] ?? []);
-        $output .= generateWeeklyWeatherOutput($data, $textColor, $attr['showHoliday']); // 週間天気用の出力関数を呼び出し
+        $output .= generateWeeklyWeatherOutput($data, $textColor, $attr['showHoliday']);
       } else {
-        break; // 5番目の要素を処理した後、ループから抜け出す
+        break;
       }
     }
     $output .= '</ul>';

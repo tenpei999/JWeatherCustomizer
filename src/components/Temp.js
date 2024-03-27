@@ -1,9 +1,16 @@
-const Temp = ({ weather }) => {
+/**
+ * Displays the highest and lowest temperatures for a given day, along with temperature comparisons
+ *
+ * @param {Object} props - Component properties.
+ * @param {Object} props.weather - The weather data containing temperature information.
+ * @returns JSX.Element | null - A list of temperature readings or null if the weather data is not valid.
+ */
 
-    // weather プロパティのバリデーション
-    if (!weather || typeof weather !== 'object') {
-      return null;
-    }
+const Temp = ({ weather }) => {
+  // Checks if the weather data is valid. If not, returns null to render nothing.
+  if (!weather || typeof weather !== 'object') {
+    return null;
+  }
 
   return (
     <ul className="temp">
@@ -17,6 +24,6 @@ const Temp = ({ weather }) => {
       </li>
     </ul>
   )
-}
+};
 
 export default Temp;

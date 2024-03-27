@@ -1,37 +1,51 @@
 import getWeatherInfo from "../hooks/getWeatherInfo";
 import dayWithHoliday from "./dayWithHoloday";
 
+/**
+ * Processes raw weather data fetched from an API to enhance it with additional details,
+ * including holiday information, validated temperatures, and computed temperature differences.
+ * 
+ * @param {Object} data - The raw weather data fetched from the API.
+ * @param {boolean} addBreak - Optional parameter to indicate whether to add a break during processing.
+ * @returns {Object} An object containing processed daily weather data.
+ */
 async function processWeatherData(data, addBreak = false) {
 
+  // Sanitizes a URL to ensure it's valid. Returns an empty string if invalid.
   const sanitizeImageUrl = (url) => {
-    // 画像URLをサニタイズする関数。不正なURLを除去または修正
     try {
       return new URL(url).toString();
     } catch (e) {
-      return ''; // 不正なURLは空文字列に置き換える
+      return '';
     }
   };
 
+  // Validates a temperature value to ensure it's numeric.
   const validateTemperature = (temperature) => {
-    // 温度データが数値であることを検証
     return !isNaN(temperature) && isFinite(temperature);
   };
+
+  // Throws an error if the data is in an unexpected format.
   if (!data || !data.daily) {
     throw new Error("Unexpected data format received from the weather API.");
   }
+
+  // Fetches and processes holiday data to be combined with weather data.
   const datesForWeek = await dayWithHoliday(addBreak);
   if (!datesForWeek || datesForWeek.length !== 7) {
     throw new Error("Unexpected date array length from dayWithHoliday.");
-  }
+  };
 
-  const weatherCodesForWeek = data.daily.weathercode; // 本日から6日後までの天気コード
-
-
-  // 天気コードを天気名に変換
+  // Maps weather codes to human-readable labels and sanitized image URLs.
+  const weatherCodesForWeek = data.daily.weathercode;
   const weatherNamesForWeek = weatherCodesForWeek.map(code => getWeatherInfo(code).label);
   const weatherImageForWeek = weatherCodesForWeek.map(code => sanitizeImageUrl(getWeatherInfo(code).icon));
+
+  // Validates and stores temperature data.
   const highestTemperatureForWeek = data.daily.temperature_2m_max.map(temp => validateTemperature(temp) ? temp : null);
   const lowestTemperatureForWeek = data.daily.temperature_2m_min.map(temp => validateTemperature(temp) ? temp : null);
+
+  // Calculates daily temperature differences for highs.
   const highestTemperatureDifferencesForWeek = [];
 
   for (let i = -1; i < highestTemperatureForWeek.length; i++) {
@@ -39,10 +53,10 @@ async function processWeatherData(data, addBreak = false) {
     const yesterdayMaxTemperature = highestTemperatureForWeek[i];
     const temperatureDifference = Math.ceil((todayMaxTemperature - yesterdayMaxTemperature) * 10) / 10;
     const formattedDifference = (temperatureDifference >= 0) ? `(+${temperatureDifference})` : `(-${Math.abs(temperatureDifference)})`;
-
     highestTemperatureDifferencesForWeek.push(formattedDifference);
   }
 
+  // Similar computation for lows.
   const lowestTemperatureDifferencesForWeek = [];
 
   for (let i = -1; i < lowestTemperatureForWeek.length; i++) {
@@ -54,6 +68,7 @@ async function processWeatherData(data, addBreak = false) {
     lowestTemperatureDifferencesForWeek.push(formattedDifference);
   }
 
+  // Organizes hourly precipitation probability data.
   const rainProbability1 = {};
 
   for (let i = 1; i <= 7; i++) {
@@ -68,6 +83,7 @@ async function processWeatherData(data, addBreak = false) {
     }
   }
 
+  // Combines all processed data into a structured format for each day of the week.
   const dailyData = datesForWeek.map((day, index) => {
     return {
       day: datesForWeek[index],
@@ -77,14 +93,16 @@ async function processWeatherData(data, addBreak = false) {
       lowestTemperature: lowestTemperatureForWeek[index + 1],
       maximumTemperatureComparison: highestTemperatureDifferencesForWeek[index + 1],
       lowestTemperatureComparison: lowestTemperatureDifferencesForWeek[index + 1],
-      rainProbability: rainProbability1[index + 1], // インデックス調整
+      rainProbability: rainProbability1[index + 1],
     }
   }).filter((_, index) => index < datesForWeek.length);
 
-  // 加工された全データを返す
+  // Returns the structured daily weather data which now includes additional details
+  // such as holiday information, validated temperatures, computed temperature differences,
+  // and organized precipitation probability data.
   return {
-    dailyData, // 加工された日毎の天気データ
+    dailyData,
   };
-}
+};
 
 export default processWeatherData;

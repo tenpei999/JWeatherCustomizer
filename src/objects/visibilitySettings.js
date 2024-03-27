@@ -1,3 +1,14 @@
+/**
+ * Generates an array of settings for managing the visibility of different weather information components.
+ * This utility function simplifies the process of creating consistent visibility controls for various weather data aspects,
+ * such as today's weather, tomorrow's weather, weekly forecast, holidays, and precipitation probability.
+ * 
+ * @param {Object} params - The parameters object.
+ * @param {Object} params.attributes - The current block attributes, containing visibility flags for various components.
+ * @param {Function} params.setAttributes - Function provided by WordPress to update block attributes.
+ * @returns {Array} - An array of visibility settings, each containing a label, a checked state, and an onChange handler.
+ */
+
 export const createVisibilitySettings = ({ attributes, setAttributes }) => {
   const {
     showTomorrowWeather,
@@ -18,31 +29,28 @@ export const createVisibilitySettings = ({ attributes, setAttributes }) => {
   return [
     {
       label: "今日の天気を表示",
-      checked: attributes.showTodayWeather, // 属性から現在の値を取得
+      checked: showTodayWeather,
       onChange: (isChecked) => {
-        // 'showTodayWeather' 属性を更新
         updateAttribute('showTodayWeather', isChecked);
       },
     },
     {
       label: '明日の天気を表示',
-      checked: attributes.showTomorrowWeather,
+      checked: showTomorrowWeather,
       onChange: (isChecked) => {
-        // 'showTodayWeather' 属性を更新
         updateAttribute('showTomorrowWeather', isChecked);
       },
     },
     {
       label: '週間天気を表示',
-      checked: attributes.showWeeklyWeather,
+      checked: showWeeklyWeather,
       onChange: (isChecked) => {
-        // 'showTodayWeather' 属性を更新
         updateAttribute('showWeeklyWeather', isChecked);
       },
     },
     {
       label: '祝日を表示',
-      checked: attributes.showHoliday,
+      checked: showHoliday,
       onChange: (isChecked) => {
 
         updateAttribute('showHoliday', isChecked);
@@ -50,7 +58,7 @@ export const createVisibilitySettings = ({ attributes, setAttributes }) => {
     },
     {
       label: '降水確率を表示',
-      checked: attributes.showPrecipitation,
+      checked: showPrecipitation,
       onChange: (isChecked) => {
 
         updateAttribute('showPrecipitation', isChecked);

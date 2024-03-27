@@ -5,6 +5,13 @@ import { getBackgroundStyles } from '../hooks/getBackgroundStyles';
 import getTextColor from '../hooks/getTextColor';
 import '../style.scss';
 
+/**
+ * Renders the current weather conditions with customizable styles.
+ * Utilizes custom hooks and components to display weather data dynamically based on props.
+ * 
+ * @param {Object} props - Properties passed to the component including weather data and style preferences.
+ * @returns JSX.Element | null - The CurrentWeather component or null if weather data is missing.
+ */
 const CurrentWeather = ({
   borders,
   borderRadius,
@@ -22,7 +29,9 @@ const CurrentWeather = ({
 }) => {
 
   const textColor = getTextColor(weather);
-  if (!weather || !weather.day) return null; // weather と weather.day の存在を確認
+
+  // Return null early if weather data is not provided.
+  if (!weather || !weather.day) return null;
 
   const borderStyles = useBorderStyles(borders);
   const backgroundStyles = getBackgroundStyles({ backgroundStyleType, selectedMedia, backgroundColor, backgroundGradient });
@@ -38,7 +47,7 @@ const CurrentWeather = ({
       <h3>{title}</h3>
       <h4 style={{ color: textColor }}>{weather.day.date.fullDate}</h4>
 
-      {/* showHolidayがtrueの場合のみ祝日の名前を表示 */}
+      {/* Conditionally render holiday name if available and applicable. */}
       {showHoliday && weather.day.isHoliday && (
         <p>{weather.day.holidayName}</p>
       )}
@@ -47,10 +56,9 @@ const CurrentWeather = ({
       <img src={weather.image} alt="weather icon" />
       <Temp weather={weather} />
 
-      {/* showPrecipitationがtrueの場合のみTimeZoneコンポーネントを表示 */}
       {showPrecipitation && <TimeZone weather={weather} />}
     </article>
   )
-}
+};
 
 export { CurrentWeather };

@@ -1,7 +1,7 @@
 
 export const ResponseError = ({ errorMessage }) => {
   if (!errorMessage) {
-    return null; // エラーメッセージがない場合は何も表示しない
+    return null;
   }
 
   const grid = {

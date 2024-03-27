@@ -14,11 +14,27 @@
  * @package           create-block
  */
 
+// Define constants to avoid repetition of directory paths and URLs.
 define('JWEATHERCUSTOMIZER_CACHE_DIR', plugin_dir_path(__FILE__) . 'JWeatherCustomizer_Cache/');
 define('JWEATHERCUSTOMIZER_URL', plugin_dir_url(__FILE__));
-define('HOLIDAYS_API_URL', 'https://holidays-jp.github.io/api/v1/date.json');
+define('JWEATHERCUSTOMIZER_HOLIDAYS_API_URL', 'https://holidays-jp.github.io/api/v1/date.json');
+define('JWEATHERCUSTOMIZER_DEFAULT_WEATHER_API_URL', 'https://api.open-meteo.com/v1/forecast?latitude=35.6895&longitude=139.6917&hourly=precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14');
+define('JWEATHERCUSTOMIZER_WEATHER_CACHE_DURATION', 14400); 
 
-function create_block_JWeatherCustomizer_block_init()
+// Include dependencies.
+require_once dirname(__FILE__) . '/render-blocks.php';
+require_once dirname(__FILE__) . '/assets/cleanup_weather_cache_files.php';
+
+// Register block type and REST API routes.
+add_action('init', 'JWeatherCustomizer_init');
+add_action('rest_api_init', 'jweathercustomizer_register_routes');
+register_deactivation_hook(__FILE__, 'JWeatherCustomizer_cleanup');
+date_default_timezone_set('Asia/Tokyo');
+
+/**
+ * Initializes the block type and registers necessary scripts.
+ */
+function JWeatherCustomizer_init()
 {
 	register_block_type(
 		__DIR__ . '/build',
@@ -26,48 +42,28 @@ function create_block_JWeatherCustomizer_block_init()
 			'render_callback' => 'jWeatherCustomizer_render_block',
 		]
 	);
-}
-
-add_action('init', 'create_block_JWeatherCustomizer_block_init');
-
-
-function test_rest_url()
-{
-	$url = rest_url('j-weather-customizer/save-data/');
-}
-add_action('init', 'test_rest_url');
-
-function enqueue_jWeatherCustomizer_script()
-{
-	// ブロックエディタ用のスクリプトを登録
 	wp_register_script(
 		'j-weather-customizer-script',
 		plugins_url('build/index.js', __FILE__),
-		array('wp-blocks'), // 必要に応じて依存関係を記述
+		array('wp-blocks'),
 		'1.0.0',
 		true
 	);
 
-	// データをローカライズしてセキュアな方法でスクリプトに渡します。
-	$plugin_data = array(
+	wp_localize_script('j-weather-customizer-script', 'JWeatherCustomizerData', [
 		'pluginImagePath' => plugin_dir_url(__FILE__) . 'images/',
 		'restUrl'         => rest_url('j-weather-customizer/save-data/'),
 		'nonce' => wp_create_nonce('wp_rest'),
 		'siteUrl'         => get_site_url(),
-	);
-
-	// ローカライズスクリプト
-	wp_localize_script('j-weather-customizer-script', 'JWeatherCustomizerData', $plugin_data);
-
-	// スクリプトをエンキューします。
+	]);
 	wp_enqueue_script('j-weather-customizer-script');
 }
 
-add_action('admin_enqueue_scripts', 'enqueue_jWeatherCustomizer_script');
-
-include dirname(__FILE__) . '/render-blocks.php';
-
-add_action('rest_api_init', function () {
+/**
+ * Registers REST API routes for the plugin.
+ */
+function  jweathercustomizer_register_routes()
+{
 	register_rest_route('j-weather-customizer', '/save-data/', array(
 		'methods' => 'POST',
 		'callback' => 'save_weather_data',
@@ -75,33 +71,35 @@ add_action('rest_api_init', function () {
 			return current_user_can('edit_posts');
 		}
 	));
-});
+};
 
-// ディレクトリが存在しない場合に作成する関数
-function ensureCacheDirectoryExists()
+/**
+ * Ensures the cache directory exists.
+ */
+function jweathercustomizer_ensure_cache_directory_exists()
 {
-  if (!file_exists(JWEATHERCUSTOMIZER_CACHE_DIR) || !is_dir(JWEATHERCUSTOMIZER_CACHE_DIR)) {
-    if (!mkdir(JWEATHERCUSTOMIZER_CACHE_DIR, 0755, true)) {
-      logMessage("Failed to create cache directory: " . JWEATHERCUSTOMIZER_CACHE_DIR);
-      exit;
-    }
-  }
+	if (!file_exists(JWEATHERCUSTOMIZER_CACHE_DIR) || !is_dir(JWEATHERCUSTOMIZER_CACHE_DIR)) {
+		if (!mkdir(JWEATHERCUSTOMIZER_CACHE_DIR, 0755, true)) {
+			logMessage("Failed to create cache directory: " . JWEATHERCUSTOMIZER_CACHE_DIR);
+			exit;
+		}
+	}
 }
 
-// タイムゾーンを日本時間に設定
-date_default_timezone_set('Asia/Tokyo');
-
-// プラグインの無効化時に実行される関数を登録
-register_deactivation_hook(__FILE__, 'JWeatherCustomizer_cleanup');
-
+/**
+ * Cleans up the cache directory upon plugin deactivation.
+ */
 function JWeatherCustomizer_cleanup()
 {
-	// 削除したいディレクトリのパス
 	$cacheDir = plugin_dir_path(__FILE__) . 'JWeatherCustomizer_Cache/';
-
-	// ディレクトリを再帰的に削除するカスタム関数
 	JWeatherCustomizer_recursive_delete($cacheDir);
 }
+
+/**
+ * Recursively deletes the contents of a directory.
+ *
+ * @param string $directory The path to the directory to delete.
+ */
 
 function JWeatherCustomizer_recursive_delete($directory)
 {
@@ -124,6 +122,3 @@ function JWeatherCustomizer_recursive_delete($directory)
 	}
 	rmdir($directory);
 }
-
-require_once dirname(__FILE__) . '/assets/cleanup_weather_cache_files.php';
-

@@ -2,6 +2,14 @@ import SelectCity from './SelectCity';
 import VisibilityControl from './VisibilityControl';
 import UIControlGroup from './UIControlGroup';
 
+/**
+ * A container component that groups together various UI controls for settings.
+ * This component encapsulates controls for selecting a city, adjusting visibility,
+ * and modifying UI elements like font family and text color.
+ * 
+ * @param {Object} props - Props containing settings and handler functions.
+ */
+
 const SettingGroup = ({
   selectedCity,
   cityOptions,

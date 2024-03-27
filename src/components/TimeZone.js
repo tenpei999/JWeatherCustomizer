@@ -1,3 +1,12 @@
+/**
+ * Displays the chance of rain for different times throughout the day.
+ * This component renders a list showing precipitation probabilities at specific intervals.
+ *
+ * @param {Object} props - Component properties.
+ * @param {Object} props.weather - The weather data containing rain probability information.
+ * @returns JSX.Element | null - A list of precipitation probabilities or null if weather data is not provided.
+ */
+
 const TimeZone = ({ weather }) => {
 
   if (!weather) return null;
@@ -30,6 +39,6 @@ const TimeZone = ({ weather }) => {
       </li>
     </ul>
   )
-}
+};
 
 export default TimeZone;
