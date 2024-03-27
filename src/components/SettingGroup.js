@@ -26,6 +26,10 @@ const SettingGroup = ({
   setAttributes,
 }) => {
 
+  const handleUpdateGroup1Count = (newCount) => {
+    setAttributes({ onCountGroup1: newCount });
+  };
+
   const wrapperStyle = {
     padding: '10px',
     display: 'flex',
@@ -49,7 +53,10 @@ const SettingGroup = ({
           cityOptions={cityOptions}
           handleCityChange={handleCityChange}
         />
-        <VisibilityControl settings={visibilitySettings} />
+        <VisibilityControl
+          settings={visibilitySettings}
+          onUpdateGroup1Count={handleUpdateGroup1Count}
+        />
         <UIControlGroup
           fontFamily={fontFamily}
           onChangeFontFamily={onChangeFontFamily}
@@ -62,6 +69,8 @@ const SettingGroup = ({
           setAttributes={setAttributes}
         />
       </div>
+      <a className='licenseOfApi' href="https://open-meteo.com/">Weather data by Open-Meteo.com</a>
+      <a className='licenseOfApi' href="https://opensource.org/license/mit">Holidays JP is licensed under the MIT license.</a>
     </div>
   );
 };

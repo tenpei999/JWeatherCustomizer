@@ -61,9 +61,7 @@
 		&--weekly {
 			display: flex;
 
-			@media screen and (min-width: $tablet-breakpoint) {
-
-			}
+			@media screen and (min-width: $tablet-breakpoint) {}
 		}
 
 		&--day {
@@ -187,6 +185,22 @@
 
 		.temp {
 			gap: 10px;
+		}
+	}
+
+	.licenseOfApi {
+		font-size: 15px;
+		display: block;
+
+		&-single {
+			display: block;
+			text-align: center;
+			
+			&--holiday {
+				font-size: 14px;
+				display: block;
+				text-align: center;
+			}
 		}
 	}
 }

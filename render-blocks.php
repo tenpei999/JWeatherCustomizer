@@ -51,6 +51,7 @@ function jWeatherCustomizer_render_block($attr, $content)
 
   $attr = array_merge([
     'uniqueID' => sanitize_key($attr['uniqueID'] ?? uniqid('block_', true)),
+    'onCountGroup1' => sanitize_key($attr['onCountGroup1'] ?? 3),
     'showTodayWeather' => filter_var($attr['showTodayWeather'] ?? true, FILTER_VALIDATE_BOOLEAN),
     'showTomorrowWeather' => filter_var($attr['showTomorrowWeather'] ?? true, FILTER_VALIDATE_BOOLEAN),
     'showWeeklyWeather' => filter_var($attr['showWeeklyWeather'] ?? true, FILTER_VALIDATE_BOOLEAN),
@@ -75,6 +76,7 @@ function jWeatherCustomizer_render_block($attr, $content)
   ], $attr);
 
 
+  $onCountGropu1 = $attr['onCountGroup1'];
   $uniqueID = $attr['uniqueID'];
   $apiUrl = $attr['selectedCity']['url'];
 
@@ -144,7 +146,11 @@ function jWeatherCustomizer_render_block($attr, $content)
     }
     $output .= '</ul>';
   }
+  // Weather data by Open-Meteo.com リンク
+  $output .= '<a href="https://open-meteo.com/" class="' . ($onCountGropu1 === 1 ? 'licenseOfApi-single' : 'licenseOfApi') . '">Weather data by Open-Meteo.com</a>';
 
+  // Holidays JP is licensed under the MIT license. リンク
+  $output .= '<a href="https://opensource.org/license/mit" class="' . ($onCountGropu1 === 1 ? 'licenseOfApi-single--holiday' : 'licenseOfApi') . '">Holidays JP is licensed under the MIT license.</a>';
   return $output;
 }
 
@@ -204,6 +210,7 @@ function generateWeeklyWeatherOutput($data, $textColor, $showHoliday)
   $output .= '</li>';
   $output .= '</ul>';
   $output .= '</li>';
+
 
   return $output;
 }

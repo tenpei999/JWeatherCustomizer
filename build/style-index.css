@@ -151,5 +151,18 @@
 .wp-block-create-block-j-weather-customizer .Comfortable .temp {
   gap: 10px;
 }
+.wp-block-create-block-j-weather-customizer .licenseOfApi {
+  font-size: 15px;
+  display: block;
+}
+.wp-block-create-block-j-weather-customizer .licenseOfApi-single {
+  display: block;
+  text-align: center;
+}
+.wp-block-create-block-j-weather-customizer .licenseOfApi-single--holiday {
+  font-size: 14px;
+  display: block;
+  text-align: center;
+}
 
 /*# sourceMappingURL=style-index.css.map*/

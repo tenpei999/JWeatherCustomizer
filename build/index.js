@@ -628,7 +628,13 @@ function Preview({
   }, showTodayWeather && renderCurrentWeather(todayWeather, '今日の天気'), showTomorrowWeather && renderCurrentWeather(tomorrowWeather, '明日の天気')), showWeeklyWeather && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_WeekWeather__WEBPACK_IMPORTED_MODULE_3__["default"], {
     weather: weeklyWeather,
     ...commonProps
-  })));
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
+    href: "https://open-meteo.com/",
+    className: attributes.onCountGroup1 === 1 ? 'licenseOfApi-single' : 'licenseOfApi'
+  }, "Weather data by Open-Meteo.com"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
+    href: "https://opensource.org/license/mit",
+    className: attributes.onCountGroup1 === 1 ? 'licenseOfApi-single--holiday' : 'licenseOfApi'
+  }, "Holidays JP is licensed under the MIT license.")));
 }
 ;
 
@@ -851,6 +857,11 @@ const SettingGroup = ({
   attributes,
   setAttributes
 }) => {
+  const handleUpdateGroup1Count = newCount => {
+    setAttributes({
+      onCountGroup1: newCount
+    });
+  };
   const wrapperStyle = {
     padding: '10px',
     display: 'flex',
@@ -873,7 +884,8 @@ const SettingGroup = ({
     cityOptions: cityOptions,
     handleCityChange: handleCityChange
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_VisibilityControl__WEBPACK_IMPORTED_MODULE_2__["default"], {
-    settings: visibilitySettings
+    settings: visibilitySettings,
+    onUpdateGroup1Count: handleUpdateGroup1Count
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_UIControlGroup__WEBPACK_IMPORTED_MODULE_3__["default"], {
     fontFamily: fontFamily,
     onChangeFontFamily: onChangeFontFamily,
@@ -884,7 +896,13 @@ const SettingGroup = ({
     fontBalanceOptions: fontBalanceOptions,
     attributes: attributes,
     setAttributes: setAttributes
-  })));
+  })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
+    className: "licenseOfApi",
+    href: "https://open-meteo.com/"
+  }, "Weather data by Open-Meteo.com"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
+    className: "licenseOfApi",
+    href: "https://opensource.org/license/mit"
+  }, "Holidays JP is licensed under the MIT license."));
 };
 /* harmony default export */ __webpack_exports__["default"] = (SettingGroup);
 
@@ -1195,7 +1213,8 @@ __webpack_require__.r(__webpack_exports__);
  * @param {Array} props.settings - An array of visibility settings, each with a label, checked state, and onChange handler.
  */
 const VisibilityControl = ({
-  settings
+  settings,
+  onUpdateGroup1Count
 }) => {
   // Local state to manage the visibility settings and special conditions for interactions.
   const [localSettings, setLocalSettings] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(settings);
@@ -1211,6 +1230,13 @@ const VisibilityControl = ({
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     setLocalSettings(settings);
   }, [settings]);
+
+  // Update the parent component with the new count of checked checkboxes in group1
+  // whenever the localSettings state changes.
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    const newCount = localSettings.slice(0, 3).filter(setting => setting.checked).length;
+    onUpdateGroup1Count(newCount);
+  }, [localSettings, onUpdateGroup1Count]);
 
   // Special condition handling: Resets the special click state after a short delay.
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
@@ -1575,6 +1601,7 @@ function Edit({
     showHoliday: attributes.showHoliday,
     showPrecipitation: attributes.showPrecipitation
   };
+  console.log(attributes);
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     ...blockProps,
     id: attributes.uniqueID
@@ -4301,7 +4328,7 @@ module.exports = window["wp"]["i18n"];
 /***/ (function(module) {
 
 "use strict";
-module.exports = JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"create-block/j-weather-customizer","version":"1.2","title":"JWeatherCustomizer","category":"text","icon":"flag","description":"A plugin that allows you to display a weather forecast of your choice on your website.","attributes":{"uniqueID":{"type":"string","default":""},"selectedCity":{"type":"object","default":{"name":"東京","url":"https://api.open-meteo.com/v1/forecast?latitude=35.6895&longitude=139.6917&hourly=precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14"}},"showTomorrowWeather":{"type":"boolean","default":true},"showWeeklyWeather":{"type":"boolean","default":true},"showTodayWeather":{"type":"boolean","default":true},"showHoliday":{"type":"boolean","default":true},"showPrecipitation":{"type":"boolean","default":true},"todayWeather":{"type":"object","default":{}},"tomorrowWeather":{"type":"object","default":{}},"weeklyWeather":{"type":"array","default":[]},"borderRadiusValue":{"type":"string","default":"0px"},"borderMode":{"type":"string","default":"flat"},"borders":{"type":"object","default":{"top":{"color":"#72aee6","style":"dashed","width":"1px"},"right":{"color":"#72aee6","style":"dashed","width":"1px"},"bottom":{"color":"#72aee6","style":"dashed","width":"1px"},"left":{"color":"#72aee6","style":"dashed","width":"1px"}}},"fontFamily":{"type":"string","default":"Noto Sans JP, sans-serif"},"textColor":{"type":"string","default":"black"},"backgroundStyleType":{"type":"string","default":"color"},"backgroundImage":{"type":"string","default":"http://hoge.local/wp-content/uploads/2023/10/IMG_5308-scaled.jpeg"},"backgroundGradient":{"type":"string","default":"linear-gradient(135deg,#1E9600 0%, #FFF200 0%, #FF0000 100%)"},"backgroundColor":{"type":"string","default":"#fff"},"balanceOption":{"type":"string","default":"EmphasizeTheWeather"}},"supports":{"html":false},"textdomain":"j-weather-customizer","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css"}');
+module.exports = JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"create-block/j-weather-customizer","version":"1.2","title":"JWeatherCustomizer","category":"text","icon":"flag","description":"A plugin that allows you to display a weather forecast of your choice on your website.","attributes":{"uniqueID":{"type":"string","default":""},"selectedCity":{"type":"object","default":{"name":"東京","url":"https://api.open-meteo.com/v1/forecast?latitude=35.6895&longitude=139.6917&hourly=precipitation_probability,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&past_days=1&forecast_days=14"}},"onCountGroup1":{"type":"number","default":3},"showTomorrowWeather":{"type":"boolean","default":true},"showWeeklyWeather":{"type":"boolean","default":true},"showTodayWeather":{"type":"boolean","default":true},"showHoliday":{"type":"boolean","default":true},"showPrecipitation":{"type":"boolean","default":true},"todayWeather":{"type":"object","default":{}},"tomorrowWeather":{"type":"object","default":{}},"weeklyWeather":{"type":"array","default":[]},"borderRadiusValue":{"type":"string","default":"0px"},"borderMode":{"type":"string","default":"flat"},"borders":{"type":"object","default":{"top":{"color":"#72aee6","style":"dashed","width":"1px"},"right":{"color":"#72aee6","style":"dashed","width":"1px"},"bottom":{"color":"#72aee6","style":"dashed","width":"1px"},"left":{"color":"#72aee6","style":"dashed","width":"1px"}}},"fontFamily":{"type":"string","default":"Noto Sans JP, sans-serif"},"textColor":{"type":"string","default":"black"},"backgroundStyleType":{"type":"string","default":"color"},"backgroundImage":{"type":"string","default":"http://hoge.local/wp-content/uploads/2023/10/IMG_5308-scaled.jpeg"},"backgroundGradient":{"type":"string","default":"linear-gradient(135deg,#1E9600 0%, #FFF200 0%, #FF0000 100%)"},"backgroundColor":{"type":"string","default":"#fff"},"balanceOption":{"type":"string","default":"EmphasizeTheWeather"}},"supports":{"html":false},"textdomain":"j-weather-customizer","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css"}');
 
 /***/ })
 

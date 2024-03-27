@@ -28,7 +28,7 @@ export default function Preview({ attributes, commonProps }) {
 
   const [errorMessage, setErrorMessage] = useState(null);
 
-   // Effect hook to check for API errors and set an appropriate error message using a custom handler.
+  // Effect hook to check for API errors and set an appropriate error message using a custom handler.
   useEffect(() => {
     if (isApiError.isError) {
       const message = handleWeatherError(isApiError);
@@ -38,16 +38,15 @@ export default function Preview({ attributes, commonProps }) {
     }
   }, [isApiError]);
 
-    /**
-   * Renders the CurrentWeather component for a given weather data set and title.
-   * 
-   * @param {Object} weather The weather data for the day.
-   * @param {string} title The title to display for this weather data set.
-   * @returns JSX.Element | null A CurrentWeather component or null if no weather data is provided.
-   */
+  /**
+  * Renders the CurrentWeather component for a given weather data set and title.
+  * 
+  * @param {Object} weather The weather data for the day.
+  * @param {string} title The title to display for this weather data set.
+  * @returns JSX.Element | null A CurrentWeather component or null if no weather data is provided.
+  */
   const renderCurrentWeather = (weather, title) => {
     if (!weather || !weather.day) return null;
-
 
     const isHoliday = weather.day.isHoliday || weather.day.isSunday;
     const textColor = isHoliday ? 'red' : weather.day.isSaturday ? 'blue' : '';
@@ -64,7 +63,7 @@ export default function Preview({ attributes, commonProps }) {
     );
   };
 
-   // Main render method of the Preview component. Displays an error message if there is an API error, otherwise renders weather information.
+  // Main render method of the Preview component. Displays an error message if there is an API error, otherwise renders weather information.
   return (
     <>
       {isApiError.isError ? (
@@ -76,8 +75,17 @@ export default function Preview({ attributes, commonProps }) {
             {showTomorrowWeather && renderCurrentWeather(tomorrowWeather, '明日の天気')}
           </div>
           {showWeeklyWeather && <WeekWeather weather={weeklyWeather} {...commonProps} />}
-        </div>
-      )}
+          <a
+            href="https://open-meteo.com/"
+            className={attributes.onCountGroup1 === 1 ? 'licenseOfApi-single' : 'licenseOfApi'}
+          >Weather data by Open-Meteo.com</a>
+          <a
+            href="https://opensource.org/license/mit"
+            className={attributes.onCountGroup1 === 1 ? 'licenseOfApi-single--holiday' : 'licenseOfApi'}
+          >Holidays JP is licensed under the MIT license.</a>
+        </div >
+      )
+      }
     </>
   );
 };
