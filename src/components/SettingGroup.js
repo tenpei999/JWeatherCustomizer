@@ -1,6 +1,8 @@
+import { useState } from '@wordpress/element';
 import SelectCity from './SelectCity';
 import VisibilityControl from './VisibilityControl';
 import UIControlGroup from './UIControlGroup';
+import { Credits } from './Credits';
 
 /**
  * A container component that groups together various UI controls for settings.
@@ -9,6 +11,7 @@ import UIControlGroup from './UIControlGroup';
  * 
  * @param {Object} props - Props containing settings and handler functions.
  */
+
 
 const SettingGroup = ({
   selectedCity,
@@ -25,6 +28,8 @@ const SettingGroup = ({
   attributes,
   setAttributes,
 }) => {
+
+  const [showCredits, setShowCredits] = useState(false);
 
   const handleUpdateGroup1Count = (newCount) => {
     setAttributes({ onCountGroup1: newCount });
@@ -43,6 +48,8 @@ const SettingGroup = ({
   const headingTitle = {
     textAlign: 'center',
   }
+
+  const toggleCredits = () => setShowCredits(!showCredits);
 
   return (
     <div style={wrapperStyle}>
@@ -68,9 +75,16 @@ const SettingGroup = ({
           attributes={attributes}
           setAttributes={setAttributes}
         />
+        <button onClick={toggleCredits} className="credits-button">
+          Credits
+        </button>
       </div>
-      <a className='licenseOfApi' href="https://open-meteo.com/">Weather data by Open-Meteo.com</a>
-      <a className='licenseOfApi' href="https://opensource.org/license/mit">Holidays JP is licensed under the MIT license.</a>
+      {/* クレジット一覧が表示される条件分岐 */}
+      {showCredits && (
+        <Credits
+          setShowCredits={setShowCredits}
+        />
+      )}
     </div>
   );
 };

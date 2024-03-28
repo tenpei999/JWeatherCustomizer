@@ -75,17 +75,8 @@ export default function Preview({ attributes, commonProps }) {
             {showTomorrowWeather && renderCurrentWeather(tomorrowWeather, '明日の天気')}
           </div>
           {showWeeklyWeather && <WeekWeather weather={weeklyWeather} {...commonProps} />}
-          <a
-            href="https://open-meteo.com/"
-            className={attributes.onCountGroup1 === 1 ? 'licenseOfApi-single' : 'licenseOfApi'}
-          >Weather data by Open-Meteo.com</a>
-          <a
-            href="https://opensource.org/license/mit"
-            className={attributes.onCountGroup1 === 1 ? 'licenseOfApi-single--holiday' : 'licenseOfApi'}
-          >Holidays JP is licensed under the MIT license.</a>
         </div >
-      )
-      }
+      )}
     </>
   );
 };

@@ -356,6 +356,52 @@ function BorderControlGroup({
 
 /***/ }),
 
+/***/ "./src/components/Credits.js":
+/*!***********************************!*\
+  !*** ./src/components/Credits.js ***!
+  \***********************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Credits: function() { return /* binding */ Credits; }
+/* harmony export */ });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+
+const Credits = ({
+  setShowCredits
+}) => {
+  const handleClose = () => {
+    setShowCredits(false); // '戻る' ボタンクリックで showCredits 状態を更新
+  };
+
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("article", {
+    className: "credits-full"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h3", null, "Credits"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("ul", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", {
+    className: "credits-list"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
+    href: "https://open-meteo.com/"
+  }, "Weather data by Open-Meteo.com")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", {
+    className: "credits-list"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
+    href: "https://holidays-jp.github.io/"
+  }, "Holiday information obtained from Holidays JP by matsuoshi")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
+    href: "https://opensource.org/license/mit"
+  }, "Licensed by MIT"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", {
+    className: "credits-list"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
+    href: "https://www.jma.go.jp/jma/kishou/info/coment.html"
+  }, "The icons are from the Japan Meteorological Agency")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("ul", {
+    className: "credits-list__child"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", null, "https://www.jma.go.jp/bosai/forecast/img/100.svg")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", null, "https://www.jma.go.jp/bosai/forecast/img/101.svg")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", null, "https://www.jma.go.jp/bosai/forecast/img/200.svg")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", null, "https://www.jma.go.jp/bosai/forecast/img/202.svg")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", null, "https://www.jma.go.jp/bosai/forecast/img/302.svg")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", null, "https://www.jma.go.jp/bosai/forecast/img/400.svg"))))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    onClick: handleClose
+  }, "return")));
+};
+
+/***/ }),
+
 /***/ "./src/components/CurrentWeather.js":
 /*!******************************************!*\
   !*** ./src/components/CurrentWeather.js ***!
@@ -628,13 +674,7 @@ function Preview({
   }, showTodayWeather && renderCurrentWeather(todayWeather, '今日の天気'), showTomorrowWeather && renderCurrentWeather(tomorrowWeather, '明日の天気')), showWeeklyWeather && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_WeekWeather__WEBPACK_IMPORTED_MODULE_3__["default"], {
     weather: weeklyWeather,
     ...commonProps
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
-    href: "https://open-meteo.com/",
-    className: attributes.onCountGroup1 === 1 ? 'licenseOfApi-single' : 'licenseOfApi'
-  }, "Weather data by Open-Meteo.com"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
-    href: "https://opensource.org/license/mit",
-    className: attributes.onCountGroup1 === 1 ? 'licenseOfApi-single--holiday' : 'licenseOfApi'
-  }, "Holidays JP is licensed under the MIT license.")));
+  })));
 }
 ;
 
@@ -829,6 +869,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _SelectCity__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./SelectCity */ "./src/components/SelectCity.js");
 /* harmony import */ var _VisibilityControl__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./VisibilityControl */ "./src/components/VisibilityControl.js");
 /* harmony import */ var _UIControlGroup__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./UIControlGroup */ "./src/components/UIControlGroup.js");
+/* harmony import */ var _Credits__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Credits */ "./src/components/Credits.js");
+
+
 
 
 
@@ -857,6 +900,7 @@ const SettingGroup = ({
   attributes,
   setAttributes
 }) => {
+  const [showCredits, setShowCredits] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
   const handleUpdateGroup1Count = newCount => {
     setAttributes({
       onCountGroup1: newCount
@@ -873,6 +917,7 @@ const SettingGroup = ({
   const headingTitle = {
     textAlign: 'center'
   };
+  const toggleCredits = () => setShowCredits(!showCredits);
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     style: wrapperStyle
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h3", {
@@ -896,13 +941,12 @@ const SettingGroup = ({
     fontBalanceOptions: fontBalanceOptions,
     attributes: attributes,
     setAttributes: setAttributes
-  })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
-    className: "licenseOfApi",
-    href: "https://open-meteo.com/"
-  }, "Weather data by Open-Meteo.com"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
-    className: "licenseOfApi",
-    href: "https://opensource.org/license/mit"
-  }, "Holidays JP is licensed under the MIT license."));
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    onClick: toggleCredits,
+    className: "credits-button"
+  }, "Credits")), showCredits && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Credits__WEBPACK_IMPORTED_MODULE_4__.Credits, {
+    setShowCredits: setShowCredits
+  }));
 };
 /* harmony default export */ __webpack_exports__["default"] = (SettingGroup);
 
@@ -1601,7 +1645,6 @@ function Edit({
     showHoliday: attributes.showHoliday,
     showPrecipitation: attributes.showPrecipitation
   };
-  console.log(attributes);
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     ...blockProps,
     id: attributes.uniqueID

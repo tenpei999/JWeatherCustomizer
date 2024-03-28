@@ -113,10 +113,8 @@ export default function Edit({ attributes, setAttributes }) {
 		showPrecipitation: attributes.showPrecipitation,
 	};
 
-	console.log(attributes)
-
 	return (
-		<div {...blockProps}  id={attributes.uniqueID} >
+		<div {...blockProps} id={attributes.uniqueID} >
 			<div onClick={handleLayoutClick} ref={ref}>
 				{showSelection ? (
 					<SettingGroup
