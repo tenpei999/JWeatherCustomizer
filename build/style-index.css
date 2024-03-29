@@ -37,6 +37,9 @@
   font-weight: 400;
   font-style: normal;
 }
+.wp-block-create-block-j-weather-customizer {
+  position: relative;
+}
 .wp-block-create-block-j-weather-customizer p {
   margin-block-start: 0;
   margin-block-end: 0;
@@ -159,15 +162,11 @@
   display: block;
   text-align: center;
 }
-.wp-block-create-block-j-weather-customizer .licenseOfApi-single--holiday {
-  font-size: 14px;
-  display: block;
-  text-align: center;
-}
 .wp-block-create-block-j-weather-customizer .credits-full {
   width: 100%;
   height: 100%;
   position: absolute;
+  top: 0;
   display: flex;
   flex-direction: column;
   justify-content: center;

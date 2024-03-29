@@ -23,6 +23,7 @@
 
 	$tablet-breakpoint: 800px;
 	$desktop-breakpoint: 1200px;
+	position: relative;
 
 	p {
 		margin-block-start: 0;
@@ -195,12 +196,6 @@
 		&-single {
 			display: block;
 			text-align: center;
-
-			&--holiday {
-				font-size: 14px;
-				display: block;
-				text-align: center;
-			}
 		}
 	}
 
@@ -209,6 +204,7 @@
 			width: 100%;
 			height: 100%;
 			position: absolute;
+			top: 0;
 			display: flex;
 			flex-direction: column;
 			justify-content: center;

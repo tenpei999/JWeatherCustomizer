@@ -55,6 +55,7 @@ function JWeatherCustomizer_init()
 		'restUrl'         => rest_url('j-weather-customizer/save-data/'),
 		'nonce' => wp_create_nonce('wp_rest'),
 		'siteUrl'         => get_site_url(),
+		'creditsUrl' => plugin_dir_url(__FILE__) . 'assets/credits.php',
 	]);
 	wp_enqueue_script('j-weather-customizer-script');
 }
@@ -121,4 +122,18 @@ function JWeatherCustomizer_recursive_delete($directory)
 		}
 	}
 	rmdir($directory);
+};
+
+function JWeatherCustomizer_frontend_scripts() {
+	// ブロックが存在するページのみでスクリプトを読み込む
+	if ( has_block( 'create-block/j-weather-customizer' ) ) {
+			wp_enqueue_script(
+					'JWeatherCustomizer-frontend-script',
+					JWEATHERCUSTOMIZER_URL . '/frontScript/frontend.js', // 正確なパスに変更してください
+					array(), // 依存関係がある場合はここに記載
+					'1.0',
+					true // スクリプトをフッターに配置
+			);
+	}
 }
+add_action( 'wp_enqueue_scripts', 'JWeatherCustomizer_frontend_scripts' );

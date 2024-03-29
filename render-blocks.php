@@ -146,11 +146,8 @@ function jWeatherCustomizer_render_block($attr, $content)
     }
     $output .= '</ul>';
   }
-  // Weather data by Open-Meteo.com リンク
-  $output .= '<a href="https://open-meteo.com/" class="' . ($onCountGropu1 === 1 ? 'licenseOfApi-single' : 'licenseOfApi') . '">Weather data by Open-Meteo.com</a>';
-
-  // Holidays JP is licensed under the MIT license. リンク
-  $output .= '<a href="https://opensource.org/license/mit" class="' . ($onCountGropu1 === 1 ? 'licenseOfApi-single--holiday' : 'licenseOfApi') . '">Holidays JP is licensed under the MIT license.</a>';
+  $output .= '<button id="loadCredits">Credits</button>';
+  $output .= '<div id="creditsContainer"></div> ';
   return $output;
 }
 
